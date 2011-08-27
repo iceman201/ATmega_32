@@ -1,0 +1,8 @@
+Use this directory for your final game and its module(s).  Only the
+files in this directory will be marked.
+
+Ensure you use the svn add command to add your files to the subversion
+repository.  For example,
+
+svn add game.c
+svn add Makefile

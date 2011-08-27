@@ -1,0 +1,9 @@
+apps         --- contains a sub-directory for each application
+drivers      --- device driver modules (hardware independent)
+drivers/avr  --- device driver modules specifically for AVR architecture
+drivers/test --- device driver modules for test scaffold
+common       --- common modules (utilities, etc.)
+doc          --- documentation
+etc          --- miscellaneous scripts
+fonts        --- fonts and font creation program
+
