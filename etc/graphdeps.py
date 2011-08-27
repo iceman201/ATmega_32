@@ -61,6 +61,10 @@ def node_output (dotfile, name, options):
         colour = 'orange'
         shape = 'rectangle'
 
+    if options.calls:
+        colour = 'magenta'
+        shape = 'rectangle'
+
     dotfile.write ('\t"' + name + '"\t [style=filled,shape=' + shape + ',color=' + colour + '];\n')
 
     return name
@@ -144,6 +148,10 @@ def main(argv = None):
     parser.add_option('--modules', action = 'store_true',
                       dest = 'modules', default = False,
                       help = 'show module dependencies')
+
+    parser.add_option('--calls', action = 'store_true',
+                      dest = 'calls', default = False,
+                      help = 'show callgraph')
 
     parser.add_option('--fullpaths', action = 'store_true',
                       dest = 'fullpaths', default = False,

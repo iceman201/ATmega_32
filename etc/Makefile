@@ -59,7 +59,7 @@ appcallgraph: $(APPCALLGRAPH)
 	./graphdeps.py $< --out $@ --showops
 
 ../%/callgraph.pdf: ../%/callgraph.d 
-	(cd $(dir $@);	../../etc/graphdeps.py $(notdir $<) --out $(notdir $@))
+	(cd $(dir $@);	../../etc/graphdeps.py --calls $(notdir $<) --out $(notdir $@))
 
 ../%/files.d: ../%/Makefile
 	(cd $(dir $@);	../../etc/makemake.py --relpath --files . . ../../drivers ../../drivers/avr ../../utils --exclude system.h > files.d)
