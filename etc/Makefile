@@ -33,11 +33,11 @@ testmakefiles: $(TESTMAKEFILES)
 appmakefiles: $(APPMAKEFILES)
 
 ../%/Makefile.test: Makefile.test.template Makefile
-	(cd $(dir $@);	../../etc/makemake.py --relpath --objext=-test.o --template ../../etc/Makefile.test.template . . ../../utils ../../drivers ../../drivers/test > Makefile.test)
+	(cd $(dir $@);	../../etc/makemake.py --cc="gcc" --cflags="" --relpath --objext=-test.o --template ../../etc/Makefile.test.template . . ../../utils ../../drivers ../../drivers/test > Makefile.test)
 
 
 ../%/Makefile: Makefile.template Makefile makemake.py
-	(cd $(dir $@);	../../etc/makemake.py --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > Makefile)
+	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > Makefile)
 
 
 appfiledeps: $(APPFILEDEPS)
@@ -69,7 +69,7 @@ appcallgraph: $(APPCALLGRAPH)
 	(cd $(dir $@);	../../etc/makemake.py --relpath --modules . . ../../drivers ../../drivers/avr ../../utils --exclude system > modules.d)
 
 ../%/callgraph.d: ../%/Makefile
-	(cd $(dir $@);	../../etc/makemake.py --relpath --calls . . ../../drivers ../../drivers/avr ../../utils --exclude system > callgraph.d)
+	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --calls . . ../../drivers ../../drivers/avr ../../utils --exclude system > callgraph.d)
 
 
 # Compile all the applications.

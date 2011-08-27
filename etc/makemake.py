@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.03
+"""makemake V0.04
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -27,6 +27,8 @@ The --modules option also needs fixing.  FIXME!
 There are special strings that are replaced in the template file:
  @PROJECT@      Project name
  @VPATH@        List of source directories
+ @CC@           Compiler name
+ @CFLAGS@       Compiler flags
  @INCLUDES@     List of include directories each prefixed by -I
  @SRC@          List of source files
  @OBJ@          List of object files
@@ -157,6 +159,8 @@ def  makefile_print (options, template, maincfilename, filedeps,
 
     text = re.sub (r'@PROJECT@', project, text)
     text = re.sub (r'@VPATH@', vpath, text)
+    text = re.sub (r'@CC@', options.cc, text)
+    text = re.sub (r'@CFLAGS@', options.cflags, text)
     text = re.sub (r'@INCLUDES@', includes, text)
     text = re.sub (r'@SRC@', src, text)
 
@@ -386,6 +390,14 @@ def main(argv = None):
                       default = '.out',
                       help = 'executable file extension')
 
+    parser.add_option('--cc', dest = 'cc',
+                      default = 'gcc',
+                      help = 'compiler name')
+
+    parser.add_option('--cflags', dest = 'cflags',
+                      default = '',
+                      help = 'CFLAGS')
+
     parser.add_option('--relpath', action = 'store_true',
                       dest = 'relpath', default = False,
                       help = 'use relative paths')
@@ -440,9 +452,9 @@ def main(argv = None):
             print >> sys.stderr, 'Found C file ' + maincfilename
 
     includes = '-I' + ' -I'.join (search_list)
-    cflags = '-mmcu=atmega32u2'
-    opts = '-Os'
-    gcc = 'avr-gcc' + ' ' + cflags + ' ' + opts + ' ' + includes
+    gcc = options.cc + ' ' + options.cflags + ' ' + includes
+
+    print >> sys.stderr, gcc
 
     # Search main c file looking for header files included with #include
     # and any header files included by the header files    
