@@ -234,6 +234,9 @@ def functions_find (gcc, filepath, functiondeps = {}):
     rtlfilename = os.path.abspath (os.path.basename (filepath)) + '.012t.cfg'
     # print >> sys.stderr, rtlfilename
 
+    if not os.path.exists (rtlfilename):
+        return
+
     file = open (rtlfilename, 'r')
     text = file.readlines ()
     file.close ()
@@ -241,7 +244,8 @@ def functions_find (gcc, filepath, functiondeps = {}):
     function = None
     for line in text:
         #print >> sys.stderr, line
-        matches = re.findall (r'^(.*)\s[(][)]', line)
+        #matches = re.findall (r'^(.*)\s[(][)]', line)
+        matches = re.findall (r'^;; Function (.*)\s[(]', line)
         if matches:
             function = matches[0]
             functiondeps[function] = []
@@ -252,11 +256,11 @@ def functions_find (gcc, filepath, functiondeps = {}):
             if function:
                 functiondeps[function].append (matches[0])
             else:
-                print >> sys.stderr, matches[0], 'used outside function",
+                print >> sys.stderr, matches[0], 'used outside function in', filepath
 
     command = 'rm ' + rtlfilename
     # print >> sys.stderr, command
-    os.system (command)
+    # os.system (command)
 
 
 def files_find (gcc, filepath, search_path, filedeps, moduledeps, functiondeps, indent, debug):
@@ -284,12 +288,12 @@ def files_find (gcc, filepath, search_path, filedeps, moduledeps, functiondeps, 
             continue
         # Have found a module
         modules.append (cpath)
+
+    functions_find (gcc, filepath, functiondeps)
         
     base, ext = os.path.splitext (os.path.basename (filepath))
     if ext == '.c':
         
-        functions_find (gcc, filepath, functiondeps)
-
         moduledeps[base] = []
         for module in modules:
             modbase, ext = os.path.splitext (os.path.basename (module))
@@ -326,7 +330,9 @@ def deps_print (target, depsdir, mopts, record = {}):
 
     if record.has_key (target):
         return
-
+    if not depsdir.has_key (target):
+        return
+    
     deps = depsdir[target]
     deps = [dep for dep in deps if os.path.basename (dep) not in mopts['exclude']]
     for dep in deps:
@@ -443,6 +449,8 @@ def main(argv = None):
         moduledeps = {}
         functiondeps = {}
         files_find (gcc, maincfilename, search_path, filedeps, moduledeps, functiondeps, '', debug)
+
+        print >> sys.stderr, functiondeps
 
         cfilelist = cfiles_get (filedeps)
         ofilelist = [cfile[:-2] + mopts['objext'] for cfile in cfilelist]
