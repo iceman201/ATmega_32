@@ -238,7 +238,7 @@ def functions_find (gcc, filepath, functiondeps = {}):
     text = file.readlines ()
     file.close ()
 
-    func_def = None
+    function = None
     for line in text:
         #print >> sys.stderr, line
         matches = re.findall (r'^(.*)\s[(][)]', line)
@@ -249,7 +249,10 @@ def functions_find (gcc, filepath, functiondeps = {}):
         matches = re.findall (r'.*gimple_call [<]([\w]*)[,]', line)
         if matches:
             # print >> sys.stderr, 'USE', matches[0]
-            functiondeps[function].append (matches[0])
+            if function:
+                functiondeps[function].append (matches[0])
+            else:
+                print >> sys.stderr, matches[0], 'used outside function",
 
     command = 'rm ' + rtlfilename
     # print >> sys.stderr, command
