@@ -263,7 +263,7 @@ def functions_find (gcc, filepath, functiondeps = {}):
     # os.system (command)
 
 
-def files_find (gcc, filepath, search_path, filedeps, moduledeps, functiondeps, indent, debug):
+def files_find (gcc, filepath, search_path, filedeps, moduledeps, indent, debug):
 
     # filedeps is a cache of all known included files
 
@@ -289,8 +289,6 @@ def files_find (gcc, filepath, search_path, filedeps, moduledeps, functiondeps, 
         # Have found a module
         modules.append (cpath)
 
-    functions_find (gcc, filepath, functiondeps)
-        
     base, ext = os.path.splitext (os.path.basename (filepath))
     if ext == '.c':
         
@@ -303,11 +301,11 @@ def files_find (gcc, filepath, search_path, filedeps, moduledeps, functiondeps, 
 
     # Search recursively each new included file
     for file in includes2:    
-        files_find (gcc, file, search_path, filedeps, moduledeps, functiondeps, indent + ' ', debug)
+        files_find (gcc, file, search_path, filedeps, moduledeps, indent + ' ', debug)
 
     # Search the modules
     for file in modules:    
-        files_find (gcc, file, search_path, filedeps, moduledeps, functiondeps, indent + ' ', debug)
+        files_find (gcc, file, search_path, filedeps, moduledeps, indent + ' ', debug)
 
 
 def alldeps_print (depsdir, mopts):
@@ -465,6 +463,8 @@ def main(argv = None):
         # print >> sys.stderr, filedeps
 
         if mopts['calls']:
+            for cfile in cfilelist:
+                functions_find (gcc, cfile, functiondeps)
             deps_print ('main', functiondeps, mopts)
 
         if mopts['files']:
