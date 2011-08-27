@@ -249,13 +249,25 @@ def functions_find (gcc, filepath, functiondeps = {}):
             function = matches[0]
             functiondeps[function] = []
             # print >> sys.stderr, 'DEF', function
-        matches = re.findall (r'.*gimple_call [<]([\w]*)[,]', line)
+        matches = re.findall (r'.*gimple_call <([\w]*),', line)
         if matches:
             # print >> sys.stderr, 'USE', matches[0]
             if function:
                 functiondeps[function].append (matches[0])
             else:
                 print >> sys.stderr, matches[0], 'used outside function in', filepath
+
+    # Search for where a function address is taken
+    function = None
+    for line in text:
+        matches = re.findall (r'^;; Function (.*)\s[(]', line)
+        if matches:
+            function = matches[0]
+        #  gimple_assign <addr_expr, tasks[0].func, display_task, NULL>
+        matches = re.findall (r'.*gimple_assign <addr_expr, [\w\[\].]*, ([\w]*)', line)
+        if matches and functiondeps.has_key (matches[0]):
+            # This is an indirect link
+            functiondeps[function].append (matches[0])
 
     command = 'rm ' + rtlfilename
     # print >> sys.stderr, command
