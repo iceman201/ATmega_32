@@ -4,7 +4,7 @@
 # Descr:  Makefile for @PROJECT@
 
 # Definitions.
-CC = @CC@
+CC = avr-gcc
 CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g @INCLUDES@
 OBJCOPY = avr-objcopy
 SIZE = avr-size
