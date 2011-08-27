@@ -446,9 +446,7 @@ def main(argv = None):
         filedeps = {}
         moduledeps = {}
         functiondeps = {}
-        files_find (gcc, maincfilename, search_path, filedeps, moduledeps, functiondeps, '', debug)
-
-        print >> sys.stderr, functiondeps
+        files_find (gcc, maincfilename, search_path, filedeps, moduledeps, '', debug)
 
         cfilelist = cfiles_get (filedeps)
         ofilelist = [cfile[:-2] + mopts['objext'] for cfile in cfilelist]
