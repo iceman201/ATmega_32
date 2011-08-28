@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""graphdeps V0.06
+"""graphdeps V0.07
 Copyright (c) 2011 Michael P. Hayes, UC ECE, NZ
 
 Usage: graphdeps Makefile
@@ -40,6 +40,12 @@ def parse_rules (filename):
 
 
 def node_output (dotfile, name, options):
+
+    if options.debug:
+        print >> sys.stderr, 'Node', name
+
+    if not options.fullpaths:
+        name = os.path.basename (name)
 
     # Should check if creating a duplicate although graphviz will
     # weed them out.
@@ -85,11 +91,8 @@ def edge_output (dotfile, target, dep, indirect):
 
 def dep_output (dotfile, target, dep, modules, options):
 
-    if not options.fullpaths:
-        target = os.path.basename (target)
-        dep = os.path.basename (dep)
-
-    target = node_output (dotfile, target, options)
+    if options.debug:
+        print >> sys.stderr, target, '::', dep
 
     if dep == '':
         return
@@ -98,7 +101,7 @@ def dep_output (dotfile, target, dep, modules, options):
     if indirect:
         dep = dep[1:]
 
-    dep = node_output (dotfile, dep, options)
+    # dep = node_output (dotfile, dep, options)
 
     (file, ext) = os.path.splitext (target)        
 
@@ -126,15 +129,22 @@ def target_output (dotfile, target, targets, modules, options, seen = {}):
 
     if not target or seen.has_key (target):
         return
-
     deps = targets[target]
+
+    if options.debug:
+        print >> sys.stderr, target, ':', deps
 
     for dep in deps:
         if targets.has_key (dep) and target != dep:
             target_output (dotfile, dep, targets, modules, options, seen)
     
+    target1 = node_output (dotfile, target, options)
+
     for dep in deps:
-        dep_output (dotfile, target, dep, modules, options)
+        if dep != '':
+            dep_output (dotfile, target1, dep, modules, options)
+
+    seen[target] = True
 
 
 
@@ -158,6 +168,10 @@ def main(argv = None):
     parser.add_option('--calls', action = 'store_true',
                       dest = 'calls', default = False,
                       help = 'show callgraph')
+
+    parser.add_option('--debug', action = 'store_true',
+                      dest = 'debug', default = False,
+                      help = 'enable debugging')
 
     parser.add_option('--fullpaths', action = 'store_true',
                       dest = 'fullpaths', default = False,
