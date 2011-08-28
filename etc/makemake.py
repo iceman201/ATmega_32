@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.04
+"""makemake V0.05
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -343,8 +343,15 @@ def deps_print (target, depsdir, options, record = {}):
         return
     
     deps = depsdir[target]
+
+    print >> sys.stderr, target + ': ', deps
+
     deps = [dep for dep in deps if os.path.basename (dep) not in options.exclude]
     for dep in deps:
+        # Have recursion
+        if target == dep:
+            continue
+
         deps_print (dep, depsdir, options, record)
 
     if options.relpath:
@@ -466,7 +473,8 @@ def main(argv = None):
     includes = '-I' + ' -I'.join (search_list)
     gcc = options.cc + ' ' + options.cflags + ' ' + includes
 
-    print >> sys.stderr, gcc
+    if options.debug:
+        print >> sys.stderr, gcc
 
     # Search main c file looking for header files included with #include
     # and any header files included by the header files    

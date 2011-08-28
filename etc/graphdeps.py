@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""graphdeps V0.04
+"""graphdeps V0.05
 Copyright (c) 2011 Michael P. Hayes, UC ECE, NZ
 
 Usage: graphdeps Makefile
@@ -57,12 +57,11 @@ def node_output (dotfile, name, options):
 
     shape = 'ellipse'
     if options.modules:
-        # Maybe magenta
         colour = 'orange'
         shape = 'rectangle'
 
     if options.calls:
-        colour = 'magenta'
+        colour = 'turquoise1'
         shape = 'rectangle'
 
     dotfile.write ('\t"' + name + '"\t [style=filled,shape=' + shape + ',color=' + colour + '];\n')
@@ -124,7 +123,7 @@ def target_output (dotfile, target, targets, modules, options, seen = {}):
     deps = targets[target]
 
     for dep in deps:
-        if targets.has_key (dep):
+        if targets.has_key (dep) and target != dep:
             target_output (dotfile, dep, targets, modules, options, seen)
     
     for dep in deps:

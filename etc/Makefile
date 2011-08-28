@@ -22,9 +22,9 @@ APPFILEDEPS = $(addsuffix /file_dependencies.pdf, $(APPS))
 APPMODULEDEPS = $(addsuffix /module_dependencies.pdf, $(APPS))
 APPMAKEFILEDEPS = $(addsuffix /makefile_dependencies.pdf, $(APPS))
 APPBUILDDEPS = $(addsuffix /build_dependencies.pdf, $(APPS))
-APPCALLGRAPHDDEPS = $(addsuffix /callgraph.pdf, $(APPS))
+APPCALLGRAPHS = $(addsuffix /callgraph.pdf, $(APPS))
 
-all: testmakefiles appmakefiles apps test appfiledeps appmoduledeps appmakefiledeps appbuilddeps appcallgraph
+all: testmakefiles appmakefiles apps test appfiledeps appmoduledeps appmakefiledeps appbuilddeps appcallgraphs
 
 clean: cleanapps cleantest
 
@@ -44,7 +44,7 @@ appfiledeps: $(APPFILEDEPS)
 appmoduledeps: $(APPMODULEDEPS)
 appmakefiledeps: $(APPMAKEFILEDEPS)
 appbuilddeps: $(APPBUILDDEPS)
-appcallgraph: $(APPCALLGRAPH)
+appcallgraphs: $(APPCALLGRAPHS)
 
 ../%/file_dependencies.pdf: ../%/files.d 
 	./graphdeps.py $< --out $@
