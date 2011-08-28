@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""graphdeps V0.07
+"""graphdeps V0.08
 Copyright (c) 2011 Michael P. Hayes, UC ECE, NZ
 
 Usage: graphdeps Makefile
@@ -28,12 +28,16 @@ def parse_rules (filename):
 
     # Look for targets ignoring targets starting with dot (.PHONY, etc).
     # This expects the command to be a single line.
-    matches = re.findall (r'^([a-z0-9._/\-]*):\s(.*)\n(.*)', text, re.MULTILINE)
+    matches = re.findall (r'^([@a-z0-9._/\-]*):\s(.*)\n(.*)', text, re.MULTILINE)
 
     rules = []
     for match in matches:
-        # Target, dependencies, command.
-        rule = (match[0], match[1].strip().split (' '), match[2].strip ())
+        target = match[0]
+        filename = None
+        if '@' in target:
+            (target, filename) = target.split ('@')
+        # Target, dependencies, command, filename.
+        rule = (target, match[1].strip().split (' '), match[2].strip (), filename)
         rules.append (rule)
 
     return rules
@@ -226,6 +230,22 @@ def main(argv = None):
 
     for target in wantedtargets:
         target_output (dotfile, target, targets, modules, options)
+
+    if options.calls and options.modules:
+        modules = {}
+        for rule in rules:
+            filename = rule[3]
+            if not filename:
+                continue
+            if not modules.has_key (filename):
+                modules[filename] = []
+            modules[filename].append (rule[0])
+
+        for module in modules.keys ():
+            dotfile.write ('\tsubgraph "cluster_' + module + '" {label = "' + module + '";')
+            for function in modules[module]:
+                dotfile.write (function + ';')
+            dotfile.write ('}\n')
 
     dotfile.write ('}\n')
     dotfile.close ()

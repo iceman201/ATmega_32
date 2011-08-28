@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.06
+"""makemake V0.07
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -224,7 +224,7 @@ def maincfilename_find (dirname):
     return filelist[0]
 
 
-def functions_find (gcc, filepath, functiondeps = {}):
+def functions_find (gcc, filepath, functiondeps = {}, functions = {}):
 
     command = gcc + ' -c ' + filepath + ' -fdump-tree-cfg-raw  > /dev/null'
     # print >> sys.stderr, command
@@ -248,6 +248,7 @@ def functions_find (gcc, filepath, functiondeps = {}):
         if matches:
             function = matches[0]
             functiondeps[function] = []
+            functions[function] = filepath
             # print >> sys.stderr, 'DEF', function
         matches = re.findall (r'.*gimple_call <([\w]*),', line)
         if matches:
@@ -362,14 +363,14 @@ def deps_print (target, depsdir, options, record = {}):
     print os.path.relpath (target) + ': ' + ' '.join (deps) + '\n'
 
 
-def callgraph_print (target, depsdir, options, record = {}):
+def callgraph_print (target, functiondeps, functions, options, record = {}):
 
     if record.has_key (target):
         return
-    if not depsdir.has_key (target):
+    if not functiondeps.has_key (target):
         return
     
-    deps = depsdir[target]
+    deps = functiondeps[target]
 
     # print >> sys.stderr, target + ': ', deps
 
@@ -382,11 +383,13 @@ def callgraph_print (target, depsdir, options, record = {}):
         if dep[0] == '@':
             dep = dep[1:]
 
-        deps_print (dep, depsdir, options, record)
+        callgraph_print (dep, functiondeps, functions, options, record)
 
     record[target] = True
 
-    print os.path.relpath (target) + ': ' + ' '.join (deps) + '\n'
+#    print os.path.relpath (target) + ': ' + ' '.join (deps) + '\n' + '\t' + os.path.basename (functions[target]) + '\n'
+
+    print os.path.relpath (target) + '@' + os.path.basename (functions[target]) + ': ' + ' '.join (deps) + '\n'
 
 
 
@@ -508,7 +511,6 @@ def main(argv = None):
 
     filedeps = {}
     moduledeps = {}
-    functiondeps = {}
     files_find (gcc, maincfilename, search_path, filedeps, moduledeps, '', options.debug)
     
     cfilelist = cfiles_get (filedeps)
@@ -524,9 +526,11 @@ def main(argv = None):
     # print >> sys.stderr, filedeps
 
     if options.calls:
+        functiondeps = {}
+        functions = {}
         for cfile in cfilelist:
-            functions_find (gcc, cfile, functiondeps)
-        callgraph_print ('main', functiondeps, options)
+            functions_find (gcc, cfile, functiondeps, functions)
+        callgraph_print ('main', functiondeps, functions, options)
 
     if options.files:
         deps_print (outfile, filedeps, options)
