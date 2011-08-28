@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.05
+"""makemake V0.06
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -267,7 +267,7 @@ def functions_find (gcc, filepath, functiondeps = {}):
         matches = re.findall (r'.*gimple_assign <addr_expr, [\w\[\].]*, ([\w]*)', line)
         if matches and functiondeps.has_key (matches[0]):
             # This is an indirect link
-            functiondeps[function].append (matches[0])
+            functiondeps[function].append ('@' + matches[0])
 
     command = 'rm ' + rtlfilename
     # print >> sys.stderr, command
@@ -344,7 +344,7 @@ def deps_print (target, depsdir, options, record = {}):
     
     deps = depsdir[target]
 
-    print >> sys.stderr, target + ': ', deps
+    # print >> sys.stderr, target + ': ', deps
 
     deps = [dep for dep in deps if os.path.basename (dep) not in options.exclude]
     for dep in deps:
@@ -356,6 +356,33 @@ def deps_print (target, depsdir, options, record = {}):
 
     if options.relpath:
         deps = [os.path.relpath (dep) for dep in deps]
+
+    record[target] = True
+
+    print os.path.relpath (target) + ': ' + ' '.join (deps) + '\n'
+
+
+def callgraph_print (target, depsdir, options, record = {}):
+
+    if record.has_key (target):
+        return
+    if not depsdir.has_key (target):
+        return
+    
+    deps = depsdir[target]
+
+    # print >> sys.stderr, target + ': ', deps
+
+    deps = [dep for dep in deps if dep not in options.exclude]
+    for dep in deps:
+        # Have recursion
+        if target == dep:
+            continue
+        
+        if dep[0] == '@':
+            dep = dep[1:]
+
+        deps_print (dep, depsdir, options, record)
 
     record[target] = True
 
@@ -499,7 +526,7 @@ def main(argv = None):
     if options.calls:
         for cfile in cfilelist:
             functions_find (gcc, cfile, functiondeps)
-        deps_print ('main', functiondeps, options)
+        callgraph_print ('main', functiondeps, options)
 
     if options.files:
         deps_print (outfile, filedeps, options)

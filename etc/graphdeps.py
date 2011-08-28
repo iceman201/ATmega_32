@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""graphdeps V0.05
+"""graphdeps V0.06
 Copyright (c) 2011 Michael P. Hayes, UC ECE, NZ
 
 Usage: graphdeps Makefile
@@ -74,10 +74,13 @@ def op_output (dotfile, op, name):
     dotfile.write ('\t"' + op + '"\t[shape=rectangle,label="' + name + '"];\n')
 
 
-def edge_output (dotfile, target, dep):
+def edge_output (dotfile, target, dep, indirect):
 
 #    dotfile.write ('\t"' + target + '" ->\t"' + dep + '"\t[dir=back];\n')
-    dotfile.write ('\t"' + target + '" ->\t"' + dep + '";\n')
+    if indirect:
+        dotfile.write ('\t"' + target + '" ->\t"' + dep + '"\t[style="dashed"];\n')
+    else:
+        dotfile.write ('\t"' + target + '" ->\t"' + dep + '";\n')
 
 
 def dep_output (dotfile, target, dep, modules, options):
@@ -91,12 +94,16 @@ def dep_output (dotfile, target, dep, modules, options):
     if dep == '':
         return
 
+    indirect = (dep[0] == '@')
+    if indirect:
+        dep = dep[1:]
+
     dep = node_output (dotfile, dep, options)
 
     (file, ext) = os.path.splitext (target)        
 
     if not options.showops:
-        edge_output (dotfile, target, dep)
+        edge_output (dotfile, target, dep, indirect)
     else:
         if ext == '.o':
             op = 'Compiler'
@@ -108,11 +115,11 @@ def dep_output (dotfile, target, dep, modules, options):
             op = ''
 
         if op == '':
-            edge_output (dotfile, target, dep)
+            edge_output (dotfile, target, dep, indirect)
         else:
             op_output (dotfile, op + target, op)
-            edge_output (dotfile, target, op + target)
-            edge_output (dotfile, op + target, dep)
+            edge_output (dotfile, target, op + target, indirect)
+            edge_output (dotfile, op + target, dep, indirect)
 
 
 def target_output (dotfile, target, targets, modules, options, seen = {}):
