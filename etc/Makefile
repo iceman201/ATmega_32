@@ -17,14 +17,9 @@ CLEANTEST = $(addsuffix .cleantest, $(APPS))
 
 TESTMAKEFILES = $(addsuffix /Makefile.test, $(APPS))
 APPMAKEFILES = $(addsuffix /Makefile, $(APPS))
+DOCMAKEFILES = $(addsuffix /doc/Makefile, $(APPS))
 
-APPFILEDEPS = $(addsuffix /file_dependencies.pdf, $(APPS))
-APPMODULEDEPS = $(addsuffix /module_dependencies.pdf, $(APPS))
-APPMAKEFILEDEPS = $(addsuffix /makefile_dependencies.pdf, $(APPS))
-APPBUILDDEPS = $(addsuffix /build_dependencies.pdf, $(APPS))
-APPCALLGRAPHS = $(addsuffix /callgraph.pdf, $(APPS))
-
-all: testmakefiles appmakefiles apps test appfiledeps appmoduledeps appmakefiledeps appbuilddeps appcallgraphs
+all: testmakefiles appmakefiles apps test docs
 
 clean: cleanapps cleantest
 
@@ -32,44 +27,18 @@ testmakefiles: $(TESTMAKEFILES)
 
 appmakefiles: $(APPMAKEFILES)
 
+docs: $(DOCMAKEFILES)
+
+../%/doc/Makefile: Makefile.doc.template Makefile makemake.py
+	mkdir -p $(dir $@)
+	(cd $(dir $@)/..; ../../etc/makemake.py --relpath --template ../../etc/Makefile.doc.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > doc/Makefile)
+
 ../%/Makefile.test: Makefile.test.template Makefile
 	(cd $(dir $@);	../../etc/makemake.py --cc="gcc" --cflags="" --relpath --objext=-test.o --template ../../etc/Makefile.test.template . . ../../utils ../../drivers ../../drivers/test > Makefile.test)
-
 
 ../%/Makefile: Makefile.template Makefile makemake.py
 	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > Makefile)
 
-
-appfiledeps: $(APPFILEDEPS)
-appmoduledeps: $(APPMODULEDEPS)
-appmakefiledeps: $(APPMAKEFILEDEPS)
-appbuilddeps: $(APPBUILDDEPS)
-appcallgraphs: $(APPCALLGRAPHS)
-
-../%/file_dependencies.pdf: ../%/files.d 
-	./graphdeps.py $< --out $@
-
-../%/module_dependencies.pdf: ../%/modules.d 
-	./graphdeps.py $< --modules --out $@
-
-../%/makefile_dependencies.pdf: ../%/Makefile
-	./graphdeps.py $< --out $@
-
-../%/build_dependencies.pdf: ../%/Makefile
-	./graphdeps.py $< --out $@ --showops
-
-../%/callgraph.pdf: ../%/callgraph.d 
-	(cd $(dir $@);	../../etc/graphdeps.py --calls --modules $(notdir $<) --out $(notdir $@))
-
-../%/files.d: ../%/Makefile
-	(cd $(dir $@);	../../etc/makemake.py --relpath --files . . ../../drivers ../../drivers/avr ../../utils --exclude system.h > files.d)
-
-
-../%/modules.d: ../%/Makefile
-	(cd $(dir $@);	../../etc/makemake.py --relpath --modules . . ../../drivers ../../drivers/avr ../../utils --exclude system > modules.d)
-
-../%/callgraph.d: ../%/Makefile
-	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --calls . . ../../drivers ../../drivers/avr ../../utils --exclude system > callgraph.d)
 
 
 # Compile all the applications.

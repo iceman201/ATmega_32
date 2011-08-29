@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""graphdeps V0.08
+"""graphdeps V0.09
 Copyright (c) 2011 Michael P. Hayes, UC ECE, NZ
 
 Usage: graphdeps Makefile
@@ -48,7 +48,7 @@ def node_output (dotfile, name, options):
     if options.debug:
         print >> sys.stderr, 'Node', name
 
-    if not options.fullpaths:
+    if not options.calls and not options.fullpaths:
         name = os.path.basename (name)
 
     # Should check if creating a duplicate although graphviz will
@@ -95,6 +95,9 @@ def edge_output (dotfile, target, dep, indirect):
 
 def dep_output (dotfile, target, dep, modules, options):
 
+    if not options.calls and not options.fullpaths:
+        dep = os.path.basename (dep)
+
     if options.debug:
         print >> sys.stderr, target, '::', dep
 
@@ -104,8 +107,6 @@ def dep_output (dotfile, target, dep, modules, options):
     indirect = (dep[0] == '@')
     if indirect:
         dep = dep[1:]
-
-    # dep = node_output (dotfile, dep, options)
 
     (file, ext) = os.path.splitext (target)        
 
@@ -139,6 +140,11 @@ def target_output (dotfile, target, targets, modules, options, seen = {}):
         print >> sys.stderr, target, ':', deps
 
     for dep in deps:
+        if dep == '':
+            continue
+        if not targets.has_key (dep):
+            node_output (dotfile, dep, options)
+            
         if targets.has_key (dep) and target != dep:
             target_output (dotfile, dep, targets, modules, options, seen)
     
