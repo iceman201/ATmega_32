@@ -8,20 +8,27 @@
 # using template Makefiles and a python script makemake.py that parses
 # the applications looking for #includes.
 
-APPS = $(filter-out ../apps/README, $(wildcard ../apps/*))
+APPDIRS = $(filter-out ../apps/README, $(wildcard ../apps/*))
+TESTDIRS = $(APPDIRS)
+DOCDIRS = $(addsuffix /doc, $(APPDIRS))
 
-MAKEAPPS = $(addsuffix .apps, $(APPS))
-MAKETEST = $(addsuffix .test, $(APPS))
-CLEANAPPS = $(addsuffix .cleanapps, $(APPS))
-CLEANTEST = $(addsuffix .cleantest, $(APPS))
+TESTMAKEFILES = $(addsuffix /Makefile.test, $(APPDIRS))
+APPMAKEFILES = $(addsuffix /Makefile, $(TESTDIRS))
+DOCMAKEFILES = $(addsuffix /Makefile, $(DOCDIRS))
 
-TESTMAKEFILES = $(addsuffix /Makefile.test, $(APPS))
-APPMAKEFILES = $(addsuffix /Makefile, $(APPS))
-DOCMAKEFILES = $(addsuffix /doc/Makefile, $(APPS))
+MAKEAPPS = $(addsuffix .apps, $(APPDIRS))
+MAKETESTS = $(addsuffix .tests, $(TESTDIRS))
+MAKEDOCS = $(addsuffix .docs, $(DOCDIRS))
 
-all: testmakefiles appmakefiles apps test docs
+CLEANAPPS = $(addsuffix .cleanapps, $(APPDIRS))
+CLEANTESTS = $(addsuffix .cleantests, $(TESTDIRS))
+CLEANDOCS = $(addsuffix .cleandocs, $(APPDIRS))
 
-clean: cleanapps cleantest
+all: testmakefiles appmakefiles docmakefiles apps tests docs
+
+clean: cleanapps cleantests cleandocs
+
+docmakefiles: $(DOCMAKEFILES)
 
 testmakefiles: $(TESTMAKEFILES)
 
@@ -49,11 +56,18 @@ $(MAKEAPPS):
 	-@$(MAKE) -C $(subst .apps,,$@)
 
 # Compile all the test applications.
-test: $(MAKETEST)
+tests: $(MAKETESTS)
 
-.PHONY: $(MAKETEST)
-$(MAKETEST):
-	-@$(MAKE) -f Makefile.test -C $(subst .test,,$@)
+.PHONY: $(MAKETESTS)
+$(MAKETESTS):
+	-@$(MAKE) -f Makefile.test -C $(subst .tests,,$@)
+
+# Make all the docs.
+docs: $(MAKEDOCS)
+
+.PHONY: $(MAKEDOCS)
+$(MAKEDOCS):
+	-@$(MAKE) -C $(subst .docs,,$@)
 
 # Clean all the applications.
 cleanapps: $(CLEANAPPS)
@@ -63,10 +77,17 @@ $(CLEANAPPS):
 	-@$(MAKE) -C $(subst .cleanapps,,$@) clean
 
 # Clean all the test applications.
-cleantest: $(CLEANTEST)
+cleantests: $(CLEANTESTS)
 
-.PHONY: $(CLEANTEST)
-$(CLEANTEST):
-	-@$(MAKE) -f Makefile.test -C $(subst .cleantest,,$@) clean
+.PHONY: $(CLEANTESTS)
+$(CLEANTESTS):
+	-@$(MAKE) -f Makefile.test -C $(subst .cleantests,,$@) clean
+
+# Clean all the docs.
+cleandocs: $(CLEANDOCS)
+
+.PHONY: $(CLEANDOCS)
+$(CLEANDOCS):
+	-@$(MAKE) -C $(subst .cleandocs,,$@) clean
 
 
