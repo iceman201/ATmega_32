@@ -226,8 +226,8 @@ def maincfilename_find (dirname):
 
 def functions_find (gcc, filepath, functiondeps = {}, functions = {}):
 
-    command = gcc + ' -c ' + filepath + ' -fdump-tree-cfg-raw  > /dev/null'
-    # print >> sys.stderr, command
+    command = gcc + ' -c ' + filepath + ' -fdump-tree-cfg-raw -fno-inline > /dev/null'
+    #print >> sys.stderr, command
     os.system (command)
 
     rtlfilename = os.path.abspath (os.path.basename (filepath)) + '.012t.cfg'
@@ -275,7 +275,7 @@ def functions_find (gcc, filepath, functiondeps = {}, functions = {}):
     # os.system (command)
 
 
-def files_find (gcc, filepath, search_path, filedeps, moduledeps, indent, debug):
+def files_find (filepath, search_path, filedeps, moduledeps, indent, debug):
 
     # filedeps is a cache of all known included files
 
@@ -313,11 +313,11 @@ def files_find (gcc, filepath, search_path, filedeps, moduledeps, indent, debug)
 
     # Search recursively each new included file
     for file in includes2:    
-        files_find (gcc, file, search_path, filedeps, moduledeps, indent + ' ', debug)
+        files_find (file, search_path, filedeps, moduledeps, indent + ' ', debug)
 
     # Search the modules
     for file in modules:    
-        files_find (gcc, file, search_path, filedeps, moduledeps, indent + ' ', debug)
+        files_find (file, search_path, filedeps, moduledeps, indent + ' ', debug)
 
 
 def alldeps_print (depsdir, options):
@@ -511,7 +511,7 @@ def main(argv = None):
 
     filedeps = {}
     moduledeps = {}
-    files_find (gcc, maincfilename, search_path, filedeps, moduledeps, '', options.debug)
+    files_find (maincfilename, search_path, filedeps, moduledeps, '', options.debug)
     
     cfilelist = cfiles_get (filedeps)
     ofilelist = [cfile[:-2] + options.objext for cfile in cfilelist]
@@ -521,9 +521,6 @@ def main(argv = None):
         deps = []
         deps.append (ofile[:-2] + '.c')
         filedeps[ofile] = deps
-
-    # print >> sys.stderr, moduledeps
-    # print >> sys.stderr, filedeps
 
     if options.calls:
         functiondeps = {}
