@@ -7,17 +7,18 @@
 # This Makefile builds all the application Makefiles
 # using template Makefiles and a python script makemake.py that parses
 # the applications looking for #includes.
+# It also creates the doc directories and the callgraphs, etc.
 
-APPDIRS = $(filter-out ../apps/README, $(wildcard ../apps/*/ ../ence260-labs/*/))
+APPDIRS = $(filter-out ../apps/README ../ucfk4labs/README, $(wildcard ../apps/*/ ../ucfk4labs/*/))
 DOCDIRS = $(addsuffix /doc, $(APPDIRS))
 
 # Don't link against test-scaffold if directly accessing harware
-FOO = $(shell grep -l "\<avr/io.h\>" ../ence260-labs/*/*.c)
-DUDS = $(foreach filename, $(FOO), $(dir $(filename)))
-TESTDIRS = $(filter-out $(DUDS), $(APPDIRS))
+FOO = $(shell grep -l "\<avr/io.h\>" ../ucfk4labs/*/*.c)
+DUDDIRS = $(foreach filename, $(FOO), $(dir $(filename)))
+TESTDIRS = $(filter-out $(DUDDIRS), $(APPDIRS))
 
-TESTMAKEFILES = $(addsuffix /Makefile.test, $(APPDIRS))
-APPMAKEFILES = $(addsuffix /Makefile, $(TESTDIRS))
+APPMAKEFILES = $(addsuffix /Makefile, $(APPDIRS))
+TESTMAKEFILES = $(addsuffix /Makefile.test, $(TESTDIRS))
 DOCMAKEFILES = $(addsuffix /Makefile, $(DOCDIRS))
 
 MAKEAPPS = $(addsuffix .apps, $(APPDIRS))
