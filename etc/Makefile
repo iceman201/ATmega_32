@@ -8,9 +8,13 @@
 # using template Makefiles and a python script makemake.py that parses
 # the applications looking for #includes.
 
-APPDIRS = $(filter-out ../apps/README, $(wildcard ../apps/*))
-TESTDIRS = $(APPDIRS)
+APPDIRS = $(filter-out ../apps/README, $(wildcard ../apps/*/ ../ence260-labs/*/))
 DOCDIRS = $(addsuffix /doc, $(APPDIRS))
+
+# Don't link against test-scaffold if directly accessing harware
+FOO = $(shell grep -l "\<avr/io.h\>" ../ence260-labs/*/*.c)
+DUDS = $(foreach filename, $(FOO), $(dir $(filename)))
+TESTDIRS = $(filter-out $(DUDS), $(APPDIRS))
 
 TESTMAKEFILES = $(addsuffix /Makefile.test, $(APPDIRS))
 APPMAKEFILES = $(addsuffix /Makefile, $(TESTDIRS))
@@ -89,5 +93,3 @@ cleandocs: $(CLEANDOCS)
 .PHONY: $(CLEANDOCS)
 $(CLEANDOCS):
 	-@$(MAKE) -C $(subst .cleandocs,,$@) clean
-
-
