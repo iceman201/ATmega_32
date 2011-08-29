@@ -28,7 +28,7 @@ system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-pio2.out: pio.o pio2.o system.o
+pio2.out: pio2.o pio.o system.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

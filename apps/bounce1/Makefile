@@ -34,7 +34,7 @@ pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.
 
 
 # Link: create ELF output file from object files.
-bounce1.out: bounce1.o pacer.o pio.o system.o timer.o
+bounce1.out: bounce1.o pio.o system.o timer.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

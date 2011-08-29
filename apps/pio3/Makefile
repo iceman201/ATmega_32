@@ -31,7 +31,7 @@ timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/
 
 
 # Link: create ELF output file from object files.
-pio3.out: pio.o pio3.o system.o timer.o
+pio3.out: pio3.o pio.o system.o timer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

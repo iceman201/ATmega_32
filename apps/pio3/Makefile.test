@@ -14,7 +14,7 @@ all: pio3
 
 
 # Compile: create object files from C source files.
-timer-test.o: ../../drivers/test/timer.c ../../drivers/test/timer.h ../../drivers/test/system.h
+pio3-test.o: pio3.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
@@ -23,23 +23,24 @@ mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
 pio-test.o: ../../drivers/test/pio.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-pio3-test.o: pio3.c ../../drivers/test/timer.h ../../drivers/test/pio.h ../../drivers/test/avrtest.h ../../drivers/test/system.h
+system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/pio.h ../../drivers/test/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-system-test.o: ../../drivers/test/system.c ../../drivers/test/pio.h ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/system.h
+timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drivers/test/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
 
 
 # Link: create executable file from object files.
-pio3: timer-test.o mgetkey-test.o pio-test.o pio3-test.o system-test.o
+pio3: pio3-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) pio3 timer-test.o mgetkey-test.o pio-test.o pio3-test.o system-test.o
+	-$(DEL) pio3 pio3-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o
+
 
 

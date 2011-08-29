@@ -61,7 +61,7 @@ uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-space9.out: display.o eeprom.o flasher.o led.o ledmat.o navswitch.o pacer.o pio.o space9.o spacey.o system.o timer.o tinygl.o uint8toa.o
+space9.out: space9.o flasher.o spacey.o eeprom.o pio.o system.o timer.o display.o led.o ledmat.o navswitch.o pacer.o tinygl.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

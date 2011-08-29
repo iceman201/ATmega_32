@@ -52,7 +52,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-scribble1.out: button.o display.o led.o ledmat.o navswitch.o pacer.o pio.o scribble1.o system.o timer.o tinygl.o
+scribble1.out: scribble1.o pio.o system.o timer.o button.o display.o led.o ledmat.o navswitch.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

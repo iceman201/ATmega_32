@@ -31,7 +31,7 @@ led.o: ../../drivers/led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ..
 
 
 # Link: create ELF output file from object files.
-demo2.out: demo2.o led.o pio.o system.o
+demo2.out: demo2.o pio.o system.o led.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

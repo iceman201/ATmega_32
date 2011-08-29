@@ -14,38 +14,39 @@ all: task1
 
 
 # Compile: create object files from C source files.
-timer-test.o: ../../drivers/test/timer.c ../../drivers/test/timer.h ../../drivers/test/system.h
+task1-test.o: task1.c ../../drivers/led.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-led-test.o: ../../drivers/led.c ../../drivers/led.h ../../drivers/test/pio.h ../../drivers/test/avrtest.h ../../drivers/test/system.h
+led-test.o: ../../drivers/led.c ../../drivers/led.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio-test.o: ../../drivers/test/pio.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-task-test.o: ../../utils/task.c ../../drivers/test/timer.h ../../utils/task.h ../../drivers/test/system.h
+system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/pio.h ../../drivers/test/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-task1-test.o: task1.c ../../drivers/led.h ../../drivers/test/timer.h ../../utils/task.h ../../drivers/test/system.h
+timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drivers/test/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-system-test.o: ../../drivers/test/system.c ../../drivers/test/pio.h ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/system.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
-mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
+task-test.o: ../../utils/task.c ../../drivers/test/system.h ../../drivers/test/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
 
 
 # Link: create executable file from object files.
-task1: timer-test.o led-test.o pio-test.o task-test.o task1-test.o system-test.o mgetkey-test.o
+task1: task1-test.o led-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o task-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) task1 timer-test.o led-test.o pio-test.o task-test.o task1-test.o system-test.o mgetkey-test.o
+	-$(DEL) task1 task1-test.o led-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o task-test.o
+
 
 

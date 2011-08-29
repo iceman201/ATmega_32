@@ -43,7 +43,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-hello3.out: display.o hello3.o ledmat.o pacer.o pio.o system.o timer.o tinygl.o
+hello3.out: hello3.o pio.o system.o timer.o display.o ledmat.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

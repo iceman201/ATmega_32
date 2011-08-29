@@ -52,7 +52,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-ir_serial_test1.out: display.o ir.o ir_serial.o ir_serial_test1.o ledmat.o navswitch.o pacer.o pio.o system.o timer.o tinygl.o
+ir_serial_test1.out: ir_serial_test1.o pio.o system.o timer.o display.o ir.o ir_serial.o ledmat.o navswitch.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

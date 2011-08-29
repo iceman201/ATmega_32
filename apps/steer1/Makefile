@@ -46,7 +46,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-steer1.out: display.o ledmat.o navswitch.o pacer.o pio.o steer1.o system.o timer.o tinygl.o
+steer1.out: steer1.o pio.o system.o timer.o display.o ledmat.o navswitch.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

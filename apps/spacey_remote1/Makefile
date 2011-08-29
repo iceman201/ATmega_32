@@ -52,7 +52,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-spacey_remote1.out: display.o ir.o ir_serial.o ledmat.o navswitch.o pacer.o pio.o spacey_remote1.o system.o timer.o tinygl.o
+spacey_remote1.out: spacey_remote1.o pio.o system.o timer.o display.o ir.o ir_serial.o ledmat.o navswitch.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

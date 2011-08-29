@@ -46,7 +46,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-task2.out: display.o led.o ledmat.o pio.o system.o task.o task2.o timer.o tinygl.o
+task2.out: task2.o pio.o system.o timer.o display.o led.o ledmat.o task.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

@@ -14,7 +14,7 @@ all: pio2
 
 
 # Compile: create object files from C source files.
-pio2-test.o: pio2.c ../../drivers/test/pio.h ../../drivers/test/avrtest.h ../../drivers/test/system.h
+pio2-test.o: pio2.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
@@ -23,7 +23,7 @@ mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
 pio-test.o: ../../drivers/test/pio.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-system-test.o: ../../drivers/test/system.c ../../drivers/test/pio.h ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/system.h
+system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/pio.h ../../drivers/test/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
@@ -38,5 +38,6 @@ pio2: pio2-test.o mgetkey-test.o pio-test.o system-test.o
 .PHONY: clean
 clean: 
 	-$(DEL) pio2 pio2-test.o mgetkey-test.o pio-test.o system-test.o
+
 
 

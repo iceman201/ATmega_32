@@ -37,7 +37,7 @@ pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.
 
 
 # Link: create ELF output file from object files.
-hello1.out: hello1.o ledmat.o pacer.o pio.o system.o timer.o
+hello1.out: hello1.o pio.o system.o timer.o ledmat.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
