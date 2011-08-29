@@ -40,8 +40,9 @@ appmakefiles: $(APPMAKEFILES)
 
 docs: $(DOCMAKEFILES)
 
-../%/doc/Makefile: Makefile.doc.template Makefile makemake.py
+../%/doc/Makefile: Makefile.doc.template Makefile makemake.py README.doc.template
 	mkdir -p $(dir $@)
+	cp -f README.doc.template $(dir $@)/README
 	(cd $(dir $@)/..; ../../etc/makemake.py --relpath --template ../../etc/Makefile.doc.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > doc/Makefile)
 
 ../%/Makefile.test: Makefile.test.template Makefile

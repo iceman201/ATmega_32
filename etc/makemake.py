@@ -120,6 +120,11 @@ def file_parse (pathname, indent, debug):
     text = file.read ()
     file.close ()
 
+    # We could use the -MM option for gcc to find all the header file
+    # dependencies (even with conditional compilation) but we would
+    # not find the relationship between the header files.  So let's do
+    # if outselves even with conditional compilation may lead us
+    # astray.
     prog = re.compile (r'^#include[ ].*["<]([a-zA-Z_.0-9].*)[">]', re.MULTILINE)
 
     hfilelist = prog.findall (text, 0)    
