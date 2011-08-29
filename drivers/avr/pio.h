@@ -130,6 +130,53 @@ typedef enum pio_config_enum
 #define PIO_DATA_(pio) (*PIO_PORT_ (pio))
 
 
+#ifdef __NO_INLINE__
+/** Configure pio.
+    @param pio PIO to configure
+    @param config PIO configuration type
+    @return non-zero for success.  */
+bool pio_config_set (pio_t pio, pio_config_t config);
+
+
+/** Return pio configuration
+    @param pio 
+    @return config  */
+pio_config_t pio_config_get (pio_t pio);
+
+
+/** Set pio high.
+    @param pio  */
+void pio_output_high (pio_t pio);
+
+
+/** Set pio low. 
+    @param pio  */
+void pio_output_low (pio_t pio);
+
+
+/** Toggle pio.
+    @param pio  */
+void pio_output_toggle (pio_t pio);
+
+
+/** Read input state from pio. 
+    @param pio
+    @return input state of pio  */
+bool pio_input_get (pio_t pio);
+
+
+/** Get output state of pio. 
+    @param pio
+    @return output state of pio  */
+bool pio_output_get (pio_t pio);
+
+
+/** Set pio to desired state.
+    @param pio
+    @param state value to write pio  */
+void pio_output_set (pio_t pio, bool state);
+
+#else
 
 /** Configure pio.
     @param pio PIO to configure
@@ -249,5 +296,6 @@ void pio_output_set (pio_t pio, bool state)
 {
     state ? pio_output_high (pio) : pio_output_low (pio);
 }
+#endif
 
 #endif
