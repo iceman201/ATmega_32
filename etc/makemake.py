@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.07
+"""makemake V0.08
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -224,14 +224,14 @@ def maincfilename_find (dirname):
     return filelist[0]
 
 
-def functions_find (gcc, filepath, functiondeps = {}, functions = {}):
+def functions_find (filepath, functiondeps, functions, options):
 
-    command = gcc + ' -c ' + filepath + ' -fdump-tree-cfg-raw -fno-inline > /dev/null'
-    #print >> sys.stderr, command
+    command = options.compile + ' -c ' + filepath + ' -fdump-tree-cfg-raw -fno-inline > /dev/null'
+    if options.debug:
+        print >> sys.stderr, command
     os.system (command)
 
     rtlfilename = os.path.abspath (os.path.basename (filepath)) + '.012t.cfg'
-    # print >> sys.stderr, rtlfilename
 
     if not os.path.exists (rtlfilename):
         return
@@ -242,17 +242,17 @@ def functions_find (gcc, filepath, functiondeps = {}, functions = {}):
 
     function = None
     for line in text:
-        #print >> sys.stderr, line
-        #matches = re.findall (r'^(.*)\s[(][)]', line)
         matches = re.findall (r'^;; Function (.*)\s[(]', line)
         if matches:
             function = matches[0]
             functiondeps[function] = []
             functions[function] = filepath
-            # print >> sys.stderr, 'DEF', function
+            if options.debug:
+                print >> sys.stderr, 'DEF', function
         matches = re.findall (r'.*gimple_call <([\w]*),', line)
         if matches:
-            # print >> sys.stderr, 'USE', matches[0]
+            if options.debug:
+                print >> sys.stderr, 'USE', matches[0]
             if function:
                 functiondeps[function].append (matches[0])
             else:
@@ -271,8 +271,9 @@ def functions_find (gcc, filepath, functiondeps = {}, functions = {}):
             functiondeps[function].append ('@' + matches[0])
 
     command = 'rm ' + rtlfilename
-    # print >> sys.stderr, command
-    # os.system (command)
+    if options.debug:
+        print >> sys.stderr, command
+    os.system (command)
 
 
 def files_find (filepath, search_path, filedeps, moduledeps, indent, debug):
@@ -345,8 +346,6 @@ def deps_print (target, depsdir, options, record = {}):
     
     deps = depsdir[target]
 
-    # print >> sys.stderr, target + ': ', deps
-
     deps = [dep for dep in deps if os.path.basename (dep) not in options.exclude]
     for dep in deps:
         # Have recursion
@@ -371,8 +370,6 @@ def callgraph_print (target, functiondeps, functions, options, record = {}):
         return
     
     deps = functiondeps[target]
-
-    # print >> sys.stderr, target + ': ', deps
 
     deps = [dep for dep in deps if dep not in options.exclude]
     for dep in deps:
@@ -481,14 +478,18 @@ def main(argv = None):
     if len (args) > 1:
         search_list.extend (args[1:len (args)])
 
+    search_path = pathsep.join (search_list)
+
+    includes = '-I' + ' -I'.join (search_list)
+    options.compile = options.cc + ' ' + options.cflags + ' ' + includes
+
     if options.debug:
         print >> sys.stderr, search_list
-    search_path = pathsep.join (search_list)
-    if options.debug:
         print >> sys.stderr, 'template', options.template
         print >> sys.stderr, 'cfile', maincfilename
         print >> sys.stderr, 'search_path', search_path
         print >> sys.stderr, 'CWD = ', os.getcwd()
+        print >> sys.stderr, options.compile
 
     if os.path.isdir (maincfilename):
         if options.debug:
@@ -500,11 +501,6 @@ def main(argv = None):
         if options.debug:
             print >> sys.stderr, 'Found C file ' + maincfilename
 
-    includes = '-I' + ' -I'.join (search_list)
-    gcc = options.cc + ' ' + options.cflags + ' ' + includes
-
-    if options.debug:
-        print >> sys.stderr, gcc
 
     # Search main c file looking for header files included with #include
     # and any header files included by the header files    
@@ -526,7 +522,7 @@ def main(argv = None):
         functiondeps = {}
         functions = {}
         for cfile in cfilelist:
-            functions_find (gcc, cfile, functiondeps, functions)
+            functions_find (cfile, functiondeps, functions, options)
         callgraph_print ('main', functiondeps, functions, options)
 
     if options.files:
