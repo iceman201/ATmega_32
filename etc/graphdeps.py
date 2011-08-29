@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""graphdeps V0.09
+"""graphdeps V0.10
 Copyright (c) 2011 Michael P. Hayes, UC ECE, NZ
 
 Usage: graphdeps Makefile
@@ -47,6 +47,10 @@ def node_output (dotfile, name, options):
 
     if options.debug:
         print >> sys.stderr, 'Node', name
+
+    indirect = (name[0] == '@')
+    if indirect:
+        name = name[1:]
 
     if not options.calls and not options.fullpaths:
         name = os.path.basename (name)
