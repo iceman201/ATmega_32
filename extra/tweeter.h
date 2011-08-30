@@ -15,10 +15,17 @@ typedef uint8_t tweeter_period_t;
 typedef uint8_t tweeter_velocity_t;
 typedef uint8_t tweeter_scale_t;
 
-/* Could calculate scale divisors at run time.  2^(1/2) is approx
+/* We could calculate scale divisors at run time.  2^(1/2) is approx
    1.0594631.  A reasonable rational approximation is 267/252 =
-   1.0595238.  Let's save memory and provide a macro to compute the
-   divisors.  */
+   1.0595238.
+
+   Let's save memory and provide a macro to compute the
+   divisors.  There is only 8 bits per note so the maximum POLL_RATE
+   is 255 * 82.41 = 21014 Hz.  If we use a lower rate then the divisors
+   become less accurate, especially at the higher frequencies.   For example,
+   with C5, f = 523 Hz, and if POLL_RATE = 10000, then the divisor is 19
+   giving a generated frequency of 526 Hz.
+*/
 
 #define TWEETER_DIVISOR(POLL_RATE, FREQ) (POLL_RATE / FREQ + 0.5)
 
