@@ -177,8 +177,41 @@ void tinygl_draw_char (char ch, tinygl_point_t offset, bool rotate)
             }
         }
     }
-
 }
+
+
+
+/** Draw string (well, as much as possible) using current font.
+    @param str string to draw
+    @param offset coordinates of top left position
+    @param rotate non-zero to rotate string
+    @return number of whole characters drawn.  */
+uint8_t tinygl_draw_string (const char *str, tinygl_point_t offset, bool rotate)
+{
+    uint8_t count = 0;
+
+    while (*str)
+    {
+        if (rotate)
+        {
+            if (offset.y + font->width > TINYGL_HEIGHT)
+                break;
+            tinygl_draw_char (*str, offset, 1);
+            offset.y += font->width + 1;            
+        }
+        else
+        {
+            if (offset.x + font->width > TINYGL_WIDTH)
+                break;
+            tinygl_draw_char (*str, offset, 0);
+            offset.x += font->width + 1;
+        }
+        count++;
+        str++;
+    }
+    return count;
+}
+
 
 
 /** Display a character.

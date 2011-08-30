@@ -153,6 +153,14 @@ void tinygl_font_set (font_t *pfont);
 void tinygl_draw_char (char ch, tinygl_point_t offset, bool rotate);
 
 
+/** Draw string (well, as much as possible) using current font.
+    @param str string to draw
+    @param offset coordinates of top left position
+    @param rotate non-zero to rotate string
+    @return number of whole characters drawn.  */
+uint8_t tinygl_draw_string (const char *str, tinygl_point_t offset,
+                            bool rotate);
+
 /** Draw point.
     @param point coordinates of point
     @param pixel_value pixel value to draw point.  */
