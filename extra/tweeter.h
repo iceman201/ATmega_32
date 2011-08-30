@@ -57,21 +57,24 @@ typedef tweeter_private_t tweeter_obj_t;
 typedef tweeter_obj_t *tweeter_t;
 
 /* The scale table is usually defined with:
-
- static tweeter_scale_t scale_table[] = TWEETER_SCALE_TABLE (LOOP_POLL_RATE);
+   static tweeter_scale_t scale_table[] = TWEETER_SCALE_TABLE (LOOP_POLL_RATE);
 */
 
-extern int8_t 
+
+/** Decide whether to turn tweeter on.  */
+bool
 tweeter_update (tweeter_t tweeter);
+
 
 /* The note and velocity are specified as per the MIDI standard except
    a note value of 0 indicates a rest (note off).  The velocity has a
    maximum value of 127 and gives an indication of the note
    volume.  */
-extern void
+void
 tweeter_note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity);
 
-extern tweeter_t
+
+tweeter_t
 tweeter_init (tweeter_obj_t *dev, 
               uint16_t poll_rate,
               tweeter_scale_t *scale_table);

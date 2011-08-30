@@ -3,9 +3,7 @@
     @date   20 April 2007
     @brief  Generate PWM for a piezo tweeter.
 */
-
-#define TWEETER_TRANSPARENT 1
-
+#include "system.h"
 #include "tweeter.h"
 
 
@@ -65,16 +63,11 @@ tweeter_note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity)
     duty = (period * velocity) >> 8;
 
     tweeter_note_set (tweeter, period, duty);
-
-#if 0
-    printf ("note = %d, octave = %d, period = %d\n",
-            note, index / TWEETER_SCALE_SIZE, period);
-#endif
-
 }
 
 
-int8_t
+/** Decide whether to turn tweeter on.  */
+bool
 tweeter_update (tweeter_t tweeter)
 {
     if (tweeter->note_holdoff)

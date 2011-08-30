@@ -3,9 +3,7 @@
     @date   20 April 2007
     @brief  Play simple melodies.
 */
-
-#define MMELODY_TRANSPARENT 1
-
+#include "system.h"
 #include "mmelody.h"
 
 
@@ -42,6 +40,9 @@
    we would need to indicate this with AAAA.  With the latter scheme
    we could separate two indentical quarter notes with a comma, for
    example, A,A.
+
+   Eighth notes and triplets?  *8 switches to interpreting the notes
+   as eighth notes.  *4 switches back to quarter notes.
 
    Rests are easy.  Each space represents one rest of quarter-note
    duration.  Two spaces represent a half-note rest.  Alternatively,
@@ -254,6 +255,7 @@ mmelody_play (mmelody_t mmelody, const char *str)
     mmelody->loop_start = 0;
     mmelody->loop_count = 0;
     mmelody->octave = MMELODY_OCTAVE_DEFAULT;
+    /* Default to quarter notes.  */
     mmelody_note_fraction_set (mmelody, 4);
 }
 

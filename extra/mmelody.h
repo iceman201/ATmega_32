@@ -43,24 +43,29 @@ typedef mmelody_obj_t *mmelody_t;
 
 typedef void (* mmelody_callback_t) (void *data, uint8_t note, uint8_t volume);
 
-extern mmelody_t
+mmelody_t
 mmelody_init (mmelody_obj_t *dev, 
               uint16_t poll_rate,
               mmelody_callback_t play_callback,
               void *play_callback_data);
 
-extern void 
+/** Start playing a new melody.  */
+void 
 mmelody_play (mmelody_t mmelody, const char *str);
 
-extern void
+
+/** Update melody sequencer.  */
+void
 mmelody_update (mmelody_t mmelody);
 
-/* Set (base) speed in beats per minute (BPM).  */
-extern void 
+
+/** Set (base) speed in beats per minute (BPM).  */
+void 
 mmelody_speed_set (mmelody_t mmelody, mmelody_speed_t speed);
 
-/* Set volume as percentage of maximum.  */
-extern void 
+
+/** Set volume as percentage of maximum.  */
+void 
 mmelody_volume_set (mmelody_t mmelody, mmelody_volume_t volume);
 
 #endif
