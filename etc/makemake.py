@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.09
+"""makemake V0.10
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -122,6 +122,19 @@ def hfiles_get_all (filedeps):
     return files_get_all (filedeps, '.h')
 
 
+def paths_prune (filelist):
+
+    relpaths = unique ([os.path.dirname (os.path.relpath (path)) for path in filelist])
+
+    relpaths = unique (relpaths)
+
+    if '' in relpaths:
+        relpaths.remove ('')
+        relpaths.insert (0, '.')
+
+    return relpaths
+
+
 def file_parse (pathname, indent, debug):
 
     if debug:
@@ -162,13 +175,8 @@ def makefile_print (options, template, maincfilename, filedeps,
 
     hfilelist = hfiles_get_all (filedeps)
 
-    includedirs = unique ([os.path.dirname (os.path.relpath (path)) for path in hfilelist])
-
-    moduledirs = unique ([os.path.dirname (os.path.relpath (path)) for path in cfilelist])
-    if options.debug:
-        print >> sys.stderr, includedirs
-        print >> sys.stderr, moduledirs
-
+    includedirs = paths_prune (hfilelist)
+    moduledirs = paths_prune (cfilelist)
 
     vpath = ' '.join (moduledirs)
     includes = '-I' + ' -I'.join (includedirs)

@@ -5,7 +5,7 @@
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I -I../../drivers -I../../drivers/avr -I../../utils
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../../drivers -I../../drivers/avr -I../../utils
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
