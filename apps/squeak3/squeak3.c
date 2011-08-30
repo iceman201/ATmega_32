@@ -25,7 +25,7 @@
 
 #define BUTTON_TASK_RATE 10
 
-#define DISPLAY_TASK_RATE 400
+#define DISPLAY_TASK_RATE 200
 
 /* Define text update rate (characters per 10 s).  */
 #define MESSAGE_RATE 10
@@ -36,6 +36,8 @@
 static tweeter_scale_t scale_table[] = TWEETER_SCALE_TABLE (TWEETER_TASK_RATE);
 static tweeter_t tweeter;
 static tweeter_obj_t tweeter_info;
+static char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+static uint8_t note = 0;
 
 
 static void led_flash_task_init (void)
@@ -73,11 +75,15 @@ static void button_task_init (void)
 }
 
 
+static void display_note (void)
+{
+    tinygl_clear ();
+    tinygl_text (note_names[note]);
+}
+
+
 static void button_task (__unused__ void *data)
 {
-    static uint8_t note = 0;
-    static char *note_names[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-
     button_update ();
     navswitch_update ();
 
@@ -87,6 +93,7 @@ static void button_task (__unused__ void *data)
             note++;
         else
             note = 0;
+        display_note ();
     }
 
     if (navswitch_push_event_p (NAVSWITCH_SOUTH))
@@ -95,15 +102,18 @@ static void button_task (__unused__ void *data)
             note--;
         else
             note = ARRAY_SIZE (note_names) - 1;
+        display_note ();
     }
 
-    if (button_push_event_p (BUTTON1))
+    if (button_push_event_p (BUTTON1)
+        || navswitch_push_event_p (NAVSWITCH_PUSH))
+
     {
-        tinygl_text (note_names[note]);
         tweeter_note_play (tweeter, note + MIDI_NOTE_C4, 127);
     }
 
-    if (button_release_event_p (BUTTON1))
+    if (button_release_event_p (BUTTON1)
+        || navswitch_release_event_p (NAVSWITCH_PUSH))
     {
         tweeter_note_play (tweeter, 0, 127);
     }
@@ -116,6 +126,8 @@ static void display_task_init (void)
     tinygl_font_set (&font3x5_1);
     tinygl_text_speed_set (MESSAGE_RATE);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_STEP);
+
+    display_note ();
 }
 
 

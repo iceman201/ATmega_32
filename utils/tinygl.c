@@ -16,6 +16,7 @@ static font_t *font;
 static tinygl_text_mode_t text_mode = TINYGL_TEXT_MODE_STEP;
 static uint8_t message_index;
 static uint8_t scroll_pos = 0;
+static uint8_t display_pos = 0;
 static char message1[32] = "";
 
 
@@ -144,6 +145,42 @@ static bool tinygl_font_pixel_get (char ch, uint8_t col, uint8_t row)
 }
 
 
+/** Draw character using current font.
+    @param ch character to draw
+    @param offset coordinates of top left position
+    @param rotate non-zero to rotate character.  */
+void tinygl_draw_char (char ch, tinygl_point_t offset, bool rotate)
+{
+    uint8_t x;
+    uint8_t y;
+
+    if (rotate)
+    {
+        for (x = 0; x < font->height; x++)
+        {
+            for (y = 0; y < font->width; y++)
+            {
+                tinygl_draw_point (tinygl_point (x + offset.x, 
+                                   TINYGL_HEIGHT - 1 - (y + offset.y)),
+                                   tinygl_font_pixel_get (ch, y, x));
+            }
+        }
+    }
+    else
+    {
+        for (x = 0; x < font->width; x++)
+        {
+            for (y = 0; y < font->height; y++)
+            {
+                tinygl_draw_point (tinygl_point (x + offset.x, y + offset.y),
+                                   tinygl_font_pixel_get (ch, x, y));
+            }
+        }
+    }
+
+}
+
+
 /** Display a character.
     @param ch character to display
     @return 1 if character fully displayed.  */
@@ -171,17 +208,17 @@ static bool tinygl_display_char (char ch)
         if (scroll_pos != 0)
             break;
 
-        for (x = 0; x < font->width; x++)
-        {
-            for (y = 0; y < font->height; y++)
-            {
-                tinygl_draw_point (tinygl_point (x, y),
-                                   tinygl_font_pixel_get (ch, x, y));
-            }
-        }
+        tinygl_draw_char (ch, tinygl_point (0, 0), 0);
         break;
 
     case TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN:
+        if ((display_pos + font->width) < TINYGL_WIDTH)
+        {
+            tinygl_draw_char (ch, tinygl_point (0, display_pos), 1);
+            display_pos += font->width + 1;
+            break;
+        }
+
         display_scroll_down ();
         
         for (x = 0; x < font->height; x++)
@@ -189,6 +226,19 @@ static bool tinygl_display_char (char ch)
             tinygl_draw_point (tinygl_point (x, 0),
                                tinygl_font_pixel_get (ch, scroll_pos, x));
         }
+        break;
+
+    case TINYGL_TEXT_MODE_ROTATE_STEP:
+        if (scroll_pos != 0)
+            break;
+
+        if ((display_pos + font->width) > TINYGL_HEIGHT)
+            display_pos = 0;
+
+        tinygl_draw_char (ch, tinygl_point (0, display_pos), 1);
+        display_pos += font->width + 1; 
+        if ((display_pos + font->width) < TINYGL_WIDTH)
+            return 1;
         break;
     }
         
@@ -203,7 +253,10 @@ static bool tinygl_display_char (char ch)
 static void tinygl_text_advance (void)
 {
     if (!message1[message_index])
+    {
         message_index = 0;
+        display_pos = 0;
+    }
     
     if (message1[message_index])
     {
@@ -219,6 +272,7 @@ void tinygl_text (const char *string)
 {
     message_index = 0;
     scroll_pos = 0;
+    display_pos = 0;
     strncpy (message1, string, sizeof (message1));
 }
 

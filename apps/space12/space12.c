@@ -28,7 +28,7 @@
 
 /** Define polling rates in Hz.  The tweeter task needs to be the highest
     priority since any jitter will make the sound awful.  */
-enum {TWEETER_TASK_RATE = 20000};
+enum {TWEETER_TASK_RATE = 5000};
 enum {DISPLAY_TASK_RATE = 300};
 enum {TUNE_TASK_RATE = 100};
 enum {BUTTON_TASK_RATE = 20};
@@ -345,7 +345,6 @@ static void display_task (__unused__ void *data)
 
         tinygl_init (DISPLAY_TASK_RATE);
         tinygl_font_set (&font3x5_1);
-        tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
         tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN);
         tinygl_text_speed_set (10);
 

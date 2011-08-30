@@ -108,7 +108,9 @@ typedef enum
     /** Scrolling text.  */
     TINYGL_TEXT_MODE_SCROLL_LEFT,
     /** Rotated scrolling text.  */
-    TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN
+    TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN,
+    /* Stepping rotated text.  */
+    TINYGL_TEXT_MODE_ROTATE_STEP
 } tinygl_text_mode_t;
 
 
@@ -142,6 +144,13 @@ void tinygl_text_mode_set (tinygl_text_mode_t mode);
 /** Set the font to use for text.
     @param pfont pointer to font description.  */
 void tinygl_font_set (font_t *pfont);
+
+
+/** Draw character using current font.
+    @param ch character to draw
+    @param offset coordinates of top left position
+    @param rotate non-zero to rotate character.  */
+void tinygl_draw_char (char ch, tinygl_point_t offset, bool rotate);
 
 
 /** Draw point.
