@@ -24,15 +24,15 @@ callgraph.pdf: callgraph.d
 
 
 files.d: ../Makefile
-	(cd ..;	../../etc/makemake.py --relpath --files . . ../../drivers ../../drivers/avr ../../utils --exclude system.h > doc/files.d)
+	(cd ..;	../../etc/makemake.py --relpath --files . . ../../drivers ../../drivers/avr ../../utils ../../extra --exclude system.h > doc/files.d)
 
 
 modules.d: ../Makefile
-	(cd ..;	../../etc/makemake.py --relpath --modules . . ../../drivers ../../drivers/avr ../../utils --exclude system > doc/modules.d)
+	(cd ..;	../../etc/makemake.py --relpath --modules . . ../../drivers ../../drivers/avr ../../utils ../../extra --exclude system > doc/modules.d)
 
 
 callgraph.d: ../Makefile
-	(cd ..;	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --calls . . ../../drivers ../../drivers/avr ../../utils --exclude system.h > doc/callgraph.d)
+	(cd ..;	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --calls . . ../../drivers ../../drivers/avr ../../utils ../../extra --exclude system.h > doc/callgraph.d)
 
 
 # Clean: delete derived files.

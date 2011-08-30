@@ -4,7 +4,7 @@
 # Descr:  Makefile for demo1
 
 CC = gcc
-CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../drivers -I../../drivers/test
+CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../drivers -I../../drivers/test -I../../extra
 
 DEL = rm
 

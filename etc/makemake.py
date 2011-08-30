@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""makemake V0.08
+"""makemake V0.09
 Copyright (c) 2010 Michael P. Hayes, UC ECE, NZ
 
 This program tries to make a Makefile from a template.  Given a C file
@@ -101,14 +101,25 @@ def hfiles_get (cfile, filedeps, options):
     return unique (hfilelist)
 
 
-def cfiles_get (filedeps):
+def files_get_all (filedeps, ext):
 
-    cfilelist = []
+    filelist = []
     for target in filedeps:
-        if target[-2:] == '.c':
-            cfilelist.append (target)
+        if target[-2:] == ext:
+            filelist.append (target)
 
-    return unique (cfilelist)
+    return unique (filelist)
+
+
+
+def cfiles_get_all (filedeps):
+
+    return files_get_all (filedeps, '.c')
+
+
+def hfiles_get_all (filedeps):
+
+    return files_get_all (filedeps, '.h')
 
 
 def file_parse (pathname, indent, debug):
@@ -134,10 +145,10 @@ def file_parse (pathname, indent, debug):
     return hfilelist
 
 
-def  makefile_print (options, template, maincfilename, filedeps, 
-                     search_list):
+def makefile_print (options, template, maincfilename, filedeps, 
+                    search_list):
     
-    cfilelist = cfiles_get (filedeps)
+    cfilelist = cfiles_get_all (filedeps)
     cfilelist.sort ()
     basecfilelist = [os.path.basename (cfile) for cfile in cfilelist]
 
@@ -149,8 +160,18 @@ def  makefile_print (options, template, maincfilename, filedeps,
     text = file.read ()
     file.close ()
 
-    vpath = ' '.join (search_list)
-    includes = '-I' + ' -I'.join (search_list)
+    hfilelist = hfiles_get_all (filedeps)
+
+    includedirs = unique ([os.path.dirname (os.path.relpath (path)) for path in hfilelist])
+
+    moduledirs = unique ([os.path.dirname (os.path.relpath (path)) for path in cfilelist])
+    if options.debug:
+        print >> sys.stderr, includedirs
+        print >> sys.stderr, moduledirs
+
+
+    vpath = ' '.join (moduledirs)
+    includes = '-I' + ' -I'.join (includedirs)
     src = ' '.join (basecfilelist)
     obj = src
 
@@ -514,7 +535,7 @@ def main(argv = None):
     moduledeps = {}
     files_find (maincfilename, search_path, filedeps, moduledeps, '', options.debug)
     
-    cfilelist = cfiles_get (filedeps)
+    cfilelist = cfiles_get_all (filedeps)
     ofilelist = [cfile[:-2] + options.objext for cfile in cfilelist]
     outfile = maincfilename[:-2] + options.exeext
     filedeps[outfile] = ofilelist

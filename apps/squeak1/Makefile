@@ -5,7 +5,7 @@
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../fonts -I../../drivers -I../../drivers/avr -I../../extra
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/avr -I../../extra -I../../drivers -I../../utils
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
@@ -16,7 +16,7 @@ all: squeak1.out
 
 
 # Compile: create object files from C source files.
-squeak1.o: squeak1.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/led.h ../../extra/mmelody.h ../../extra/squeaker.h ../../extra/tweeter.h ../../utils/font.h ../../utils/task.h
+squeak1.o: squeak1.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/led.h ../../extra/mmelody.h ../../extra/squeaker.h ../../extra/ticker.h ../../extra/tweeter.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -31,13 +31,16 @@ timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/
 led.o: ../../drivers/led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h ../../utils/font.h
+mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h ../../extra/ticker.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../utils/font.h
+squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tweeter.o: ../../extra/tweeter.c ../../drivers/avr/system.h ../../extra/tweeter.h ../../utils/font.h
+ticker.o: ../../extra/ticker.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+tweeter.o: ../../extra/tweeter.c ../../drivers/avr/system.h ../../extra/ticker.h ../../extra/tweeter.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/task.h
@@ -46,7 +49,7 @@ task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h 
 
 
 # Link: create ELF output file from object files.
-squeak1.out: squeak1.o pio.o system.o timer.o led.o mmelody.o squeaker.o tweeter.o task.o
+squeak1.out: squeak1.o pio.o system.o timer.o led.o mmelody.o squeaker.o ticker.o tweeter.o task.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

@@ -1,6 +1,6 @@
 /** @file   squeak1.c
     @author M.P. Hayes
-    @date   5 Oct 2010
+    @date   30 Aug 2011
 */
 
 #include "system.h"
@@ -12,6 +12,7 @@
 #include "mmelody.h"
 
 
+/* Connect piezo tweeter to outermost pins of UCFK4 P1 connector.  */
 #define PIEZO_PIO PIO_DEFINE (PORT_D, 6)
 
 /* Define polling rate in Hz.  */

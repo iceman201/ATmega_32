@@ -44,13 +44,13 @@ docs: $(DOCMAKEFILES)
 ../%/doc/Makefile: Makefile.doc.template Makefile makemake.py README.doc.template
 	mkdir -p $(dir $@)
 	cp -f README.doc.template $(dir $@)/README
-	(cd $(dir $@)/..; ../../etc/makemake.py --relpath --template ../../etc/Makefile.doc.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > doc/Makefile)
+	(cd $(dir $@)/..; ../../etc/makemake.py --relpath --template ../../etc/Makefile.doc.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr ../../extra > doc/Makefile)
 
 ../%/Makefile.test: Makefile.test.template Makefile
-	(cd $(dir $@);	../../etc/makemake.py --cc="gcc" --cflags="" --relpath --objext=-test.o --template ../../etc/Makefile.test.template . . ../../utils ../../drivers ../../drivers/test > Makefile.test)
+	(cd $(dir $@);	../../etc/makemake.py --cc="gcc" --cflags="" --relpath --objext=-test.o --template ../../etc/Makefile.test.template . . ../../utils ../../drivers ../../drivers/test ../../extra > Makefile.test)
 
 ../%/Makefile: Makefile.template Makefile makemake.py
-	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr > Makefile)
+	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr ../../extra > Makefile)
 
 
 
