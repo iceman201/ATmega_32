@@ -16,9 +16,7 @@
 /* Connect piezo tweeter to outermost pins of UCFK4 P1 connector.  */
 #define PIEZO_PIO PIO_DEFINE (PORT_D, 6)
 
-/* Define polling rate in Hz.  */
-#define LED_TASK_RATE 2
-
+/* Define polling rates in Hz.  */
 #define TWEETER_TASK_RATE 20000
 
 #define TUNE_TASK_RATE 100
@@ -26,6 +24,8 @@
 #define BUTTON_TASK_RATE 10
 
 #define TUNE_BPM_RATE 200
+
+#define LED_TASK_RATE (TUNE_BPM_RATE / 60.0)
 
 
 static tweeter_scale_t scale_table[] = TWEETER_SCALE_TABLE (TWEETER_TASK_RATE);
@@ -37,7 +37,8 @@ static tweeter_obj_t tweeter_info;
 
 static const char tune1[] =
 {
-#include "mysterex.mmel"
+//#include "mysterex.mmel"
+#include "electric.mmel"
 "    >"
 };
 
