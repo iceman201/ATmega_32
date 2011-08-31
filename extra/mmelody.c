@@ -20,62 +20,55 @@
    C5?  This uses numbers to indicate note duration, for example, C2
    denotes a C of twice the standard duration.
 
-   For emphasis of first beat in bar, perhaps use ^ to indicate
-   louder, for example, C^.  Similarly, to make a note quieter it
-   could have a v suffix.  Alternatively, | bar markers could be
-   inserted and perhaps time signatures.
+   By default notes are crotchets (quarter notes) and tempos are
+   defined in beats per minute.  If we assume 4/4 time, then each beat
+   has a quarter-note duration.
 
-   By default notes are quarter-notes.  It is probably best to define
-   speed in terms of quarter-notes (beats per minute) rather than bars
-   per minute since this requires bars to be defined.  Two bars in 4/4
-   could be represented by C^DEDC^BAB whereas two bars in 3/4 could be
-   represented by C^DEC^DE.
+   The note duration can be halved with a comma suffix, e.g., A,
+
+   The note duration can be extended by a half with a dot suffix, e.g., A.
+
+   The note duration can be doubled with a slash suffix, e.g., A/
+
+   The note duration can be trebled with two slash suffixes, e.g., A//
+   (this can be continued to lengthen the note).
+
+   If there are lots of quavers (eighth notes), then the default note
+   duration can be switched using *8.  *4 returns to quarter note timing.
+
+   Rests are specified with a space character.  The timing modifiers ,
+   . and / can be used.
+
+   <ABC> is equivalent to ABCABC
+
+   <ABC>3 is equivalent to ABCABCABC
    
-   So how should we denote note duration?  We need to distinguish
-   between 2 identical quarter-notes (A A) played in succession and a
-   half-note since this sounds different.
-
-   We could use AA to indicate two A quarter-notes.  Alternatively, we
-   could use AA to indicate an A half-note.  However, for a whole note
-   we would need to indicate this with AAAA.  With the latter scheme
-   we could separate two indentical quarter notes with a comma, for
-   example, A,A.
-
-   Eighth notes and triplets?  *8 switches to interpreting the notes
-   as eighth notes.  *4 switches back to quarter notes.
-
-   Rests are easy.  Each space represents one rest of quarter-note
-   duration.  Two spaces represent a half-note rest.  Alternatively,
-   we could represent this with " /".
-
-   From a sequencing point of view it is simpler if every symbol
-   represents a quarter-note rather than having variable length notes
-   since this alters the sequencing timing.  This favours the approach
-   of using AA to denote a half-note.
-
-   If I implement a simple attack/decay response then it would be
-   easier to use A/ for a half-note since we would interpret the / as
-   to keep playing the previous note without sounding it again.
-   Alternatively, when each new note is sounded there could be a short
-   delay.
-
-   >num could indicate jump forward to label num while <num could
-   represent jump back to label num.  Although I prefer the notation
-   <ABC>3 to represent playing the notes ABC in succession 3 times.
-   This notation could be nested, for example, <ABC<DEF>2>3.
-   Perhaps <ABC> denotes playing ABC indefinitely?  No I prefer
-   a simple repeat.  Use ABC: for an infinite repeat.
+   ABC: performs an infinite repeat of ABC
 
    <ABC]1DE]2FG> represents ABCDEABCFG where ]n denotes alternate
    endings.  
 
-   With 8 bits for the tempo (in bpm), the max tempo is 255 bpm.
-   This corresponds to 4.25 beats per second.  If the minimum time
-   to release a note is 1 / 8 of a quarter note, then we need
-   to poll at a rate of at least 4.25 * 8 = 34 times per second.
+   A+ sounds an octave higher
+
+   A- sounds an octave lower
+
+   @120 sets the tempo to 120 beats per minute
 
    This could be made a lot more flexible but the orginal
-   implementation had a tight memory constraint.
+   implementation had a tight memory constraint.  Possible extensions:
+
+   * For emphasis perhaps use ^ to indicate louder, for example, C^.
+     Similarly, to make a note quieter it could have a v suffix.
+
+   * Use | for bar markers; these can be ignored.
+   
+   * Time signatures.
+
+   * Nested loops, e.g., <AB<ABC>>
+
+   * sixteenth notes?  Perhaps A,,
+
+   * Perhaps lower case for eighth notes.
 */
 
 enum {MMELODY_SCALE_SIZE = 12};
@@ -89,22 +82,31 @@ mmelody_ticker_set (mmelody_t mmelody)
     /* Notes per four minutes.  */
     speed = mmelody->speed * mmelody->note_fraction;
 
-    mmelody->beat_duration = mmelody->poll_rate * 60 * 4 / speed;
+    /* This is the duration of an eighth-note.
+
+       With note_fraction = 4, speed = 50, and poll_rate of 200 this
+       gives a result of 120.  */
+    mmelody->note_ticks = mmelody->poll_rate * 60 * 2 / speed;
 }
 
 
 static void
 mmelody_note_on (mmelody_t mmelody, mmelody_note_t note, uint8_t duration)
 {
+    /* The duration is in terms of eighth notes.  */
+
     mmelody->play_callback (mmelody->play_callback_data, note,
                             mmelody->volume);
     mmelody->note = note;
 
-    /* Determine ticks between sounding notes.  */
-    mmelody->ticks2 = (mmelody->beat_duration + 8) / 16;
+    /* Determine ticks between sounding notes (this needs to be a
+       minimum of 1).  */
+    mmelody->ticks2 = mmelody->note_ticks / 16;
+    if (!mmelody->ticks2)
+        mmelody->ticks2 = 1;
 
     /* Determine ticks before turning the note off.  */
-    mmelody->ticks1 = mmelody->beat_duration * duration - mmelody->ticks2;
+    mmelody->ticks1 = mmelody->note_ticks * duration - mmelody->ticks2;
 }
 
 
@@ -148,7 +150,7 @@ mmelody_scan (mmelody_t mmelody, const char *str)
         char modifier;
         bool have_hash;
         bool have_num;
-        mmelody_note_t note;
+        mmelody_note_t note = 0;
         uint8_t duration = 1;
         
         /* Play rest at end of melody.  */
@@ -218,17 +220,6 @@ mmelody_scan (mmelody_t mmelody, const char *str)
                 str++;
             continue;
 
-            /* Play rest.  */
-        case ' ':
-            while (*str == '/')
-            {
-                duration++;
-                str++;
-            }
-            mmelody_note_on (mmelody, 0, duration);
-            return str;
-            break;
-            
         case '*':
             if (num)
                 mmelody_note_fraction_set (mmelody, num);
@@ -263,10 +254,30 @@ mmelody_scan (mmelody_t mmelody, const char *str)
             /* Convert note to MIDI note number.  */
             note += (mmelody->octave + 1) * MMELODY_SCALE_SIZE;
 
+            /* Fall through.  */
+        case ' ':
+
             while (*str == '/')
             {
                 duration++;
                 str++;
+            }
+            if (*str == '.')
+            {
+                /* Dotted quarter note.  */
+                duration += duration * 2;
+                str++;
+            }
+            else if (*str == ',')
+            {
+                /* Eighth note.  */
+                str++;
+                /* What about dotted eighth notes?  */
+            }
+            else
+            {
+                /* Quarter note.  */
+                duration *= 2;
             }
 
             mmelody_note_on (mmelody, note, duration);
@@ -303,7 +314,12 @@ mmelody_play (mmelody_t mmelody, const char *str)
 void 
 mmelody_speed_set (mmelody_t mmelody, mmelody_speed_t speed)
 {
-    /* The duration of a beat varies with the time signature:
+    /* With 8 bits for the tempo (in bpm), the max tempo is 255 bpm.
+       This corresponds to 4.25 beats per second.  If the minimum time
+       to release a note is 1 / 8 of a quarter note, then we need to
+       poll at a rate of at least 4.25 * 8 = 34 times per second.
+
+       The duration of a beat varies with the time signature:
        2/2 : minum (half note)
        4/4 : crotchet (quarter note)
        6/8, 9/8, 12/8 : dotted crotchet (one and a half quarter notes)
@@ -365,11 +381,11 @@ mmelody_init (mmelody_obj_t *mmelody,
     mmelody->play_callback = play_callback;
     mmelody->play_callback_data = play_callback_data;
     mmelody->volume = 100;
-    mmelody->note_fraction = 1;
     mmelody->note = 0;
     mmelody->ticks1 = 0;
     mmelody->ticks2 = 0;
     mmelody_speed_set (mmelody, MMELODY_SPEED_DEFAULT);
+    mmelody_note_fraction_set (mmelody, 4);
 
     return mmelody;
 }

@@ -50,7 +50,7 @@ docs: $(DOCMAKEFILES)
 	(cd $(dir $@);	../../etc/makemake.py --cc="gcc" --cflags="" --relpath --objext=-test.o --template ../../etc/Makefile.test.template . . ../../utils ../../drivers ../../drivers/test ../../extra > Makefile.test)
 
 ../%/Makefile: Makefile.template Makefile makemake.py
-	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2" --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr ../../extra > Makefile)
+	(cd $(dir $@);	../../etc/makemake.py --cc="avr-gcc" --cflags="-Os -mmcu=atmega32u2 -finline" --relpath --template ../../etc/Makefile.template . . ../../utils ../../fonts ../../drivers ../../drivers/avr ../../extra > Makefile)
 
 
 

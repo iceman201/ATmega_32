@@ -20,9 +20,10 @@ enum {MMELODY_SPEED_DEFAULT = 200};
 
 typedef struct
 {
-    uint16_t beat_duration;
     uint16_t ticks1;
-    uint16_t ticks2;
+    uint8_t ticks2;
+    /* Duration of an eighth note.  */
+    uint8_t note_ticks;
     /* Pointer to current position in string.  */    
     const char *cur;
     /* Pointer to start of string.  */
