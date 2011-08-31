@@ -21,7 +21,7 @@
 /* Define polling rates in Hz.  */
 #define TWEETER_TASK_RATE 20000
 
-#define TUNE_TASK_RATE 100
+#define TUNE_TASK_RATE 200
 
 #define BUTTON_TASK_RATE 10
 

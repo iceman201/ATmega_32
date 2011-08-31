@@ -69,6 +69,13 @@
    <ABC]1DE]2FG> represents ABCDEABCFG where ]n denotes alternate
    endings.  
 
+   With 8 bits for the tempo (in bpm), the max tempo is 255 bpm.
+   This corresponds to 4.25 beats per second.  If the minimum time
+   to release a note is 1 / 8 of a quarter note, then we need
+   to poll at a rate of at least 4.25 * 8 = 34 times per second.
+
+   This could be made a lot more flexible but the orginal
+   implementation had a tight memory constraint.
 */
 
 enum {MMELODY_SCALE_SIZE = 12};
@@ -79,17 +86,34 @@ mmelody_ticker_set (mmelody_t mmelody)
 {
     uint16_t speed;
 
+    /* Notes per four minutes.  */
     speed = mmelody->speed * mmelody->note_fraction;
 
-    TICKER_INIT (&mmelody->ticker, mmelody->poll_rate * 60 * 4 / speed);
+    mmelody->beat_duration = mmelody->poll_rate * 60 * 4 / speed;
 }
 
 
 static void
-mmelody_note_play (mmelody_t mmelody, mmelody_note_t note)
+mmelody_note_on (mmelody_t mmelody, mmelody_note_t note, uint8_t duration)
 {
     mmelody->play_callback (mmelody->play_callback_data, note,
                             mmelody->volume);
+    mmelody->note = note;
+
+    /* Determine ticks between sounding notes.  */
+    mmelody->ticks2 = (mmelody->beat_duration + 8) / 16;
+
+    /* Determine ticks before turning the note off.  */
+    mmelody->ticks1 = mmelody->beat_duration * duration - mmelody->ticks2;
+}
+
+
+static void
+mmelody_note_off (mmelody_t mmelody)
+{
+    mmelody->play_callback (mmelody->play_callback_data, 
+                            mmelody->note, 0);
+    mmelody->note = 0;
 }
 
 
@@ -125,11 +149,12 @@ mmelody_scan (mmelody_t mmelody, const char *str)
         bool have_hash;
         bool have_num;
         mmelody_note_t note;
+        uint8_t duration = 1;
         
         /* Play rest at end of melody.  */
         if (! *str)
         {
-            mmelody_note_play (mmelody, 0);
+            mmelody_note_off (mmelody);
             return str;
         }
 
@@ -195,7 +220,12 @@ mmelody_scan (mmelody_t mmelody, const char *str)
 
             /* Play rest.  */
         case ' ':
-            mmelody_note_play (mmelody, 0);
+            while (*str == '/')
+            {
+                duration++;
+                str++;
+            }
+            mmelody_note_on (mmelody, 0, duration);
             return str;
             break;
             
@@ -233,12 +263,16 @@ mmelody_scan (mmelody_t mmelody, const char *str)
             /* Convert note to MIDI note number.  */
             note += (mmelody->octave + 1) * MMELODY_SCALE_SIZE;
 
-            mmelody_note_play (mmelody, note);
+            while (*str == '/')
+            {
+                duration++;
+                str++;
+            }
+
+            mmelody_note_on (mmelody, note, duration);
             return str;
             break;
             
-            /* Continue with previous note.  */
-        case '/':
         default:
             return str;
             break;
@@ -258,7 +292,10 @@ mmelody_play (mmelody_t mmelody, const char *str)
     /* Default to quarter notes.  */
     mmelody_note_fraction_set (mmelody, 4);
     /* Stop what is currently sounding.  */
-    mmelody_note_play (mmelody, 0);
+    mmelody_note_off (mmelody);
+
+    mmelody->ticks1 = 0;
+    mmelody->ticks2 = 1;
 }
 
 
@@ -266,6 +303,14 @@ mmelody_play (mmelody_t mmelody, const char *str)
 void 
 mmelody_speed_set (mmelody_t mmelody, mmelody_speed_t speed)
 {
+    /* The duration of a beat varies with the time signature:
+       2/2 : minum (half note)
+       4/4 : crotchet (quarter note)
+       6/8, 9/8, 12/8 : dotted crotchet (one and a half quarter notes)
+
+       Currently, there is no time signature support so we assume 4/4.
+       This means a beat is quarter note and a bar is four quarter notes.
+    */
     mmelody->speed = speed;
     mmelody_ticker_set (mmelody);
 }
@@ -289,10 +334,23 @@ mmelody_active_p (mmelody_t mmelody)
 void
 mmelody_update (mmelody_t mmelody)
 {
-    if (TICKER_UPDATE (&mmelody->ticker))
+    if (!mmelody->cur)
+        return;
+
+    if (mmelody->ticks1)
     {
-        if (mmelody->cur)
-            mmelody->cur = mmelody_scan (mmelody, mmelody->cur);
+        mmelody->ticks1--;
+        if (!mmelody->ticks1)
+            mmelody_note_off (mmelody);
+    }
+    else
+    {
+        if (mmelody->ticks2)
+        {
+            mmelody->ticks2--;
+            if (!mmelody->ticks2)
+                mmelody->cur = mmelody_scan (mmelody, mmelody->cur);
+        }
     }
 }
 
@@ -308,7 +366,10 @@ mmelody_init (mmelody_obj_t *mmelody,
     mmelody->play_callback_data = play_callback_data;
     mmelody->volume = 100;
     mmelody->note_fraction = 1;
+    mmelody->note = 0;
+    mmelody->ticks1 = 0;
+    mmelody->ticks2 = 0;
     mmelody_speed_set (mmelody, MMELODY_SPEED_DEFAULT);
-    mmelody_play (mmelody, 0);
+
     return mmelody;
 }

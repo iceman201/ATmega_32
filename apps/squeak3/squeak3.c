@@ -124,7 +124,6 @@ static void display_task_init (void)
 {
     tinygl_init (DISPLAY_TASK_RATE);
     tinygl_font_set (&font3x5_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_STEP);
 
     display_note ();

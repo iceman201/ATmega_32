@@ -7,8 +7,6 @@
 #include "tweeter.h"
 
 
-#define TWEETER_HOLDOFF_TIME 50e-3
-
 enum {TWEETER_SCALE_SIZE = 12};
 
 
@@ -19,12 +17,6 @@ tweeter_note_set (tweeter_t tweeter,
 {
     tweeter->note_period = period;
     tweeter->note_duty = duty;
-
-    /* To distinguish between two quarter notes and a half note of the
-       same pitch we have a short hold off period at the start of each
-       note.  */
-    tweeter->note_holdoff = tweeter->poll_rate
-        / (uint16_t)(1 / TWEETER_HOLDOFF_TIME);
 }
 
 
@@ -40,9 +32,9 @@ tweeter_note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity)
     uint8_t index;
     uint8_t octave;
 
-    if (note == 0)
+    if (note == 0 || velocity == 0)
     {
-        /* Play a rest.  */
+        /* Stop playing.  */
         tweeter_note_set (tweeter, 0, 0);
         return;
     }
@@ -70,12 +62,6 @@ tweeter_note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity)
 bool
 tweeter_update (tweeter_t tweeter)
 {
-    if (tweeter->note_holdoff)
-    {
-        tweeter->note_holdoff--;
-        return 0;
-    }
-
     if (++tweeter->note_clock >= tweeter->note_period)
         tweeter->note_clock = 0;
     

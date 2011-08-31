@@ -7,7 +7,6 @@
 #define MMELODY_H
 
 #include "system.h"
-#include "ticker.h"
 
 typedef uint8_t mmelody_speed_t;
 typedef uint8_t mmelody_scale_t;
@@ -21,7 +20,9 @@ enum {MMELODY_SPEED_DEFAULT = 200};
 
 typedef struct
 {
-    ticker_t ticker;
+    uint16_t beat_duration;
+    uint16_t ticks1;
+    uint16_t ticks2;
     /* Pointer to current position in string.  */    
     const char *cur;
     /* Pointer to start of string.  */
@@ -29,6 +30,8 @@ typedef struct
     const char *loop_start;
     int8_t loop_count;
     uint8_t note_fraction;
+    uint8_t note;
+    /* Tempo in beats per minute.  */
     mmelody_speed_t speed;
     mmelody_volume_t volume;
     uint8_t octave;

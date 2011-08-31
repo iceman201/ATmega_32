@@ -54,7 +54,6 @@ typedef struct
     uint8_t note_clock;
     uint8_t note_period;
     uint8_t note_duty;
-    uint16_t note_holdoff;
     uint16_t poll_rate;
     tweeter_scale_t *scale_table;
 } tweeter_private_t;
