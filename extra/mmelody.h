@@ -68,4 +68,10 @@ mmelody_speed_set (mmelody_t mmelody, mmelody_speed_t speed);
 void 
 mmelody_volume_set (mmelody_t mmelody, mmelody_volume_t volume);
 
+
+/** Return non-zero if playing.  */
+bool
+mmelody_active_p (mmelody_t mmelody);
+
+
 #endif

@@ -100,7 +100,12 @@ static void button_task (__unused__ void *data)
     button_update ();
 
     if (button_push_event_p (BUTTON1))
-        mmelody_play (melody, tune1);
+    {
+        if (mmelody_active_p (melody))
+            mmelody_play (melody, 0);            
+        else
+            mmelody_play (melody, tune1);
+    }
 }
 
 

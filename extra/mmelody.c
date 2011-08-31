@@ -257,6 +257,8 @@ mmelody_play (mmelody_t mmelody, const char *str)
     mmelody->octave = MMELODY_OCTAVE_DEFAULT;
     /* Default to quarter notes.  */
     mmelody_note_fraction_set (mmelody, 4);
+    /* Stop what is currently sounding.  */
+    mmelody_note_play (mmelody, 0);
 }
 
 
@@ -274,6 +276,13 @@ void
 mmelody_volume_set (mmelody_t mmelody, mmelody_volume_t volume)
 {
     mmelody->volume = volume;
+}
+
+
+bool
+mmelody_active_p (mmelody_t mmelody)
+{
+    return mmelody->cur != 0;
 }
 
 
