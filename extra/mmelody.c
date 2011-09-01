@@ -115,8 +115,8 @@ mmelody_ticker_set (mmelody_t mmelody)
        With symbol_fraction = 4, speed = 50, and poll_rate of 200 this
        gives a result of 60.  */
 
-    mmelody->unit_ticks = (mmelody->poll_rate * 60
-                           * MMELODY_BEAT_FRACTION) 
+    mmelody->unit_ticks
+        = (mmelody->poll_rate * 60 * MMELODY_BEAT_FRACTION) 
         / (mmelody->speed * mmelody->symbol_fraction
            * MMELODY_DURATION_FRACTION);
 }
