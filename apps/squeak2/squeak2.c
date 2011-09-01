@@ -126,6 +126,6 @@ int main (void)
     tune_task_init ();
     button_task_init ();
 
-    task_schedule (tasks, 4);
+    task_schedule (tasks, ARRAY_SIZE (tasks));
     return 0;
 }

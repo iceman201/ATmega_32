@@ -145,8 +145,8 @@ int main (void)
         {.func = tweeter_task, .period = TASK_RATE / TWEETER_TASK_RATE, .data = 0},
         {.func = led_flash_task, .period = TASK_RATE / LED_TASK_RATE, .data = 0},
         {.func = tune_task, .period = TASK_RATE / TUNE_TASK_RATE, .data = 0},
- 
-        {.func = display_task, .period = TASK_RATE / DISPLAY_TASK_RATE, .data = 0},       {.func = button_task, .period = TASK_RATE / BUTTON_TASK_RATE, .data = 0},
+        {.func = display_task, .period = TASK_RATE / DISPLAY_TASK_RATE, .data = 0}, 
+        {.func = button_task, .period = TASK_RATE / BUTTON_TASK_RATE, .data = 0},
     };
 
     system_init ();
@@ -157,6 +157,6 @@ int main (void)
     display_task_init ();
     button_task_init ();
 
-    task_schedule (tasks, 4);
+    task_schedule (tasks, ARRAY_SIZE (tasks));
     return 0;
 }

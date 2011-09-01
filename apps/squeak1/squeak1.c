@@ -100,6 +100,6 @@ int main (void)
     tweeter_task_init ();
     tune_task_init ();
 
-    task_schedule (tasks, 3);
+    task_schedule (tasks, ARRAY_SIZE (tasks));
     return 0;
 }
