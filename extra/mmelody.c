@@ -406,8 +406,8 @@ mmelody_init (mmelody_obj_t *mmelody,
     mmelody->ticks1 = 0;
     mmelody->ticks2 = 0;
     mmelody->release_ticks = (poll_rate * MMELODY_RELEASE_MS) / 1000;
-    mmelody_speed_set (mmelody, MMELODY_SPEED_DEFAULT);
-    mmelody_symbol_fraction_set (mmelody, 4);
+    mmelody->symbol_fraction = 4;
+    mmelody->speed = MMELODY_SPEED_DEFAULT;
 
     return mmelody;
 }
