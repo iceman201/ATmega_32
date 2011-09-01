@@ -7,6 +7,7 @@
 #define PIO_H
 
 #include "system.h"
+#include <avr/io.h>
 
 typedef enum pio_port_enum 
 {
