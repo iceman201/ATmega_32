@@ -1,7 +1,7 @@
 # File:   Makefile
 # Author: M. P. Hayes, UCECE
 # Date:   11 Sep 2010
-# Descr:  Makefile for squeak2 docs
+# Descr:  Makefile for squeak4 docs
 
 DEL = rm
 

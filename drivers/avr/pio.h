@@ -130,7 +130,7 @@ typedef enum pio_config_enum
 #define PIO_DATA_(pio) (*PIO_PORT_ (pio))
 
 
-#ifdef __NO_INLINE__
+#ifdef DEBUG
 /** Configure pio.
     @param pio PIO to configure
     @param config PIO configuration type

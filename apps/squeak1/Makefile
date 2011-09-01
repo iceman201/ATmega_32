@@ -31,7 +31,7 @@ timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/
 led.o: ../../drivers/led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h ../../extra/ticker.h
+mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h

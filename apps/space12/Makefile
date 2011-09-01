@@ -49,7 +49,7 @@ ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/syste
 navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h ../../extra/ticker.h
+mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h

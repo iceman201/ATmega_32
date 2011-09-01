@@ -4,7 +4,7 @@
 # Descr:  Makefile for squeak1
 
 CC = gcc
-CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../drivers -I../../drivers/test -I../../extra
+CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/test -I../../drivers -I../../extra -I../../utils
 
 DEL = rm
 
@@ -32,7 +32,7 @@ system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../dr
 timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drivers/test/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-mmelody-test.o: ../../extra/mmelody.c ../../drivers/test/system.h ../../extra/mmelody.h ../../extra/ticker.h
+mmelody-test.o: ../../extra/mmelody.c ../../drivers/test/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 squeaker-test.o: ../../extra/squeaker.c ../../drivers/test/system.h ../../extra/squeaker.h ../../extra/ticker.h

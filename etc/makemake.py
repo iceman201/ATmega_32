@@ -260,7 +260,7 @@ def maincfilename_find (dirname):
 
 def functions_find (filepath, functiondeps, functions, options):
 
-    command = options.compile + ' -c ' + filepath + ' -fdump-tree-cfg-raw -fno-inline > /dev/null'
+    command = options.compile + ' -c ' + filepath + ' -fdump-tree-cfg-raw -Ddebug > /dev/null'
     if options.debug:
         print >> sys.stderr, command
     os.system (command)

@@ -5,7 +5,7 @@
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -finline -Wall -Wstrict-prototypes -Wextra -g -I../../drivers -I../../extra -I../../drivers/avr -I../../fonts -I../../utils
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I../../drivers -I../../extra -I../../drivers/avr -I../../fonts -I../../utils
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
@@ -40,7 +40,7 @@ led.o: ../../drivers/led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ..
 ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/ledmat.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h ../../extra/ticker.h
+mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h

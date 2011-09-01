@@ -7,7 +7,7 @@
 #include "system.h"
 #include "pio.h"
 
-#ifdef __NO_INLINE__
+#ifdef DEBUG
 
 /** Configure pio.
     @param pio PIO to configure

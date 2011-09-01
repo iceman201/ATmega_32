@@ -4,7 +4,7 @@
 # Descr:  Makefile for steer1
 
 CC = gcc
-CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../drivers -I../../drivers/test -I../../extra
+CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/test -I../../drivers -I../../fonts -I../../utils
 
 DEL = rm
 
