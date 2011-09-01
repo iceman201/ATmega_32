@@ -22,15 +22,17 @@ typedef struct
 {
     uint16_t ticks1;
     uint8_t ticks2;
-    /* Duration of an eighth note.  */
-    uint8_t note_ticks;
+    uint8_t unit_ticks;
+    uint8_t release_ticks;
     /* Pointer to current position in string.  */    
     const char *cur;
     /* Pointer to start of string.  */
     const char *start;
     const char *loop_start;
     int8_t loop_count;
-    uint8_t note_fraction;
+    /* Fraction of a whole note, e.g., 4 for quarter note.  */
+    uint8_t symbol_fraction;
+    /* Last note emitted.  */
     uint8_t note;
     /* Tempo in beats per minute.  */
     mmelody_speed_t speed;

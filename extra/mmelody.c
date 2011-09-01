@@ -68,45 +68,76 @@
 
    * sixteenth notes?  Perhaps A,,
 
-   * Perhaps lower case for eighth notes.
+   * Perhaps lower case for eighth notes?
+
+   * Triplets and other irrational tuplets?  A triplet quarter note
+     has 2 / 3 the duration of a quarter note while a triplet eighth note
+     has 2 / 3 the duration of of an eighth note.  This can be achieved
+     using *6 or *12.
 */
 
 enum {MMELODY_SCALE_SIZE = 12};
+
+/* Assume each beat is a quarter note.  */
+enum {MMELODY_BEAT_FRACTION = 4};
+
+/* Scale factor for fraction of a symbol timing.  */
+enum {MMELODY_DURATION_FRACTION = 4};
+
+/* How long to release note before sounding the next one.  */
+#define MMELODY_RELEASE_MS 50
 
 
 static void
 mmelody_ticker_set (mmelody_t mmelody)
 {
-    uint16_t speed;
+  /*   The duration of a beat varies with the time signature:
+       2/2 : minum (half note)
+       4/4 : crotchet (quarter note)
+       6/8, 9/8, 12/8 : dotted crotchet (one and a half quarter notes)
 
-    /* Notes per four minutes.  */
-    speed = mmelody->speed * mmelody->note_fraction;
+       Currently, there is no time signature support so we assume 4/4.
+       This means a beat is a quarter note and a bar is four quarter
+       notes.  
 
-    /* This is the duration of an eighth-note.
+       ticks_per_beat = poll_rate * 60 / speed
+       symbols_per_beat = symbol_fraction / MMELODY_BEAT_FRACTION
+       ticks_per_symbol = ticks_per_beat / symbols_per_beat
+       ticks_per_unit = ticks_per_symbol / MMELODY_DURATION_FRACTION
 
-       With note_fraction = 4, speed = 50, and poll_rate of 200 this
-       gives a result of 120.  */
-    mmelody->note_ticks = mmelody->poll_rate * 60 * 2 / speed;
+       ticks_per_note = ticks_per_beat * MMELODY_BEAT_FRACTION
+                      = ticks_per_unit * symbol_fraction 
+                                       * MMELODY_DURATION_FRACTION
+
+       The duration is specified as the actual duration scaled by
+       MMELODY_DURATION_FRACTION so that it can specify half periods.
+
+       With symbol_fraction = 4, speed = 50, and poll_rate of 200 this
+       gives a result of 60.  */
+
+    mmelody->unit_ticks = (mmelody->poll_rate * 60
+                           * MMELODY_BEAT_FRACTION) 
+        / (mmelody->speed * mmelody->symbol_fraction
+           * MMELODY_DURATION_FRACTION);
 }
 
 
 static void
 mmelody_note_on (mmelody_t mmelody, mmelody_note_t note, uint8_t duration)
 {
-    /* The duration is in terms of eighth notes.  */
+    /* The duration is in terms of the half the duration of a symbol.  */
 
     mmelody->play_callback (mmelody->play_callback_data, note,
                             mmelody->volume);
     mmelody->note = note;
 
     /* Determine ticks between sounding notes (this needs to be a
-       minimum of 1).  */
-    mmelody->ticks2 = mmelody->note_ticks / 16;
-    if (!mmelody->ticks2)
-        mmelody->ticks2 = 1;
+       minimum of 1).  If we assume a release period of 50 ms,
+       this will give a count of 10 ticks at 200 Hz sampling.  */
+    mmelody->ticks2 = mmelody->release_ticks;
 
     /* Determine ticks before turning the note off.  */
-    mmelody->ticks1 = mmelody->note_ticks * duration - mmelody->ticks2;
+    mmelody->ticks1 = mmelody->unit_ticks * duration - mmelody->ticks2;
 }
 
 
@@ -122,9 +153,9 @@ mmelody_note_off (mmelody_t mmelody)
 /* Specify the default note length in fractions of a measure (bar).
    A value of 4 is the default which makes each note a quarter note.  */
 static void 
-mmelody_note_fraction_set (mmelody_t mmelody, uint8_t note_fraction)
+mmelody_symbol_fraction_set (mmelody_t mmelody, uint8_t symbol_fraction)
 {
-    mmelody->note_fraction = note_fraction;    
+    mmelody->symbol_fraction = symbol_fraction;    
     mmelody_ticker_set (mmelody);
 }
 
@@ -222,7 +253,7 @@ mmelody_scan (mmelody_t mmelody, const char *str)
 
         case '*':
             if (num)
-                mmelody_note_fraction_set (mmelody, num);
+                mmelody_symbol_fraction_set (mmelody, num);
             continue;
 
         case '@':
@@ -262,22 +293,20 @@ mmelody_scan (mmelody_t mmelody, const char *str)
                 duration++;
                 str++;
             }
+
+            duration = duration * MMELODY_DURATION_FRACTION;
+
             if (*str == '.')
             {
                 /* Dotted quarter note.  */
-                duration += duration * 2;
+                duration += duration / 2;
                 str++;
             }
             else if (*str == ',')
             {
                 /* Eighth note.  */
                 str++;
-                /* What about dotted eighth notes?  */
-            }
-            else
-            {
-                /* Quarter note.  */
-                duration *= 2;
+                duration = duration / 2;
             }
 
             mmelody_note_on (mmelody, note, duration);
@@ -301,7 +330,7 @@ mmelody_play (mmelody_t mmelody, const char *str)
     mmelody->loop_count = 0;
     mmelody->octave = MMELODY_OCTAVE_DEFAULT;
     /* Default to quarter notes.  */
-    mmelody_note_fraction_set (mmelody, 4);
+    mmelody_symbol_fraction_set (mmelody, 4);
     /* Stop what is currently sounding.  */
     mmelody_note_off (mmelody);
 
@@ -317,16 +346,8 @@ mmelody_speed_set (mmelody_t mmelody, mmelody_speed_t speed)
     /* With 8 bits for the tempo (in bpm), the max tempo is 255 bpm.
        This corresponds to 4.25 beats per second.  If the minimum time
        to release a note is 1 / 8 of a quarter note, then we need to
-       poll at a rate of at least 4.25 * 8 = 34 times per second.
+       poll at a rate of at least 4.25 * 8 = 34 times per second.  */
 
-       The duration of a beat varies with the time signature:
-       2/2 : minum (half note)
-       4/4 : crotchet (quarter note)
-       6/8, 9/8, 12/8 : dotted crotchet (one and a half quarter notes)
-
-       Currently, there is no time signature support so we assume 4/4.
-       This means a beat is quarter note and a bar is four quarter notes.
-    */
     mmelody->speed = speed;
     mmelody_ticker_set (mmelody);
 }
@@ -384,8 +405,9 @@ mmelody_init (mmelody_obj_t *mmelody,
     mmelody->note = 0;
     mmelody->ticks1 = 0;
     mmelody->ticks2 = 0;
+    mmelody->release_ticks = (poll_rate * MMELODY_RELEASE_MS) / 1000;
     mmelody_speed_set (mmelody, MMELODY_SPEED_DEFAULT);
-    mmelody_note_fraction_set (mmelody, 4);
+    mmelody_symbol_fraction_set (mmelody, 4);
 
     return mmelody;
 }
