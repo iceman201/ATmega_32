@@ -9,7 +9,6 @@
 #include "pio.h"
 #include "task.h"
 #include "tweeter.h"
-#include "squeaker.h"
 #include "mmelody.h"
 #include "tinygl.h"
 #include "../fonts/font3x5_1.h"

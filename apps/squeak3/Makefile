@@ -16,7 +16,7 @@ all: squeak3.out
 
 
 # Compile: create object files from C source files.
-squeak3.o: squeak3.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../extra/squeaker.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h
+squeak3.o: squeak3.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -43,9 +43,6 @@ ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/syste
 navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 ticker.o: ../../extra/ticker.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -61,7 +58,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-squeak3.out: squeak3.o pio.o system.o timer.o button.o display.o led.o ledmat.o navswitch.o squeaker.o ticker.o tweeter.o task.o tinygl.o
+squeak3.out: squeak3.o pio.o system.o timer.o button.o display.o led.o ledmat.o navswitch.o ticker.o tweeter.o task.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

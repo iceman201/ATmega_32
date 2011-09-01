@@ -16,7 +16,7 @@ all: space12.out
 
 
 # Compile: create object files from C source files.
-space12.o: space12.c ../../drivers/avr/eeprom.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../extra/mmelody.h ../../extra/squeaker.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h ../../utils/uint8toa.h flasher.h spacey.h
+space12.o: space12.c ../../drivers/avr/eeprom.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../extra/mmelody.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h ../../utils/uint8toa.h flasher.h spacey.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 flasher.o: flasher.c ../../drivers/avr/system.h flasher.h
@@ -52,9 +52,6 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 ticker.o: ../../extra/ticker.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -73,7 +70,7 @@ uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-space12.out: space12.o flasher.o spacey.o eeprom.o pio.o system.o timer.o display.o led.o ledmat.o navswitch.o mmelody.o squeaker.o ticker.o tweeter.o task.o tinygl.o uint8toa.o
+space12.out: space12.o flasher.o spacey.o eeprom.o pio.o system.o timer.o display.o led.o ledmat.o navswitch.o mmelody.o ticker.o tweeter.o task.o tinygl.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

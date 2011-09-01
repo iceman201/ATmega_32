@@ -14,7 +14,7 @@ all: space12
 
 
 # Compile: create object files from C source files.
-space12-test.o: space12.c ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../drivers/test/avrtest.h ../../drivers/test/eeprom.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../extra/mmelody.h ../../extra/squeaker.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h ../../utils/uint8toa.h flasher.h spacey.h
+space12-test.o: space12.c ../../drivers/display.h ../../drivers/led.h ../../drivers/navswitch.h ../../drivers/test/avrtest.h ../../drivers/test/eeprom.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../extra/mmelody.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h ../../utils/uint8toa.h flasher.h spacey.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 flasher-test.o: flasher.c ../../drivers/test/system.h flasher.h
@@ -53,9 +53,6 @@ timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drive
 mmelody-test.o: ../../extra/mmelody.c ../../drivers/test/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-squeaker-test.o: ../../extra/squeaker.c ../../drivers/test/system.h ../../extra/squeaker.h ../../extra/ticker.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 ticker-test.o: ../../extra/ticker.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -75,14 +72,14 @@ uint8toa-test.o: ../../utils/uint8toa.c ../../drivers/test/system.h
 
 
 # Link: create executable file from object files.
-space12: space12-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o squeaker-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o uint8toa-test.o
+space12: space12-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o uint8toa-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) space12 space12-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o squeaker-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o uint8toa-test.o
+	-$(DEL) space12 space12-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o uint8toa-test.o
 
 
 

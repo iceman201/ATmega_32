@@ -19,7 +19,6 @@
 #include "uint8toa.h"
 #include "../fonts/font3x5_1.h"
 #include "tweeter.h"
-#include "squeaker.h"
 #include "mmelody.h"
 #include "pio.h"
 

@@ -16,7 +16,7 @@ all: squeak2.out
 
 
 # Compile: create object files from C source files.
-squeak2.o: squeak2.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/led.h ../../extra/mmelody.h ../../extra/squeaker.h ../../extra/ticker.h ../../extra/tweeter.h ../../utils/task.h
+squeak2.o: squeak2.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/led.h ../../extra/mmelody.h ../../extra/ticker.h ../../extra/tweeter.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -37,9 +37,6 @@ led.o: ../../drivers/led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ..
 mmelody.o: ../../extra/mmelody.c ../../drivers/avr/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-squeaker.o: ../../extra/squeaker.c ../../drivers/avr/system.h ../../extra/squeaker.h ../../extra/ticker.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 ticker.o: ../../extra/ticker.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -52,7 +49,7 @@ task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h 
 
 
 # Link: create ELF output file from object files.
-squeak2.out: squeak2.o pio.o system.o timer.o button.o led.o mmelody.o squeaker.o ticker.o tweeter.o task.o
+squeak2.out: squeak2.o pio.o system.o timer.o button.o led.o mmelody.o ticker.o tweeter.o task.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

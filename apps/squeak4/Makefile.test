@@ -14,7 +14,7 @@ all: squeak4
 
 
 # Compile: create object files from C source files.
-squeak4-test.o: squeak4.c ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../extra/mmelody.h ../../extra/squeaker.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h
+squeak4-test.o: squeak4.c ../../drivers/button.h ../../drivers/display.h ../../drivers/led.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../extra/mmelody.h ../../extra/ticker.h ../../extra/tweeter.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 button-test.o: ../../drivers/button.c ../../drivers/button.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h
@@ -44,9 +44,6 @@ timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drive
 mmelody-test.o: ../../extra/mmelody.c ../../drivers/test/system.h ../../extra/mmelody.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-squeaker-test.o: ../../extra/squeaker.c ../../drivers/test/system.h ../../extra/squeaker.h ../../extra/ticker.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 ticker-test.o: ../../extra/ticker.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -63,14 +60,14 @@ tinygl-test.o: ../../utils/tinygl.c ../../drivers/display.h ../../drivers/test/s
 
 
 # Link: create executable file from object files.
-squeak4: squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o squeaker-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o
+squeak4: squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) squeak4 squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o squeaker-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o
+	-$(DEL) squeak4 squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o
 
 
 
