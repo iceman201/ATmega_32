@@ -123,6 +123,13 @@ navswitch_update (void)
 
         /* Switch PIO to an input to read switch.  */
         pio_config_set (navswitch_cfg[i].pio, PIO_PULLUP);
+
+        /* I'm unsure why this is needed.  It wasn't required for the
+           slightly slower PIO implementation.  There may be a minimum
+           number of CPU clock cycles for the synchronising flip flops
+           to propagate the input state?  */
+        DELAY_US (1.0);
+
         navswitch_state[i].current = pio_input_get (navswitch_cfg[i].pio) == 0;
 
         /* Restore PIO state.  */
@@ -136,5 +143,3 @@ void navswitch_init (void)
 {
     /* Nothing to do since we configure PIOs when polling the switch.  */
 }
-
-

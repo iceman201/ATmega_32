@@ -39,44 +39,11 @@
 
 /** Define port names, note not all the ports are available on some AVRs.  */
 
-#ifdef PORTA
-#define PORT_A &PORTA
-#endif
-
-#ifdef PORTB
-#define PORT_B &PORTB
-#endif
-
-#ifdef PORTC
-#define PORT_C &PORTC
-#endif
-
-#ifdef PORTD
-#define PORT_D &PORTD
-#endif
-
-#ifdef PORTE
-#define PORT_E &PORTE
-#endif
-
-#ifdef PORTF
-#define PORT_F &PORTF
-#endif
-
-#ifdef PORTG
-#define PORT_G &PORTG
-#endif
-
+enum {PORT_A, PORT_B, PORT_C, PORT_D, PORT_E, PORT_F, PORT_G};
 
 typedef volatile uint8_t *pio_port_t;
 typedef uint8_t pio_mask_t;
-
-
-typedef struct
-{
-    pio_port_t port;
-    pio_mask_t bitmask;
-} pio_t;
+typedef uint16_t pio_t;
 
 
 /** Define PIO pin types.  The two flavours of PIO_OUTPUT are to
@@ -99,24 +66,26 @@ typedef enum pio_config_enum
 */
 
 
-/** Define a PIO as a compound literal structure in terms of a port and
-   a bitmask.  */
-#define PIO_DEFINE(PORT, PORTBIT) (pio_t){.port = PORT, .bitmask = BIT (PORTBIT)}
+/** Define a PIO as a unique 16 bit number encoding the low part of
+    the PORT address in the low byte and the bit mask in the high
+    byte.  PORTB is used for the pattern since PORTA is not always
+    defined for some AVRs.  */
+#define PIO_DEFINE(PORT, PORTBIT) ((((PORT) - PORT_B) * 3) | (BIT(PORTBIT) << 8))
 
 
 /** Private macro to lookup bitmask.  */
-#define PIO_BITMASK_(pio) (pio.bitmask)
+#define PIO_BITMASK_(PIO) ((PIO) >> 8)
 
 
 /** Private macro to lookup port register.  */
-#define PIO_PORT_(pio) (pio.port)
+#define PIO_PORT_(PIO) (&PORTB + ((PIO) & 0xff))
 
 
 /** Private macro to map a pio to its corresponding data direction
    register (DDR).  NB, the DDR and PORT registers must be separated
    by the same number of bytes in all cases.  PORTB is used for the
    pattern since PORTA is not always defined for some AVRs.  */
-#define PIO_DDR_(pio) (*(PIO_PORT_ (pio) + (&DDRB - &PORTB)))
+#define PIO_DDR_(PIO) (*(PIO_PORT_ (PIO) + (&DDRB - &PORTB)))
 
 /** Private macro to map a pio to its input register (PIN).  NB, the
    PIN and PORT registers must be separated by the same number of
@@ -128,6 +97,59 @@ typedef enum pio_config_enum
 #define PIO_DATA_(pio) (*PIO_PORT_ (pio))
 
 
+#ifdef DEBUG
+/** Configure pio.
+    @param pio PIO to configure
+    @param config PIO configuration type
+    @return non-zero for success.  */
+bool pio_config_set (pio_t pio, pio_config_t config);
+
+
+/** Return pio configuration
+    @param pio 
+    @return config  */
+pio_config_t pio_config_get (pio_t pio);
+
+
+/** Set pio high.
+    @param pio  */
+void pio_output_high (pio_t pio);
+
+
+/** Set pio low. 
+    @param pio  */
+void pio_output_low (pio_t pio);
+
+
+/** Toggle pio.
+    @param pio  */
+void pio_output_toggle (pio_t pio);
+
+
+/** Read input state from pio. 
+    @param pio
+    @return input state of pio  */
+bool pio_input_get (pio_t pio);
+
+
+/** Read input state from pio. 
+    @param pio
+    @return input state of pio  */
+bool pio_input_get (pio_t pio);
+
+
+/** Get output state of pio. 
+    @param pio
+    @return output state of pio  */
+bool pio_output_get (pio_t pio);
+
+
+/** Set pio to desired state.
+    @param pio
+    @param state value to write pio  */
+void pio_output_set (pio_t pio, bool state);
+
+#else
 
 /** Configure pio.
     @param pio PIO to configure
@@ -248,7 +270,6 @@ void pio_output_set (pio_t pio, bool state)
     state ? pio_output_high (pio) : pio_output_low (pio);
 }
 
-
 /** Set input state for pio (this is only for use by the test scaffold). 
     @param pio
     @param state value for pio input  */
@@ -260,6 +281,6 @@ void pio_input_set (pio_t pio, bool state)
     else
         PIO_PIN_ (pio) &= ~PIO_BITMASK_ (pio);
 }
-
+#endif
 
 #endif
