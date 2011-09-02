@@ -67,7 +67,6 @@ typedef enum pio_config_enum
      1     1  Output high
 */
 
-
 /** Define a PIO as a unique 16 bit number encoding the low part of
     the PORT address offset in the low byte and the bit mask in the
     high byte.  PORTB is used for the pattern since PORTA is not
@@ -89,14 +88,16 @@ typedef enum pio_config_enum
    pattern since PORTA is not always defined for some AVRs.  */
 #define PIO_DDR_(PIO) (*(PIO_PORT_ (PIO) + (&DDRB - &PORTB)))
 
+
 /** Private macro to map a pio to its input register (PIN).  NB, the
    PIN and PORT registers must be separated by the same number of
    bytes in all cases.  PORTB is used for the pattern since PORTA is
    not always defined for some AVRs.  */
-#define PIO_PIN_(pio) (*(PIO_PORT_ (pio) + (&PINB - &PORTB)))
+#define PIO_PIN_(PIO) (*(PIO_PORT_ (PIO) + (&PINB - &PORTB)))
+
 
 /** Private macro to access a pio data register.  */
-#define PIO_DATA_(pio) (*PIO_PORT_ (pio))
+#define PIO_DATA_(PIO) (*PIO_PORT_ (PIO))
 
 
 #ifdef DEBUG
@@ -207,7 +208,6 @@ pio_config_t pio_config_get (pio_t pio)
     
     return PIO_INPUT;
 }
-
 
 
 /** Set pio high.
