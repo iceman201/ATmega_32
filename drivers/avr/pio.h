@@ -41,44 +41,11 @@
 
 /** Define port names, note not all the ports are available on some AVRs.  */
 
-#ifdef PORTA
-#define PORT_A &PORTA
-#endif
-
-#ifdef PORTB
-#define PORT_B &PORTB
-#endif
-
-#ifdef PORTC
-#define PORT_C &PORTC
-#endif
-
-#ifdef PORTD
-#define PORT_D &PORTD
-#endif
-
-#ifdef PORTE
-#define PORT_E &PORTE
-#endif
-
-#ifdef PORTF
-#define PORT_F &PORTF
-#endif
-
-#ifdef PORTG
-#define PORT_G &PORTG
-#endif
-
+enum {PORT_A, PORT_B, PORT_C, PORT_D, PORT_E, PORT_F, PORT_G};
 
 typedef volatile uint8_t *pio_port_t;
 typedef uint8_t pio_mask_t;
-
-
-typedef struct
-{
-    pio_port_t port;
-    pio_mask_t bitmask;
-} pio_t;
+typedef uint16_t pio_t;
 
 
 /** Define PIO pin types.  The two flavours of PIO_OUTPUT are to
@@ -101,17 +68,19 @@ typedef enum pio_config_enum
 */
 
 
-/** Define a PIO as a compound literal structure in terms of a port and
-   a bitmask.  */
-#define PIO_DEFINE(PORT, PORTBIT) (pio_t){.port = PORT, .bitmask = BIT (PORTBIT)}
+/** Define a PIO as a unique 16 bit number encoding the low part of
+    the PORT address in the low byte and the bit mask in the high
+    byte.  PORTB is used for the pattern since PORTA is not always
+    defined for some AVRs.  */
+#define PIO_DEFINE(PORT, PORTBIT) (((((PORT) - PORT_B) * 3 + (uint16_t) (&PORTB)) & 0xff) + (BIT(PORTBIT) << 8))
 
 
 /** Private macro to lookup bitmask.  */
-#define PIO_BITMASK_(pio) (pio.bitmask)
+#define PIO_BITMASK_(pio) (pio >> 8)
 
 
 /** Private macro to lookup port register.  */
-#define PIO_PORT_(pio) (pio.port)
+#define PIO_PORT_(pio) ((pio_port_t)(pio & 0xff))
 
 
 /** Private macro to map a pio to its corresponding data direction
