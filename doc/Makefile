@@ -5,10 +5,10 @@ docs:
 	doxygen doxygen.config
 
 
-zip: ucfk3.zip
+zip: ucfk4.zip
 
 
-ucfk3.zip: html/*
+ucfk4.zip: html/*
 	zip -r $@ html/
 
 clean:
