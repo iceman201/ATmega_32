@@ -7,6 +7,10 @@
 
 #include "pio-simple.h"
 
+#define PIO_BITMASK(PIO) (BIT((PIO) & 7)
+
+#define PIO_PORT(PIO) ((PIO) >> 3)
+
 
 /** Configure pio
     @param pio  */
@@ -14,9 +18,9 @@ bool pio_config_set (pio_t pio, pio_config_t config)
 {
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
 
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         switch (config)
@@ -115,9 +119,9 @@ void pio_output_high (pio_t pio)
 {
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
 
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         PORTB |= bitmask;
@@ -143,9 +147,9 @@ void pio_output_low (pio_t pio)
 {
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
 
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         PORTB &= ~bitmask;
@@ -171,9 +175,9 @@ void pio_output_toggle (pio_t pio)
 {
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
 
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         PORTB ^= bitmask;
@@ -200,9 +204,9 @@ bool pio_input_get (pio_t pio)
 {
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
 
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         return (PINB & bitmask) != 0;
@@ -240,9 +244,9 @@ pio_config_t pio_config_get (pio_t pio)
     bool port;
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
     
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         ddr = (DDRB & bitmask) != 0;
@@ -285,9 +289,9 @@ bool pio_output_get (pio_t pio)
 {
     uint8_t bitmask;
 
-    bitmask = BIT (pio.bit);
+    bitmask = PIO_BITMASK (pio);
 
-    switch (pio.port)
+    switch (PIO_PORT (pio))
     {
     case PORT_B:
         return (PORTB & bitmask) != 0;

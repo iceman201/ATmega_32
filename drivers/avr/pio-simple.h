@@ -14,13 +14,9 @@ typedef enum pio_port_enum
     PORT_A, PORT_B, PORT_C, PORT_D, PORT_E
 } pio_port_t;
 
-typedef uint8_t pio_bit_t;
 
-typedef struct pio_struct
-{
-    pio_port_t port;
-    pio_bit_t bit;
-} pio_t;
+typedef uint8_t pio_t;
+
 
 typedef enum pio_config_enum 
 {
@@ -29,7 +25,7 @@ typedef enum pio_config_enum
 
 
 /* Define a PIO as a structure in terms of a port and a bit.  */
-#define PIO_DEFINE(PORT, PORTBIT) (pio_t){PORT, PORTBIT}
+#define PIO_DEFINE(PORT, PORTBIT) ((PORT) * 8 + (PORTBIT))
 
 
 /** Configure pio.
