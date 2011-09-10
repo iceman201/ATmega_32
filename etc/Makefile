@@ -9,11 +9,11 @@
 # the applications looking for #includes.
 # It also creates the doc directories and the callgraphs, etc.
 
-APPDIRS = $(filter-out ../apps/README, $(wildcard ../apps/*/ ../lab*/*))
+APPDIRS = $(filter-out ../apps/README, $(wildcard ../apps/*/ ../lab*/*/))
 DOCDIRS = $(addsuffix /doc, $(APPDIRS))
 
 # Don't link against test-scaffold if directly accessing harware
-FOO = $(shell grep -l "\<avr/io.h\>" ../lab*/*.c)
+FOO = $(shell grep -l "\<avr/io.h\>" ../lab*/*/*.c)
 DUDDIRS = $(foreach filename, $(FOO), $(dir $(filename)))
 TESTDIRS = $(filter-out $(DUDDIRS), $(APPDIRS))
 
@@ -28,6 +28,7 @@ MAKEDOCS = $(addsuffix .docs, $(DOCDIRS))
 CLEANAPPS = $(addsuffix .cleanapps, $(APPDIRS))
 CLEANTESTS = $(addsuffix .cleantests, $(TESTDIRS))
 CLEANDOCS = $(addsuffix .cleandocs, $(APPDIRS))
+
 
 all: testmakefiles appmakefiles docmakefiles apps tests docs
 

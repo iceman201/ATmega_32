@@ -20,7 +20,7 @@ pio2-test.o: pio2.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../
 mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-pio-test.o: ../../drivers/test/pio.c
+pio-test.o: ../../drivers/test/pio.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../drivers/test/mgetkey.h ../../drivers/test/pio.h ../../drivers/test/system.h

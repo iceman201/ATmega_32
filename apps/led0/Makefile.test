@@ -14,7 +14,7 @@ all: led0
 
 
 # Compile: create object files from C source files.
-led0-test.o: led0.c ../../drivers/led.h ../../drivers/test/system.h ../../drivers/test/target.h ../../utils/pacer.h
+led0-test.o: led0.c ../../drivers/led.h ../../drivers/test/system.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 led-test.o: ../../drivers/led.c ../../drivers/led.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h
