@@ -2,12 +2,24 @@
     @author M. P. Hayes, UCECE
     @date   11 Jan 2006
     @brief  PIO hardware abstraction for AVR microcontroller.
-    @note   Inline functions are used in pio.h instead for performance.
 */
 #include "system.h"
 #include "pio.h"
 
 #ifdef DEBUG
+
+
+/** DDR  PORT Comment
+     0     0  High impedance input
+     0     1  Weak pullup input
+     1     0  Output low
+     1     1  Output high
+*/
+
+#define PIO_BITMASK(PIO) (BIT((PIO) & 7))
+
+#define PIO_PORT(PIO) ((PIO) >> 3))
+
 
 /** Configure pio.
     @param pio PIO to configure
@@ -15,31 +27,222 @@
     @return non-zero for success.  */
 bool pio_config_set (pio_t pio, pio_config_t config)
 {
-    switch (config)
+    uint8_t bitmask;
+
+    bitmask = PIO_BITMASK (pio);
+
+    switch (PIO_PORT (pio))
     {
-    case PIO_OUTPUT_LOW:
-        PIO_DATA_ (pio) &= ~PIO_BITMASK_ (pio);
-        PIO_DDR_ (pio) |= PIO_BITMASK_ (pio);
-        return 1;
+    case PORT_B:
+        switch (config)
+        {
+        case PIO_INPUT:
+            DDRB &= ~bitmask;
+            PORTB &= ~bitmask;
+            break;
+            
+        case PIO_PULLUP:
+            DDRB &= ~bitmask;
+            PORTB |= bitmask;
+            break;
+            
+        case PIO_OUTPUT_LOW:
+            PORTB &= ~bitmask;
+            DDRB |= bitmask;
+            break;
 
-    case PIO_OUTPUT_HIGH:
-        PIO_DATA_ (pio) |= PIO_BITMASK_ (pio);
-        PIO_DDR_ (pio) |= PIO_BITMASK_ (pio);
-        return 1;
+        case PIO_OUTPUT_HIGH:
+            PORTB |= bitmask;
+            DDRB |= bitmask;
+            break;
+            
+        default:
+            return 0;
+        }
+         break;
+         
+    case PORT_C:
+        switch (config)
+        {
+        case PIO_INPUT:
+            DDRC &= ~bitmask;
+            PORTC &= ~bitmask;
+            break;
+            
+        case PIO_PULLUP:
+            DDRC &= ~bitmask;
+            PORTC |= bitmask;
+            break;
+            
+        case PIO_OUTPUT_LOW:
+            PORTC &= ~bitmask;
+            DDRC |= bitmask;
+            break;
 
-    case PIO_INPUT:
-        PIO_DDR_ (pio) &= ~PIO_BITMASK_ (pio);
-        PIO_DATA_ (pio) &= ~PIO_BITMASK_ (pio);
-        return 1;
+        case PIO_OUTPUT_HIGH:
+            PORTC |= bitmask;
+            DDRC |= bitmask;
+            break;
+            
+        default:
+            return 0;
+        }
+        break;
+        
+    case PORT_D:
+        switch (config)
+        {
+        case PIO_INPUT:
+            DDRD &= ~bitmask;
+            PORTD &= ~bitmask;
+            break;
+            
+        case PIO_PULLUP:
+            DDRD &= ~bitmask;
+            PORTD |= bitmask;
+            break;
+            
+        case PIO_OUTPUT_LOW:
+            PORTD &= ~bitmask;
+            DDRD |= bitmask;
+            break;
 
-    case PIO_PULLUP:
-        PIO_DDR_ (pio) &= ~PIO_BITMASK_ (pio);
-        PIO_DATA_ (pio) |= PIO_BITMASK_ (pio); 
-        return 1;
-
+        case PIO_OUTPUT_HIGH:
+            PORTD |= bitmask;
+            DDRD |= bitmask;
+            break;
+            
+        default:
+            return 0;
+        }
+        break;
+        
     default:
         return 0;
     }
+    return 1;
+}
+
+
+/** Set pio high.
+    @param pio  */
+void pio_output_high (pio_t pio)
+{
+    uint8_t bitmask;
+
+    bitmask = PIO_BITMASK (pio);
+
+    switch (PIO_PORT (pio))
+    {
+    case PORT_B:
+        PORTB |= bitmask;
+        break;
+         
+    case PORT_C:
+        PORTC |= bitmask;
+        break;
+        
+    case PORT_D:
+        PORTD |= bitmask;
+        break;
+        
+    default:
+        break;
+    }
+}
+
+
+/** Set pio low. 
+    @param pio  */
+void pio_output_low (pio_t pio)
+{
+    uint8_t bitmask;
+
+    bitmask = PIO_BITMASK (pio);
+
+    switch (PIO_PORT (pio))
+    {
+    case PORT_B:
+        PORTB &= ~bitmask;
+        break;
+         
+    case PORT_C:
+        PORTC &= ~bitmask;
+        break;
+        
+    case PORT_D:
+        PORTD &= ~bitmask;
+        break;
+        
+    default:
+        break;
+    }
+}
+
+
+/** Toggle pio.
+    @param pio  */
+void pio_output_toggle (pio_t pio)
+{
+    uint8_t bitmask;
+
+    bitmask = PIO_BITMASK (pio);
+
+    switch (PIO_PORT (pio))
+    {
+    case PORT_B:
+        PORTB ^= bitmask;
+        break;
+         
+    case PORT_C:
+        PORTC ^= bitmask;
+        break;
+        
+    case PORT_D:
+        PORTD ^= bitmask;
+        break;
+        
+    default:
+        break;
+    }
+}
+
+
+/** Read input state from pio. 
+    @param pio
+    @return input state of pio  */
+bool pio_input_get (pio_t pio)
+{
+    uint8_t bitmask;
+
+    bitmask = PIO_BITMASK (pio);
+
+    switch (PIO_PORT (pio))
+    {
+    case PORT_B:
+        return (PINB & bitmask) != 0;
+
+    case PORT_C:
+        return (PINC & bitmask) != 0;
+
+    case PORT_D:
+        return (PIND & bitmask) != 0;
+        
+    default:
+        return 0;
+    }
+}
+
+
+/** Set pio to desired state
+    @param pio
+    @param state value to write pio  */
+void pio_output_set (pio_t pio, bool state)
+{
+    if (state)
+        pio_output_high (pio);
+    else
+        pio_output_low (pio);
 }
 
 
@@ -50,9 +253,30 @@ pio_config_t pio_config_get (pio_t pio)
 {
     bool ddr;
     bool port;
+    uint8_t bitmask;
 
-    ddr = PIO_DDR_ (pio) & PIO_BITMASK_ (pio);
-    port = PIO_DATA_ (pio) & PIO_BITMASK_ (pio);
+    bitmask = PIO_BITMASK (pio);
+    
+    switch (PIO_PORT (pio))
+    {
+    case PORT_B:
+        ddr = (DDRB & bitmask) != 0;
+        port = (DDRB & bitmask) != 0;
+        break;
+        
+    case PORT_C:
+        ddr = (DDRC & bitmask) != 0;
+        port = (DDRC & bitmask) != 0;
+        break;
+        
+    case PORT_D:
+        ddr = (DDRD & bitmask) != 0;
+        port = (DDRD & bitmask) != 0;
+        break;
+        
+     default:
+         return 0;
+     }
     
     if (ddr)
     {
@@ -69,55 +293,30 @@ pio_config_t pio_config_get (pio_t pio)
 }
 
 
-
-/** Set pio high.
-    @param pio  */
-void pio_output_high (pio_t pio)
-{
-    PIO_DATA_ (pio) |= PIO_BITMASK_ (pio);
-}
-
-
-/** Set pio low. 
-    @param pio  */
-void pio_output_low (pio_t pio)
-{
-    PIO_DATA_ (pio) &= ~PIO_BITMASK_ (pio);
-}
-
-
-/** Toggle pio.
-    @param pio  */
-void pio_output_toggle (pio_t pio)
-{
-    PIO_DATA_ (pio) ^= PIO_BITMASK_ (pio);
-}
-
-
-/** Read input state from pio. 
-    @param pio
-    @return input state of pio  */
-bool pio_input_get (pio_t pio)
-{
-    return (PIO_PIN_ (pio) & PIO_BITMASK_ (pio)) != 0;
-}
-
-
 /** Get output state of pio. 
     @param pio
     @return output state of pio  */
 bool pio_output_get (pio_t pio)
 {
-    return (PIO_DATA_ (pio) & PIO_BITMASK_ (pio)) != 0;
+    uint8_t bitmask;
+
+    bitmask = PIO_BITMASK (pio);
+
+    switch (PIO_PORT (pio))
+    {
+    case PORT_B:
+        return (PORTB & bitmask) != 0;
+
+    case PORT_C:
+        return (PORTC & bitmask) != 0;
+
+    case PORT_D:
+        return (PORTD & bitmask) != 0;
+        
+    default:
+        return 0;
+    }
 }
 
-
-/** Set pio to desired state.
-    @param pio
-    @param state value to write pio  */
-void pio_output_set (pio_t pio, bool state)
-{
-    state ? pio_output_high (pio) : pio_output_low (pio);
-}
 
 #endif
