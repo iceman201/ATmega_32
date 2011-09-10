@@ -18,7 +18,7 @@
 
 #define PIO_BITMASK(PIO) (BIT((PIO) & 7))
 
-#define PIO_PORT(PIO) ((PIO) >> 3))
+#define PIO_PORT(PIO) ((PIO) >> 3)
 
 
 /** Configure pio.
@@ -59,8 +59,8 @@ bool pio_config_set (pio_t pio, pio_config_t config)
         default:
             return 0;
         }
-         break;
-         
+        break;
+        
     case PORT_C:
         switch (config)
         {
