@@ -33,7 +33,6 @@ int main (void)
         count++;
         if (count >= period)
             count = 0;
-
     }
 
     return 0;
