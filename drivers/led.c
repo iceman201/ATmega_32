@@ -44,7 +44,7 @@ void led_init (void)
     for (i = 0; i < LEDS_NUM; i++)
     {
         pio_config_set (leds_cfg[i].pio,
-                        leds_cfg[i].active_high ? PIO_OUTPUT_HIGH
-                        : PIO_OUTPUT_LOW);
+                        leds_cfg[i].active_high 
+                        ? PIO_OUTPUT_HIGH : PIO_OUTPUT_LOW);
     }
 }
