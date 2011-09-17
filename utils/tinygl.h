@@ -81,6 +81,10 @@
 #define TINYGL_HEIGHT DISPLAY_HEIGHT
 
 
+/** Maximum length of a message to display.  */
+#define TINYGL_MESSAGE_SIZE 32
+
+
 /** Define a pixel value.  Currently the only supported values are 0
     for off and 1 for on.  */
 typedef uint8_t tinygl_pixel_value_t;

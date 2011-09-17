@@ -18,7 +18,7 @@ static font_t *font;
 static tinygl_text_mode_t text_mode = TINYGL_TEXT_MODE_STEP;
 static uint8_t message_index;
 static uint8_t scroll_pos = 0;
-static char message1[32] = "";
+static char message1[TINYGL_MESSAGE_SIZE] = "";
 
 
 /** Draw point.
