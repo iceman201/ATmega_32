@@ -7,6 +7,8 @@
 #include "system.h"
 #include "tinygl.h"
 #include "display.h"
+#include "font.h"
+
 
 enum {TINYGL_SPEED_DEFAULT = 20};
 
