@@ -58,6 +58,9 @@ ticker.o: ../../extra/ticker.c
 tweeter.o: ../../extra/tweeter.c ../../drivers/avr/system.h ../../extra/ticker.h ../../extra/tweeter.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -70,7 +73,7 @@ uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-space12.out: space12.o flasher.o spacey.o eeprom.o pio.o system.o timer.o display.o led.o ledmat.o navswitch.o mmelody.o ticker.o tweeter.o task.o tinygl.o uint8toa.o
+space12.out: space12.o flasher.o spacey.o eeprom.o pio.o system.o timer.o display.o led.o ledmat.o navswitch.o mmelody.o ticker.o tweeter.o font.o task.o tinygl.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

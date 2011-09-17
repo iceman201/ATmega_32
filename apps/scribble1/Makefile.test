@@ -44,6 +44,9 @@ system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../dr
 timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drivers/test/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font-test.o: ../../utils/font.c ../../drivers/test/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 pacer-test.o: ../../utils/pacer.c ../../drivers/test/system.h ../../drivers/test/timer.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -54,14 +57,14 @@ tinygl-test.o: ../../utils/tinygl.c ../../drivers/display.h ../../drivers/test/s
 
 
 # Link: create executable file from object files.
-scribble1: scribble1-test.o button-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o pacer-test.o tinygl-test.o
+scribble1: scribble1-test.o button-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o font-test.o pacer-test.o tinygl-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) scribble1 scribble1-test.o button-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o pacer-test.o tinygl-test.o
+	-$(DEL) scribble1 scribble1-test.o button-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o font-test.o pacer-test.o tinygl-test.o
 
 
 

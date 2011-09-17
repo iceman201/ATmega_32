@@ -1,7 +1,7 @@
 /** @file   font.h
     @author M. P. Hayes, UCECE
     @date   1 March 2007
-    @brief  Font definition.
+    @brief  Font lookup.
 */
 
 #ifndef FONT_H
@@ -31,11 +31,20 @@ typedef const struct
 } font_t;
 
 
-/** Return the first character in the font.  */
-#define FONT_FIRST(font) ((font)->offset)
+/** Determine if character in font.
+    @param font pointer to font structure
+    @param ch character to check
+    @return non-zero if character is in font.  */
+bool font_contains_p (font_t *font, char ch);
 
-/** Return the last character in the font.  */
-#define FONT_LAST(font) ((font)->offset + (font)->size - 1)
 
+/** Determine if pixel on or off.
+    @param font pointer to font structure
+    @param ch character to display
+    @param col column of font element
+    @param row row of font element
+    @return 1 if pixel on; if pixel out of bounds return 0.  */
+bool
+font_pixel_get (font_t *font, char ch, uint8_t col, uint8_t row);
 
 #endif

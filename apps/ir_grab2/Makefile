@@ -40,6 +40,9 @@ ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/syste
 navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -52,7 +55,7 @@ uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-ir_grab2.out: ir_grab2.o pio.o system.o timer.o display.o ir.o ledmat.o navswitch.o pacer.o tinygl.o uint8toa.o
+ir_grab2.out: ir_grab2.o pio.o system.o timer.o display.o ir.o ledmat.o navswitch.o font.o pacer.o tinygl.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

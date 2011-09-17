@@ -123,24 +123,7 @@ void tinygl_clear (void)
     @return 1 if pixel on; if pixel out of bounds return 0.  */
 static bool tinygl_font_pixel_get (char ch, uint8_t col, uint8_t row)
 {
-    int8_t index;
-    font_data_t *char_data;
-    uint8_t offset;
-
-    if (!font || col >= font->width || row >= font->height)
-        return 0;
-
-    /* Find index of font entry.  */
-    index = ch - font->offset;
-    if (index < 0 || index >= font->size)
-        return 0;    
-
-    /* Get start of font entry data for ch.  */
-    char_data = &font->data[index * font->bytes];
-
-    /* Extract whether pixel should be on or off.  */
-    offset = row * font->width + col;
-    return (char_data[offset / 8] & BIT (offset % 8)) != 0;
+    return font_pixel_get (font, ch, col, row);
 }
 
 

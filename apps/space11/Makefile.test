@@ -50,6 +50,9 @@ system-test.o: ../../drivers/test/system.c ../../drivers/test/avrtest.h ../../dr
 timer-test.o: ../../drivers/test/timer.c ../../drivers/test/system.h ../../drivers/test/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font-test.o: ../../utils/font.c ../../drivers/test/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 task-test.o: ../../utils/task.c ../../drivers/test/system.h ../../drivers/test/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -63,14 +66,14 @@ uint8toa-test.o: ../../utils/uint8toa.c ../../drivers/test/system.h
 
 
 # Link: create executable file from object files.
-space11: space11-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o task-test.o tinygl-test.o uint8toa-test.o
+space11: space11-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o font-test.o task-test.o tinygl-test.o uint8toa-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) space11 space11-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o task-test.o tinygl-test.o uint8toa-test.o
+	-$(DEL) space11 space11-test.o flasher-test.o spacey-test.o display-test.o led-test.o ledmat-test.o navswitch-test.o eeprom-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o font-test.o task-test.o tinygl-test.o uint8toa-test.o
 
 
 

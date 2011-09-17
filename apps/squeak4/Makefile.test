@@ -50,6 +50,9 @@ ticker-test.o: ../../extra/ticker.c
 tweeter-test.o: ../../extra/tweeter.c ../../drivers/test/system.h ../../extra/ticker.h ../../extra/tweeter.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font-test.o: ../../utils/font.c ../../drivers/test/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 task-test.o: ../../utils/task.c ../../drivers/test/system.h ../../drivers/test/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -60,14 +63,14 @@ tinygl-test.o: ../../utils/tinygl.c ../../drivers/display.h ../../drivers/test/s
 
 
 # Link: create executable file from object files.
-squeak4: squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o
+squeak4: squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o font-test.o task-test.o tinygl-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) squeak4 squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o tinygl-test.o
+	-$(DEL) squeak4 squeak4-test.o button-test.o display-test.o led-test.o ledmat-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o font-test.o task-test.o tinygl-test.o
 
 
 

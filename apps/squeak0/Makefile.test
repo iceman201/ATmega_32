@@ -1,23 +1,20 @@
 # File:   Makefile
 # Author: M. P. Hayes, UCECE
 # Date:   11 Sep 2010
-# Descr:  Makefile for squeak1
+# Descr:  Makefile for squeak0
 
 CC = gcc
-CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/test -I../../drivers -I../../extra -I../../utils
+CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/test -I../../extra -I../../utils
 
 DEL = rm
 
 
 # Default target.
-all: squeak1
+all: squeak0
 
 
 # Compile: create object files from C source files.
-squeak1-test.o: squeak1.c ../../drivers/led.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../extra/mmelody.h ../../extra/ticker.h ../../extra/tweeter.h ../../utils/task.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
-led-test.o: ../../drivers/led.c ../../drivers/led.h ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h
+squeak0-test.o: squeak0.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../drivers/test/timer.h ../../extra/mmelody.h ../../extra/ticker.h ../../extra/tweeter.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
@@ -48,14 +45,14 @@ task-test.o: ../../utils/task.c ../../drivers/test/system.h ../../drivers/test/t
 
 
 # Link: create executable file from object files.
-squeak1: squeak1-test.o led-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o
+squeak0: squeak0-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) squeak1 squeak1-test.o led-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o
+	-$(DEL) squeak0 squeak0-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o mmelody-test.o ticker-test.o tweeter-test.o task-test.o
 
 
 

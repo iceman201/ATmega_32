@@ -49,6 +49,9 @@ ticker.o: ../../extra/ticker.c
 tweeter.o: ../../extra/tweeter.c ../../drivers/avr/system.h ../../extra/ticker.h ../../extra/tweeter.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/task.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -58,7 +61,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-squeak3.out: squeak3.o pio.o system.o timer.o button.o display.o led.o ledmat.o navswitch.o ticker.o tweeter.o task.o tinygl.o
+squeak3.out: squeak3.o pio.o system.o timer.o button.o display.o led.o ledmat.o navswitch.o ticker.o tweeter.o font.o task.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
