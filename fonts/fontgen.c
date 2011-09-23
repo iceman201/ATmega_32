@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include <time.h>
 
-/* FIXME.  This is not robust.  */
+/* FIXME.  This is not robust.  It's an ugly hack.  Rewrite in python!  */
 
 
 typedef struct
@@ -127,6 +127,7 @@ int font_scan (font_t *font)
     unsigned int i;
 
     font->comment = 0;
+    font->interlaced = 0;
 
     /* FIXME, use more robust key-value pair parsing.  */
     while (1)
@@ -138,7 +139,8 @@ int font_scan (font_t *font)
             return 0;
 
         ungetc (c, stdin);
-        
+
+        /* Ignore lines starting with #, w, h, i.  */
         if (!strchr ("#whi", c))
             break;
 
@@ -308,6 +310,39 @@ static void font_print_1 (font_t *font, uint8_t symbol)
 }
 
 
+static void font_rotate (font_t *font, font_t *rotate_font)
+{
+    int i;
+    int x;
+    int y;
+
+    *rotate_font = *font;
+    rotate_font->width = font->height;
+    rotate_font->height = font->width;
+    rotate_font->data = calloc (FONT_SIZE_MAX, font->bytes);
+
+    for (i = 0; i < font->size; i++)    
+    {
+        for (y = 0; y < font->height; y++)
+        {
+            for (x = 0; x < font->width; x++)
+            {
+                int bit;
+                int newbit;
+
+                bit = y * font->width + x;
+                newbit = x * font->height + y;
+
+                if (font->data[i * font->bytes + bit / CHAR_BIT] 
+                    & (1 << (bit % CHAR_BIT)))
+                    rotate_font->data[i * font->bytes + newbit / CHAR_BIT] 
+                    |= (1 << (newbit % CHAR_BIT));
+            }
+        }
+    }
+}
+
+
 static void font_print (font_t *font)
 {
     int i;
@@ -316,7 +351,7 @@ static void font_print (font_t *font)
     char name_upper[128];
     char timestr[32];
 
-    bytes_per_char = (font->width * font->height + 8 - 1) >> 3;
+    bytes_per_char = (font->width * font->height + CHAR_BIT - 1) / CHAR_BIT;
 
     for (i= 0; font->name[i]; i++)
         name_upper[i] = toupper (font->name[i]);
@@ -441,7 +476,7 @@ int main (int argc, char **argv)
     argc--;
     argv++;
 
-    if (argc > 2 && !strcmp (argv[1], "-zoom"))
+    if (argc > 2 && !strcmp (argv[1], "--zoom"))
     {
         int zoom;
         font_t zoom_font;
@@ -454,7 +489,18 @@ int main (int argc, char **argv)
         font = zoom_font;
     }
 
-    if (argc > 1 && !strcmp (argv[1], "-ascii"))
+    if (argc > 1 && !strcmp (argv[1], "--rotate"))
+    {
+        font_t rotate_font;
+
+        argc -= 1;
+        argv += 1;
+        
+        font_rotate (&font, &rotate_font);
+        font = rotate_font;
+    }
+
+    if (argc > 1 && !strcmp (argv[1], "--ascii"))
         font_draw (&font);
     else
         font_print (&font);

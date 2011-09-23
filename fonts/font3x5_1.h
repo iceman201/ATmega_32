@@ -1,6 +1,6 @@
 /** @file    font3x5_1.h
     @author  fontgen
-    @date    28 Sep 2010
+    @date    24 Sep 2011
 
     @defgroup font3x5_1  This is a tiny 3x5 font with uppercase, digits, and symbols only.
  M.P. Hayes 2 Sep 2010

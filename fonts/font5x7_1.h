@@ -1,6 +1,6 @@
 /** @file    font5x7_1.h
     @author  fontgen
-    @date    28 Sep 2010
+    @date    24 Sep 2011
 
     @defgroup font5x7_1  This is a 5x7 font with uppercase, lowercase, digits, and symbols.
  M.P. Hayes 2 Sep 2010
@@ -29,7 +29,7 @@
 #endif
 #include "font.h"
 
-static const font_t font5x7_1 =
+static font_t font5x7_1 =
 {
     .flags = 1, /* (packed)  */
     .width = 5,
