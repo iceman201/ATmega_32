@@ -37,15 +37,10 @@ static void choose_font (int font_num)
 }
 
 
-static char show_char (int font_num, char ch)
+static char show_char (char ch)
 {
     char string[2];
 
-    if (ch < FONT_FIRST (fonts[font_num]))
-        ch = FONT_LAST (fonts[font_num]);
-    else if (ch > FONT_LAST (fonts[font_num]))
-        ch = FONT_FIRST (fonts[font_num]);
-            
     string[0] = ch;
     string[1] = 0;
     tinygl_text (string);
@@ -68,7 +63,7 @@ int main (void)
     choose_font (font_num);
     tinygl_text_speed_set (10);
 
-    c = show_char (font_num, c);
+    c = show_char (c);
 
     /* Paced loop.  */
     while (1)
@@ -85,17 +80,19 @@ int main (void)
                 font_num = 0;
 
             choose_font (font_num);
-            c = show_char (font_num, c);
+            c = show_char (c);
         }
         else if (navswitch_push_event_p (NAVSWITCH_WEST)
                  || navswitch_push_event_p (NAVSWITCH_SOUTH))
         {
-            c = show_char (font_num, c - 1);
+            if (font_contains_p (fonts[font_num], c - 1))
+                c = show_char (c - 1);
         }
         else if (navswitch_push_event_p (NAVSWITCH_EAST)
                  || navswitch_push_event_p (NAVSWITCH_NORTH))
         {
-            c = show_char (font_num, c + 1);
+            if (font_contains_p (fonts[font_num], c + 1))
+                c = show_char (c + 1);
         }
 
         tinygl_update ();

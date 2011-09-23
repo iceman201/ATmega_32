@@ -48,7 +48,7 @@ int main (void)
             tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
 
         if (navswitch_push_event_p (NAVSWITCH_EAST))
-            tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
+            tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
 
     }
 

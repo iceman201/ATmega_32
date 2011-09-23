@@ -11,7 +11,7 @@
 #include "tinygl.h"
 #include "pacer.h"
 #include "ir_serial.h"
-#include "../fonts/font3x5_1.h"
+#include "../fonts/font3x5_1_r.h"
 
 
 /* Define polling rate in Hz.  */
@@ -50,9 +50,9 @@ int main (void)
 
     system_init ();
     tinygl_init (LOOP_RATE);
-    tinygl_font_set (&font3x5_1);
+    tinygl_font_set (&font3x5_1_r);
     tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
 
     navswitch_init ();
     ir_serial_init ();
