@@ -277,7 +277,6 @@ static void display_task (__unused__ void *data)
 
         tinygl_init (DISPLAY_UPDATE_RATE);
         tinygl_font_set (&font3x5_1);
-        tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
         tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN);
         tinygl_text_speed_set (10);
 
