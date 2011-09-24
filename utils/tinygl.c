@@ -22,7 +22,7 @@ typedef struct tinygl_state_struct
     uint16_t update_rate;
     uint8_t message_index;
     uint16_t text_advance_period;
-    uint8_t scroll_pos;
+    int8_t scroll_pos;
     char message[TINYGL_MESSAGE_SIZE];
 } tinygl_state_t;
 
@@ -202,10 +202,11 @@ uint8_t tinygl_draw_string (const char *str, tinygl_point_t pos)
     while (*str)
     {
         pos = tinygl_draw_char (*str, pos);
+        count++;
+
         if (pos.x >= TINYGL_WIDTH || pos.y < 0)
             break;
 
-        count++;
         str++;
     }
     return count;
@@ -229,15 +230,16 @@ static void tinygl_text_advance (void)
         case TINYGL_TEXT_MODE_STEP:
             if (tinygl.scroll_pos != 0)
                 break;
-
-            /* In step mode, display a single character.  */
-            tinygl_draw_char (tinygl.message[tinygl.message_index], tinygl.pos);
+            
+            tinygl.message_index += 
+                tinygl_draw_string (tinygl.message + tinygl.message_index,
+                                    tinygl.pos) - 1;
             break;
 
         case TINYGL_TEXT_MODE_SCROLL:
             pos = tinygl.pos;
 
-            if (tinygl.dir == TINYGL_TEXT_DIR_ROTATE)        
+            if (tinygl.dir == TINYGL_TEXT_DIR_ROTATE)
                 pos.y += tinygl.scroll_pos;
             else
                 pos.x -= tinygl.scroll_pos;
@@ -265,7 +267,7 @@ void tinygl_text (const char *string, tinygl_point_t pos)
 {
     tinygl.message_index = 0;
     tinygl.scroll_pos = 0;
-    
+
     /* Not much we can do without a font.  */
     if (!tinygl.font)
         return;
@@ -276,6 +278,21 @@ void tinygl_text (const char *string, tinygl_point_t pos)
     tinygl.pos = pos;
 
     strncpy (tinygl.message, string, sizeof (tinygl.message));
+
+    if (tinygl.mode == TINYGL_TEXT_MODE_SCROLL)
+    {
+        uint8_t message_cols;
+        uint8_t message_len;
+        uint8_t cols;
+
+        message_len = strlen (string);
+        message_cols = message_len * tinygl.font->width + message_len - 1;
+
+        cols = (tinygl.dir == TINYGL_TEXT_DIR_ROTATE) ? TINYGL_HEIGHT 
+            : TINYGL_WIDTH;
+        if (message_cols > cols)
+            tinygl.scroll_pos = -2;
+    }
 }
 
 
