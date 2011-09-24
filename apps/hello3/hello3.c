@@ -26,7 +26,7 @@ int main (void)
 
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
 
     tinygl_text ("HELLO WORLD");
 

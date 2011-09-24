@@ -11,7 +11,7 @@
 #include "tweeter.h"
 #include "mmelody.h"
 #include "tinygl.h"
-#include "../fonts/font3x5_1_r.h"
+#include "../fonts/font3x5_1.h"
 
 
 /* Connect piezo tweeter to outermost pins of UCFK4 P1 connector.  */
@@ -51,7 +51,7 @@ note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity)
 {
     tinygl_clear ();
     if (note != 0 && velocity != 0)
-        tinygl_draw_string (note_names[note % 12], tinygl_point (0, 0));
+        tinygl_draw_string (note_names[note % 12], tinygl_point (0, 0), 1);
 
     tweeter_note_play (tweeter, note, velocity);
 }
@@ -126,8 +126,8 @@ static void button_task (__unused__ void *data)
 static void display_task_init (void)
 {
     tinygl_init (DISPLAY_TASK_RATE);
-    tinygl_font_set (&font3x5_1_r);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_font_set (&font3x5_1);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_STEP);
 }
 
 
