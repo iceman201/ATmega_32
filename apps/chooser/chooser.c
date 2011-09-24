@@ -29,7 +29,7 @@ static void show_num (char ch, uint8_t count)
     buffer[1] = count / 10 + '0';
     buffer[2] = count % 10 + '0';
     buffer[3] = 0;
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, 0));
 }
 
 
@@ -43,9 +43,9 @@ int main (void)
 
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
 
-    tinygl_text ("NUM?");
+    tinygl_text ("NUM?", tinygl_point (0, 0));
 
     pacer_init (LOOP_RATE);
 

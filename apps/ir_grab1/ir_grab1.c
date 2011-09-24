@@ -85,7 +85,7 @@ static void show_char (char ch)
 
     buffer[0] = ch;
     buffer[1] = 0;
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, 0));
 }
 
 

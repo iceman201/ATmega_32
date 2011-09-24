@@ -29,7 +29,7 @@ static void show_count (uint8_t count)
     buffer[0] = 'S';
     buffer[1] = count + '0';
     buffer[2] = 0;
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
 }
 
 
@@ -40,7 +40,7 @@ static void show_err (uint8_t err)
     buffer[0] = 'E';
     buffer[1] = err + '0';
     buffer[2] = 0;
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
 }
 
 
@@ -52,7 +52,8 @@ int main (void)
     tinygl_init (LOOP_RATE);
     tinygl_font_set (&font3x5_1);
     tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
 
     navswitch_init ();
     ir_serial_init ();

@@ -39,9 +39,10 @@ static void display_task_init (void)
     tinygl_init (DISPLAY_TASK_RATE);
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
     
-    tinygl_text ("HELLO WORLD ");
+    tinygl_text ("HELLO WORLD ", tinygl_point (0, TINYGL_HEIGHT - 1));
 }
 
 

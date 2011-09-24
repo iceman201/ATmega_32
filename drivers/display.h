@@ -30,14 +30,6 @@ void display_pixel_set (uint8_t col, uint8_t row, bool val);
 bool display_pixel_get (uint8_t col, uint8_t row);
 
 
-/** Scroll display contents one column to left.  */
-void display_scroll_left (void);
-
-
-/** Scroll display contents one row down.  */
-void display_scroll_down (void);
-
-
 /** Update display (perform refreshing).  */
 void display_update (void);
 

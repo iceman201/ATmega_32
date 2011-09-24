@@ -50,26 +50,6 @@ bool display_pixel_get (uint8_t col, uint8_t row)
 }
 
 
-/** Scroll display contents one column to left.  */
-void display_scroll_left (void)
-{
-    int col;
-
-    for (col = 0; col < DISPLAY_WIDTH - 1; col++)
-        display[col] = display[col + 1];
-}
-
-
-/** Scroll display contents one row down.  */
-void display_scroll_down (void)
-{
-    int col;
-
-    for (col = 0; col < DISPLAY_WIDTH; col++)
-        display[col] <<= 1;
-}
-
-
 /** Update display (perform refreshing).  */
 void display_update (void)
 {

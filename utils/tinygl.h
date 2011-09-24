@@ -56,8 +56,8 @@
 
            tinygl_font_set (&font5x7_1);
            tinygl_text_speed_set (10);
-           tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL_LEFT);
-           tinygl_text ("HELLO WORLD ");
+           tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+           tinygl_text ("HELLO WORLD ", tinygl_point (0, 0));
 
            while (1)
            {
@@ -110,12 +110,18 @@ typedef enum
     /* Stepping text.  */
     TINYGL_TEXT_MODE_STEP, 
     /** Scrolling text.  */
-    TINYGL_TEXT_MODE_SCROLL_LEFT,
-    /** Rotated scrolling text.  */
-    TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN,
-    /* Stepping rotated text.  */
-    TINYGL_TEXT_MODE_ROTATE_STEP
+    TINYGL_TEXT_MODE_SCROLL,
 } tinygl_text_mode_t;
+
+
+/** Define text display directions.  */
+typedef enum 
+{
+    /* Normal text.  */
+    TINYGL_TEXT_DIR_NORMAL, 
+    /** Rotated text.  */
+    TINYGL_TEXT_DIR_ROTATE, 
+} tinygl_text_dir_t;
 
 
 /** Construct a point from a pair of coordinates.
@@ -131,8 +137,9 @@ static inline tinygl_point_t tinygl_point (tinygl_coord_t x, tinygl_coord_t y)
 
 
 /** Display a message repeatedly.
-    @param string null terminated message to display.  */
-void tinygl_text (const char *string);
+    @param string null terminated message to display
+    @param pos position on screen.  */
+void tinygl_text (const char *string, tinygl_point_t pos);
 
 
 /** Set the message update speed.
@@ -145,6 +152,11 @@ void tinygl_text_speed_set (uint8_t speed);
 void tinygl_text_mode_set (tinygl_text_mode_t mode);
 
 
+/** Set the message display direction.
+    @param dir display direction.  */
+void tinygl_text_dir_set (tinygl_text_dir_t dir);
+
+
 /** Set the font to use for text.
     @param pfont pointer to font description.  */
 void tinygl_font_set (font_t *pfont);
@@ -152,31 +164,29 @@ void tinygl_font_set (font_t *pfont);
 
 /** Draw character using current font.
     @param ch character to draw
-    @param offset coordinates of top left position
-    @param rotate non-zero to rotate character
+    @param pos coordinates of top left position
     @return position to draw next character.  */
-tinygl_point_t tinygl_draw_char (char ch, tinygl_point_t offset, bool rotate);
+tinygl_point_t tinygl_draw_char (char ch, tinygl_point_t pos);
 
 
 /** Draw string (well, as much as possible) using current font.
     @param str string to draw
-    @param offset coordinates of top left position
-    @param rotate non-zero to rotate string
+    @param pos coordinates of top left position
     @return number of whole characters drawn.  */
-uint8_t tinygl_draw_string (const char *str, tinygl_point_t offset,
-                            bool rotate);
+uint8_t tinygl_draw_string (const char *str, tinygl_point_t pos);
+
 
 /** Draw point.
-    @param point coordinates of point
+    @param pos coordinates of point
     @param pixel_value pixel value to draw point.  */
-void tinygl_draw_point (tinygl_point_t point, tinygl_pixel_value_t pixel_value);
+void tinygl_draw_point (tinygl_point_t pos, tinygl_pixel_value_t pixel_value);
 
 
 /** Draw line.
-    @param point1 coordinates of start of line
-    @param point2 coordinates of end of line
+    @param pos1 coordinates of start of line
+    @param pos2 coordinates of end of line
     @param pixel_value pixel value to draw line.  */
-void tinygl_draw_line (tinygl_point_t point1, tinygl_point_t point2, 
+void tinygl_draw_line (tinygl_point_t pos1, tinygl_point_t pos2, 
                        tinygl_pixel_value_t pixel_value);
 
 

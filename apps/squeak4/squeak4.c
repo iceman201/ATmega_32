@@ -51,7 +51,8 @@ note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity)
 {
     tinygl_clear ();
     if (note != 0 && velocity != 0)
-        tinygl_draw_string (note_names[note % 12], tinygl_point (0, 0), 1);
+        tinygl_text (note_names[note % 12],
+                     tinygl_point (0, TINYGL_HEIGHT - 1));
 
     tweeter_note_play (tweeter, note, velocity);
 }
@@ -127,7 +128,8 @@ static void display_task_init (void)
 {
     tinygl_init (DISPLAY_TASK_RATE);
     tinygl_font_set (&font3x5_1);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_STEP);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
 }
 
 

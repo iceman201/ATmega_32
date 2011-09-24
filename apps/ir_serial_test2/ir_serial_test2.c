@@ -28,7 +28,7 @@ static void show_count (uint8_t count)
     /* FIXME!  */
     buffer[0] = count + '0';
     buffer[1] = 0;
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, 0));
 }
 
 

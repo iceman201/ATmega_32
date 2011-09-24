@@ -89,7 +89,7 @@ static void show_char (char ch)
 
     buffer[0] = ch;
     buffer[1] = 0;
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
 }
 
 
@@ -99,7 +99,7 @@ static void show_num (char ch, uint8_t num)
 
     buffer[0] = ch;
     uint8toa (num, buffer + 1, 0);
-    tinygl_text (buffer);
+    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
 }
 
 
@@ -112,7 +112,8 @@ int main (void)
     system_init ();
     tinygl_init (LOOP_RATE);
     tinygl_font_set (&font3x5_1);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_ROTATE_SCROLL_DOWN);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
     tinygl_text_speed_set (MESSAGE_RATE);
 
     navswitch_init ();

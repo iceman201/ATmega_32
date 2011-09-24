@@ -38,7 +38,7 @@ int main (void)
 
     pacer_init (LOOP_RATE);
 
-    tinygl_text ("#");
+    tinygl_text ("#", tinygl_point (0, 0));
 
     /* Paced loop.  */
     while (1)
@@ -69,11 +69,11 @@ int main (void)
             switch (event)
             {
             case SPACEY_EVENT_ALIEN_HIT:
-                tinygl_text ("*");
+                tinygl_text ("*", tinygl_point (0, 0));
                 break;
 
             case SPACEY_EVENT_ALIEN_LANDED:
-                tinygl_text ("@");
+                tinygl_text ("@", tinygl_point (0, 0));
                 break;
             }
 
