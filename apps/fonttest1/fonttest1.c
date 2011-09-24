@@ -43,7 +43,7 @@ static char show_char (char ch)
 
     string[0] = ch;
     string[1] = 0;
-    tinygl_text (string, tinygl_point (0, 0));
+    tinygl_text (string);
     return ch;
 }
 

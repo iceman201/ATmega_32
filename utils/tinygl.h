@@ -136,12 +136,6 @@ static inline tinygl_point_t tinygl_point (tinygl_coord_t x, tinygl_coord_t y)
 }
 
 
-/** Display a message repeatedly.
-    @param string null terminated message to display
-    @param pos position on screen.  */
-void tinygl_text (const char *string, tinygl_point_t pos);
-
-
 /** Set the message update speed.
     @param speed text advance speed (characters per 10 s).  */
 void tinygl_text_speed_set (uint8_t speed);
@@ -174,6 +168,17 @@ tinygl_point_t tinygl_draw_char (char ch, tinygl_point_t pos);
     @param pos coordinates of top left position
     @return number of whole characters drawn.  */
 uint8_t tinygl_draw_string (const char *str, tinygl_point_t pos);
+
+
+/** Display a message repeatedly.
+    @param string null terminated message to display
+    @param pos position on screen.  */
+void tinygl_draw_message (const char *string, tinygl_point_t pos);
+
+
+/** Display a message repeatedly.
+    @param string null terminated message to display.  */
+void tinygl_text (const char *string);
 
 
 /** Draw point.

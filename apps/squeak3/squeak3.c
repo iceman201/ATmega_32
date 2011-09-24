@@ -77,7 +77,7 @@ static void button_task_init (void)
 static void display_note (void)
 {
     tinygl_clear ();
-    tinygl_text (note_names[note], tinygl_point (0, TINYGL_HEIGHT - 1));
+    tinygl_text (note_names[note]);
 }
 
 

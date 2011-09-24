@@ -51,8 +51,7 @@ note_play (tweeter_t tweeter, tweeter_note_t note, uint8_t velocity)
 {
     tinygl_clear ();
     if (note != 0 && velocity != 0)
-        tinygl_text (note_names[note % 12],
-                     tinygl_point (0, TINYGL_HEIGHT - 1));
+        tinygl_text (note_names[note % 12]);
 
     tweeter_note_play (tweeter, note, velocity);
 }

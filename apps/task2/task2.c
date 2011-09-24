@@ -42,7 +42,7 @@ static void display_task_init (void)
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
     tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
     
-    tinygl_text ("HELLO WORLD ", tinygl_point (0, TINYGL_HEIGHT - 1));
+    tinygl_text ("HELLO WORLD ");
 }
 
 

@@ -263,7 +263,7 @@ static void tinygl_text_advance (void)
 /** Display a message repeatedly.
     @param string null terminated message to display
     @param pos position on screen.  */
-void tinygl_text (const char *string, tinygl_point_t pos)
+void tinygl_draw_message (const char *string, tinygl_point_t pos)
 {
     tinygl.message_index = 0;
     tinygl.scroll_pos = 0;
@@ -293,6 +293,19 @@ void tinygl_text (const char *string, tinygl_point_t pos)
         if (message_cols > cols)
             tinygl.scroll_pos = -2;
     }
+}
+
+
+/** Display a message repeatedly.
+    @param string null terminated message to display.  */
+void tinygl_text (const char *string)
+{
+    tinygl_point_t pos;
+
+    pos.x = 0;
+    pos.y = (tinygl.dir == TINYGL_TEXT_DIR_ROTATE) ? TINYGL_HEIGHT - 1 : 0;
+
+    tinygl_draw_message (string, pos);
 }
 
 

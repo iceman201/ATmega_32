@@ -29,7 +29,7 @@ static void show_count (uint8_t count)
     buffer[0] = 'S';
     buffer[1] = count + '0';
     buffer[2] = 0;
-    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
+    tinygl_text (buffer);
 }
 
 
@@ -40,7 +40,7 @@ static void show_err (uint8_t err)
     buffer[0] = 'E';
     buffer[1] = err + '0';
     buffer[2] = 0;
-    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
+    tinygl_text (buffer);
 }
 
 

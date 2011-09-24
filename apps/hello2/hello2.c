@@ -27,7 +27,7 @@ int main (void)
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
 
-    tinygl_text ("HELLO WORLD", tinygl_point (0, 0));
+    tinygl_text ("HELLO WORLD");
 
     pacer_init (LOOP_RATE);
 

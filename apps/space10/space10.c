@@ -86,7 +86,7 @@ game_over_display (char *buffer)
     *str++ = 'F';
     uint8toa (spacey_shells_fired_get (), str, 0);
     tinygl_clear ();
-    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
+    tinygl_text (buffer);
 }
 
 
@@ -99,7 +99,7 @@ game_text_display (uint8_t num, char *buffer, char *msg)
         *str++ = *msg++;
     uint8toa (num, str, 0);
     tinygl_clear ();
-    tinygl_text (buffer, tinygl_point (0, TINYGL_HEIGHT - 1));
+    tinygl_text (buffer);
 }
 
 
@@ -287,8 +287,7 @@ main (void)
                 break;
                 
             case STATE_INIT:
-                tinygl_text ("SPACEY READY V" VERSION " BY MPH ",
-                             tinygl_point (0, TINYGL_HEIGHT - 1));
+                tinygl_text ("SPACEY READY V" VERSION " BY MPH ");
                 state = STATE_READY;
                 break;
                 

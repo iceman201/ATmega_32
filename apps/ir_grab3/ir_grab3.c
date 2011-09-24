@@ -156,7 +156,7 @@ int main (void)
 
     pacer_init (LOOP_RATE);
 
-    tinygl_text ("X", tinygl_point (0, 0));
+    tinygl_text ("X");
     led_set (LED1, 0);
 
     while (1)
@@ -176,7 +176,7 @@ int main (void)
 
             if (seq != -1)
             {
-                tinygl_text (strings[seq], tinygl_point (0, 0));
+                tinygl_text (strings[seq]);
                 transmit (&codeseqs[seq * CODESEQ_LEN_MAX]);
             }
                     
@@ -199,7 +199,7 @@ int main (void)
                 {
                     if (capture (codeseq, CODESEQ_LEN_MAX))
                     {
-                        tinygl_text ("?", tinygl_point (0, 0));
+                        tinygl_text ("?");
                         led_set (LED1, 1);
                         state = STATE_STORE;
                         break;
@@ -227,7 +227,7 @@ int main (void)
             {
                 memcpy (&codeseqs[seq * CODESEQ_LEN_MAX], codeseq, sizeof (codeseq));
                 codeseqs_write (codeseqs, CODESEQ_LEN_MAX, CODESEQ_NUM);
-                tinygl_text (strings[seq], tinygl_point (0, 0));
+                tinygl_text (strings[seq]);
                 led_set (LED1, 0);
                 state = STATE_NORMAL;
             }
