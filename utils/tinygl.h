@@ -57,7 +57,7 @@
            tinygl_font_set (&font5x7_1);
            tinygl_text_speed_set (10);
            tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
-           tinygl_text ("HELLO WORLD ", tinygl_point (0, 0));
+           tinygl_text ("HELLO WORLD ");
 
            while (1)
            {
@@ -152,8 +152,8 @@ void tinygl_text_dir_set (tinygl_text_dir_t dir);
 
 
 /** Set the font to use for text.
-    @param pfont pointer to font description.  */
-void tinygl_font_set (font_t *pfont);
+    @param font pointer to font description.  */
+void tinygl_font_set (font_t *font);
 
 
 /** Draw character using current font.
