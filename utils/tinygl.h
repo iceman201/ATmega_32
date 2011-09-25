@@ -107,7 +107,7 @@ typedef struct tinygl_point
 /** Define text display modes.  */
 typedef enum 
 {
-    /* Stepping text.  */
+    /** Stepping text.  */
     TINYGL_TEXT_MODE_STEP, 
     /** Scrolling text.  */
     TINYGL_TEXT_MODE_SCROLL,
@@ -117,7 +117,7 @@ typedef enum
 /** Define text display directions.  */
 typedef enum 
 {
-    /* Normal text.  */
+    /** Normal text.  */
     TINYGL_TEXT_DIR_NORMAL, 
     /** Rotated text.  */
     TINYGL_TEXT_DIR_ROTATE, 
