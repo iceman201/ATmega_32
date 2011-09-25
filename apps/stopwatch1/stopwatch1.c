@@ -7,7 +7,7 @@
 #include "button.h"
 #include "task.h"
 #include "tinygl.h"
-#include "../fonts/font3x5_1_r.h"
+#include "../fonts/font3x5_1.h"
 
 
 /* Define polling rates in Hz.  */
@@ -41,8 +41,9 @@ static void button_task (__unused__ void *data)
 static void display_task_init (void)
 {
     tinygl_init (DISPLAY_TASK_RATE);
-    tinygl_font_set (&font3x5_1_r);
+    tinygl_font_set (&font3x5_1);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
 }
 
 
@@ -54,7 +55,7 @@ static void display_task (__unused__ void *data)
 
 static void timer_task_init (void)
 {
-    tinygl_draw_string ("00", tinygl_point (0, 0));
+    tinygl_text ("00");
 }
 
 
@@ -73,7 +74,7 @@ static void timer_task (__unused__ void *data)
     str[1] = (time % 10) + '0';
     str[2] = 0;
 
-    tinygl_draw_string (str, tinygl_point (0, 0));
+    tinygl_text (str);
 
     time++;
 }
