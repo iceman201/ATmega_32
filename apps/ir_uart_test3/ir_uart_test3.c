@@ -41,7 +41,7 @@ int main (void)
     tinygl_init (LOOP_RATE);
     tinygl_font_set (&font3x5_1);
     tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
     tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
 
     navswitch_init ();
@@ -88,6 +88,10 @@ int main (void)
             uint8_t data;
 
             data = ir_uart_getc ();
+
+            /* Note, if messages come in too fast, say due to IR
+               inteference from fluorescent lights, then the display
+               will not keep up and will appear to freeze.  */
             show_byte (data);
         }
     }
