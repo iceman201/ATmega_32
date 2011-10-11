@@ -1,7 +1,7 @@
 /** @file   ir_uart_test2.c
     @author M. P. Hayes, UCECE
     @date   24 August 2009
-    @brief  Test program for IR serial communnications.
+    @brief  Test program for IR serial communications.
 
     @defgroup ir_uart_test2 Test program for IR serial communications.
 */
