@@ -38,7 +38,7 @@ usart1_init (const usart1_cfg_t *cfg)
 }
 
 
-/* Return non-zero if there is a character ready to be read.  */
+/** Return non-zero if there is a character ready to be read.  */
 bool
 usart1_read_ready_p (void)
 {
@@ -46,7 +46,7 @@ usart1_read_ready_p (void)
 }
 
 
-/* Return non-zero if a character can be written without blocking.  */
+/** Return non-zero if a character can be written without blocking.  */
 bool
 usart1_write_ready_p (void)
 {
@@ -54,7 +54,7 @@ usart1_write_ready_p (void)
 }
 
 
-/* Return non-zero if transmitter finished.  */
+/** Return non-zero if transmitter finished.  */
 bool
 usart1_write_finished_p (void)
 {
@@ -62,22 +62,19 @@ usart1_write_finished_p (void)
 }
 
 
-/* Write character to USART1.  */
-int8_t 
+/** Write character to USART1.  This blocks until the character can be
+    written into transmit register.  */
+void
 usart1_putc (char ch)
 {
-    if (ch == '\n')
-        usart1_putc ('\r');
-
     while (!usart1_write_ready_p ())
         continue;                   
 
     UDR1 = ch;
-    return 1;
 }
 
 
-/* Read character from USART1.  This blocks until a character is read.  */
+/** Read character from USART1.  This blocks until a character is read.  */
 int8_t
 usart1_getc (void)
 {
@@ -89,7 +86,7 @@ usart1_getc (void)
 }
 
 
-/* Write string to USART1.  This blocks until the string is written.  */
+/** Write string to USART1.  This blocks until the string is written.  */
 void 
 usart1_puts (const char *str)
 {
