@@ -54,7 +54,8 @@ uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 ir_grab2.out: ir_grab2.o pio.o system.o timer.o display.o ir.o ledmat.o navswitch.o font.o pacer.o tinygl.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@

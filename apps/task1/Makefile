@@ -36,7 +36,8 @@ task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h 
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 task1.out: task1.o pio.o system.o timer.o led.o task.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@

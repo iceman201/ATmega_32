@@ -60,7 +60,8 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 squeak4.out: squeak4.o pio.o system.o timer.o button.o display.o led.o ledmat.o mmelody.o ticker.o tweeter.o font.o task.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@

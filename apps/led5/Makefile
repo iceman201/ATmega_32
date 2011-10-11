@@ -33,7 +33,8 @@ led.o: ../../drivers/led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ..
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 led5.out: led5.o pio.o system.o timer.o led.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@

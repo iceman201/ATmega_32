@@ -48,7 +48,8 @@ task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h 
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 squeak2.out: squeak2.o pio.o system.o timer.o button.o led.o mmelody.o ticker.o tweeter.o task.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@

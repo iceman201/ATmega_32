@@ -51,7 +51,8 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 ir_grab1.out: ir_grab1.o pio.o system.o timer.o display.o ir.o ledmat.o navswitch.o font.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@

@@ -48,7 +48,8 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 
-# Link: create ELF output file from object files.
+
+# Link: create output file (executable) from object files.
 chooser.out: chooser.o pio.o system.o timer.o display.o ledmat.o navswitch.o font.o pacer.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
