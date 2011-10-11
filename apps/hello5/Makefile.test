@@ -14,7 +14,7 @@ all: hello5
 
 
 # Compile: create object files from C source files.
-hello5-test.o: hello5.c ../../drivers/display.h ../../drivers/navswitch.h ../../drivers/test/system.h ../../fonts/font5x7_1.h ../../utils/font.h ../../utils/pacer.h ../../utils/tinygl.h
+hello5-test.o: hello5.c ../../drivers/display.h ../../drivers/navswitch.h ../../drivers/test/system.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/pacer.h ../../utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 display-test.o: ../../drivers/display.c ../../drivers/display.h ../../drivers/ledmat.h ../../drivers/test/system.h

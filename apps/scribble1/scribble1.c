@@ -9,7 +9,6 @@
 #include "led.h"
 #include "tinygl.h"
 #include "pacer.h"
-#include "../fonts/font5x7_1.h"
 
 
 /* Define polling rate in Hz.  */
