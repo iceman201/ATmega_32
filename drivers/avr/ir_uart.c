@@ -47,7 +47,8 @@ ir_uart_write_finished_p (void)
 int8_t
 ir_uart_putc (char ch)
 {
-    return usart1_putc (ch);
+    usart1_putc (ch);
+    return 1;
 }
 
 
