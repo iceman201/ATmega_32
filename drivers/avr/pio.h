@@ -36,6 +36,47 @@
 #include <avr/io.h>
 #endif
 
+/** AVR microcontrollers use two flip-flops per PIO stored in two
+    separate registers: the data direction register (DDRx) and the
+    port register (PORTx).  The DDRx register controls the whether the
+    pin is an input or an output; the PORTx register determines the
+    output state when the pin is an output but also doubles as an
+    enable for a pull-up resistor when the pin is an input.
+
+    Mode:              DDRx    PORTx
+    Input, no pull-up     0        0
+    Input, pull-up        0        1
+    Output, low           1        0
+    Output, high          1        1
+
+    These two registers cannot be changed at the same time so a
+    transient intermediate state can occur if both these registers
+    need to be changed.  This is only a concern for pins that need to
+    switched between being an input and an output; say for a
+    bidirectional communication link.
+
+    Let's consider the scenario where we change DDRx before PORTx.
+
+    If we want to reconfigure a PIO from an input with no pull-up to a
+    high output it will be momentarily a low output.
+
+    If we want to reconfigure a PIO from an input with pull-up to a
+    low output it will be momentarily a high output.
+
+    Let's consider the alternative scenario where we change DDRx after PORTx.
+
+    If we want to reconfigure a PIO from an input with no pull-up to a
+    high output it will be momentarily an input with a pull-up.  This
+    is not a bad option since a high-impedance load will not notice.
+
+    If we want to reconfigure a PIO from an input with pull-up to a
+    low output it will be momentarily an input with no-pullup.
+
+    p.s.  I am sure this subtle quirk has caused much grief to some
+    embedded systems engineers.
+ */
+
+
 
 /** Define port names; note not all the ports are available on some AVRs.  */
 
@@ -58,7 +99,7 @@ typedef enum pio_config_enum
 
 #ifdef DEBUG
 
-/* Define a PIO as a structure in terms of a port and a bit.  */
+/* Define PIO as a unique integer.  */
 #define PIO_DEFINE(PORT, PORTBIT) ((PORT) * 8 + (PORTBIT))
 
 
@@ -164,13 +205,13 @@ bool pio_config_set (pio_t pio, pio_config_t config)
     switch (config)
     {
     case PIO_OUTPUT_LOW:
-        PIO_DATA_ (pio) &= ~PIO_BITMASK_ (pio);
         PIO_DDR_ (pio) |= PIO_BITMASK_ (pio);
+        PIO_DATA_ (pio) &= ~PIO_BITMASK_ (pio);
         return 1;
 
     case PIO_OUTPUT_HIGH:
-        PIO_DATA_ (pio) |= PIO_BITMASK_ (pio);
         PIO_DDR_ (pio) |= PIO_BITMASK_ (pio);
+        PIO_DATA_ (pio) |= PIO_BITMASK_ (pio);
         return 1;
 
     case PIO_INPUT:
@@ -265,7 +306,7 @@ bool pio_output_get (pio_t pio)
 
 /** Set pio to desired state.
     @param pio
-    @param state value to write pio  */
+    @param state value to write to pio  */
 static inline
 void pio_output_set (pio_t pio, bool state)
 {
