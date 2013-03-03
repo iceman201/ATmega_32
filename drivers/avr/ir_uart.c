@@ -48,6 +48,10 @@ int8_t
 ir_uart_putc (char ch)
 {
     usart1_putc (ch);
+
+    /* The character gets echoed on the UCFK4 so we should
+       probably gobble it here.  */
+
     return 1;
 }
 
