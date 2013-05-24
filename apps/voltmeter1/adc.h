@@ -1,3 +1,9 @@
+/** @file   adc.h
+    @author M. P. Hayes, UCECE
+    @date   23 April 2013
+    @brief  Simple ADC using a comparator and RC network.
+*/
+
 #ifndef ADC_H
 #define ADC_H
 

@@ -1,3 +1,8 @@
+/** @file   adc.c
+    @author M. P. Hayes, UCECE
+    @date   23 April 2013
+    @brief  Simple ADC using a comparator and RC network.
+*/
 #include "avr/io.h"
 #include "pio.h"
 #include "delay.h"
