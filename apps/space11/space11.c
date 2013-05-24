@@ -8,7 +8,6 @@
 
 #include <string.h>
 #include "system.h"
-#include "display.h"
 #include "tinygl.h"
 #include "task.h"
 #include "navswitch.h"

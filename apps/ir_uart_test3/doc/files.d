@@ -14,31 +14,31 @@
 
 ../../drivers/navswitch.h: 
 
-../../drivers/avr/delay.h: 
-
-../../drivers/navswitch.c: ../../drivers/navswitch.h ../../drivers/avr/delay.h ../../drivers/avr/pio.h
-
-../../drivers/navswitch.o: ../../drivers/navswitch.c
-
 ../../drivers/display.h: 
 
 ../../utils/font.h: 
 
 ../../utils/tinygl.h: ../../drivers/display.h ../../utils/font.h
 
-../../utils/tinygl.c: ../../utils/tinygl.h ../../drivers/display.h ../../utils/font.h
-
-../../utils/tinygl.o: ../../utils/tinygl.c
-
 ../../utils/pacer.h: 
+
+../../utils/uint8toa.h: 
 
 ../../drivers/avr/ir_uart.h: 
 
-../../fonts/font5x7_1.h: ../../utils/font.h
+../../fonts/font3x5_1.h: ../../utils/font.h
 
-ir_uart_test3.c: ../../drivers/navswitch.h ../../utils/tinygl.h ../../utils/pacer.h ../../drivers/avr/ir_uart.h ../../fonts/font5x7_1.h
+ir_uart_test3.c: ../../drivers/navswitch.h ../../utils/tinygl.h ../../utils/pacer.h ../../utils/uint8toa.h ../../drivers/avr/ir_uart.h ../../fonts/font3x5_1.h
 
 ir_uart_test3.o: ir_uart_test3.c
+
+../../utils/uint8toa.c: 
+
+../../utils/uint8toa.o: ../../utils/uint8toa.c
+
+../../utils/tinygl.c: ../../utils/tinygl.h ../../drivers/display.h ../../utils/font.h
+
+../../utils/tinygl.o: ../../utils/tinygl.c
 
 ../../utils/font.c: ../../utils/font.h
 
@@ -84,5 +84,11 @@ ir_uart_test3.o: ir_uart_test3.c
 
 ../../drivers/avr/usart1.o: ../../drivers/avr/usart1.c
 
-ir_uart_test3.out: ../../drivers/avr/timer.o ../../drivers/ledmat.o ../../drivers/navswitch.o ../../utils/tinygl.o ir_uart_test3.o ../../utils/font.o ../../drivers/avr/pio.o ../../utils/pacer.o ../../drivers/display.o ../../drivers/avr/system.o ../../drivers/avr/prescale.o ../../drivers/avr/ir_uart.o ../../drivers/avr/timer0.o ../../drivers/avr/usart1.o
+../../drivers/avr/delay.h: 
+
+../../drivers/navswitch.c: ../../drivers/navswitch.h ../../drivers/avr/delay.h ../../drivers/avr/pio.h
+
+../../drivers/navswitch.o: ../../drivers/navswitch.c
+
+ir_uart_test3.out: ../../drivers/avr/timer.o ../../drivers/ledmat.o ir_uart_test3.o ../../utils/uint8toa.o ../../utils/tinygl.o ../../utils/font.o ../../drivers/avr/pio.o ../../utils/pacer.o ../../drivers/display.o ../../drivers/avr/system.o ../../drivers/avr/prescale.o ../../drivers/avr/ir_uart.o ../../drivers/avr/timer0.o ../../drivers/avr/usart1.o ../../drivers/navswitch.o
 

@@ -16,6 +16,7 @@ int main (void)
 
     while (1)
     {
+        count++;
         if (count > 10000)
         {
             pio_output_toggle (LED1_PIO);

@@ -18,6 +18,8 @@
 /* Define polling rate in Hz.  */
 #define LOOP_RATE 300
 
+#define SWITCH_POLL_RATE 20
+
 /* Define text update rate (characters per 10 s).  */
 #define MESSAGE_RATE 10
 
@@ -61,8 +63,20 @@ int main (void)
 
         tinygl_update ();
 
+        if (ir_uart_read_ready_p ())
+        {
+            uint8_t data;
+
+            data = ir_uart_getc ();
+
+            /* Note, if messages come in too fast, say due to IR
+               inteference from fluorescent lights, then the display
+               will not keep up and will appear to freeze.  */
+            show_byte (data);
+        }
+
         count++;
-        if (count > 20)
+        if (count > LOOP_RATE / SWITCH_POLL_RATE)
         {
             count = 0;
 
@@ -81,18 +95,6 @@ int main (void)
                 /* Gobble echoed character.  */
                 ir_uart_getc ();
             }
-        }
-
-        if (ir_uart_read_ready_p ())
-        {
-            uint8_t data;
-
-            data = ir_uart_getc ();
-
-            /* Note, if messages come in too fast, say due to IR
-               inteference from fluorescent lights, then the display
-               will not keep up and will appear to freeze.  */
-            show_byte (data);
         }
     }
 

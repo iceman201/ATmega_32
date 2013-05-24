@@ -22,6 +22,8 @@ tinygl_font_set@tinygl.c:
 
 tinygl_text_mode_set@tinygl.c: 
 
+tinygl_text_dir_set@tinygl.c: 
+
 navswitch_init@navswitch.c: 
 
 timer0_mode_set@timer0.c: 
@@ -52,11 +54,13 @@ timer_init@timer.c:
 
 pacer_init@pacer.c: timer_init
 
+uint8toa@uint8toa.c: 
+
 tinygl_draw_message@tinygl.c: strncpy strlen
 
 tinygl_text@tinygl.c: tinygl_draw_message
 
-show_char@ir_uart_test3.c: tinygl_text
+show_byte@ir_uart_test3.c: uint8toa tinygl_text
 
 timer_get@timer.c: 
 
@@ -90,6 +94,14 @@ display_update@display.c: ledmat_display_column
 
 tinygl_update@tinygl.c: tinygl_text_advance display_update
 
+usart1_read_ready_p@usart1.c: 
+
+ir_uart_read_ready_p@ir_uart.c: usart1_read_ready_p
+
+usart1_getc@usart1.c: usart1_read_ready_p
+
+ir_uart_getc@ir_uart.c: usart1_getc
+
 pio_config_get@pio.c: 
 
 _delay_loop_1@navswitch.c: 
@@ -102,17 +114,9 @@ navswitch_push_event_p@navswitch.c:
 
 usart1_write_ready_p@usart1.c: 
 
-usart1_putc@usart1.c: usart1_putc usart1_write_ready_p
+usart1_putc@usart1.c: usart1_write_ready_p
 
 ir_uart_putc@ir_uart.c: usart1_putc
 
-usart1_read_ready_p@usart1.c: 
-
-ir_uart_read_ready_p@ir_uart.c: usart1_read_ready_p
-
-usart1_getc@usart1.c: usart1_read_ready_p
-
-ir_uart_getc@ir_uart.c: usart1_getc
-
-main@ir_uart_test3.c: system_init tinygl_init tinygl_font_set tinygl_text_speed_set tinygl_text_mode_set navswitch_init ir_uart_init pacer_init show_char pacer_wait tinygl_update navswitch_update navswitch_push_event_p ir_uart_putc navswitch_push_event_p ir_uart_putc ir_uart_read_ready_p ir_uart_getc show_char
+main@ir_uart_test3.c: system_init tinygl_init tinygl_font_set tinygl_text_speed_set tinygl_text_mode_set tinygl_text_dir_set navswitch_init ir_uart_init pacer_init show_byte pacer_wait tinygl_update ir_uart_read_ready_p ir_uart_getc show_byte navswitch_update navswitch_push_event_p ir_uart_putc ir_uart_getc navswitch_push_event_p ir_uart_putc ir_uart_getc
 

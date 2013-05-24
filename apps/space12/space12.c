@@ -1,14 +1,14 @@
 /** @file   space12.c
     @author M. P. Hayes, UCECE
     @date   20 April 2007
-    @brief  A simple space invaders game with different difficulty levels.
+    @brief  A simple space invaders game with different difficulty levels
+            and sound effects.
 
-    @defgroup space12 A simple space invaders game.
+    @defgroup space12 A simple space invaders game with sound effects.
 */
 
 #include <string.h>
 #include "system.h"
-#include "display.h"
 #include "tinygl.h"
 #include "task.h"
 #include "navswitch.h"
@@ -39,8 +39,12 @@ enum {GAME_OVER_PERIOD = 2};
 enum {BUTTON_HOLD_PERIOD = 1};
 
 
-/* Connect piezo tweeter to outermost pins of UCFK4 P1 connector.  */
-#define PIEZO_PIO PIO_DEFINE (PORT_D, 6)
+/* Connect piezo tweeter to first and third pin of UCFK4 P1 connector
+   for push-pull operation.  For single-ended drive (with reduced
+   volume) connect the other piezo connection to ground or Vcc and do
+   not define PIEZO2_PIO.  */
+#define PIEZO1_PIO PIO_DEFINE (PORT_D, 4)
+#define PIEZO2_PIO PIO_DEFINE (PORT_D, 6)
 
 
 /** Define flasher modes.  */
@@ -100,13 +104,24 @@ static void tweeter_task_init (void)
 {
     tweeter = tweeter_init (&tweeter_info, TWEETER_TASK_RATE, scale_table);
 
-    pio_config_set (PIEZO_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (PIEZO1_PIO, PIO_OUTPUT_LOW);
+#ifdef PIEZO2_PIO
+    pio_config_set (PIEZO2_PIO, PIO_OUTPUT_LOW);
+#endif
 }
 
 
 static void tweeter_task (__unused__ void *data)
 {
-    pio_output_set (PIEZO_PIO, tweeter_update (tweeter));
+    bool state;
+
+    state = tweeter_update (tweeter);
+
+    pio_output_set (PIEZO1_PIO, state);
+#ifdef PIEZO2_PIO
+    /* Push-pull piezo tweeter drive.  */
+    pio_output_set (PIEZO2_PIO, !state);
+#endif
 }
 
 
