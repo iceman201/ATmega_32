@@ -52,6 +52,11 @@ updown1.out: updown1.o pio.o system.o timer.o display.o ledmat.o font.o pacer.o 
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+updown1.hex: updown1.out
+	$(OBJCOPY) -O ihex updown1.out updown1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -60,8 +65,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: updown1.out
-	$(OBJCOPY) -O ihex updown1.out updown1.hex
+program: updown1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash updown1.hex; dfu-programmer atmega32u2 start
 
 

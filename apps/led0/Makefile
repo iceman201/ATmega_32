@@ -43,6 +43,11 @@ led0.out: led0.o pio.o system.o timer.o led.o pacer.o
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+led0.hex: led0.out
+	$(OBJCOPY) -O ihex led0.out led0.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -51,8 +56,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: led0.out
-	$(OBJCOPY) -O ihex led0.out led0.hex
+program: led0.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash led0.hex; dfu-programmer atmega32u2 start
 
 

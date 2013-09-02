@@ -55,6 +55,11 @@ chooser.out: chooser.o pio.o system.o timer.o display.o ledmat.o navswitch.o fon
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+chooser.hex: chooser.out
+	$(OBJCOPY) -O ihex chooser.out chooser.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: chooser.out
-	$(OBJCOPY) -O ihex chooser.out chooser.hex
+program: chooser.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash chooser.hex; dfu-programmer atmega32u2 start
 
 

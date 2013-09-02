@@ -55,6 +55,11 @@ voltmeter1.out: voltmeter1.o adc.o pio.o system.o timer.o display.o ledmat.o fon
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+voltmeter1.hex: voltmeter1.out
+	$(OBJCOPY) -O ihex voltmeter1.out voltmeter1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: voltmeter1.out
-	$(OBJCOPY) -O ihex voltmeter1.out voltmeter1.hex
+program: voltmeter1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash voltmeter1.hex; dfu-programmer atmega32u2 start
 
 

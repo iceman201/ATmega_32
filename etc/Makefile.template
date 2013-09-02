@@ -25,6 +25,11 @@ all: @PROJECT@.out
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+@PROJECT@.hex: @PROJECT@.out
+	$(OBJCOPY) -O ihex @PROJECT@.out @PROJECT@.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -33,7 +38,6 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: @PROJECT@.out
-	$(OBJCOPY) -O ihex @PROJECT@.out @PROJECT@.hex
+program: @PROJECT@.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash @PROJECT@.hex; dfu-programmer atmega32u2 start
 

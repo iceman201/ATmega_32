@@ -9,14 +9,14 @@
 #include "pacer.h"
 
 
-/* Define polling rate in Hz.  */
+/* Define polling rate in Hz.  (Note, this is much faster than
+ needed for this application.)  */
 #define LOOP_RATE 1000
 
 #define LED_RATE_INC 2
 #define LED_RATE_MIN 0
 #define LED_RATE_MAX 100
 
-typedef struct pen pen_t;
 
 
 int main (void)

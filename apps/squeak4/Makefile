@@ -67,6 +67,11 @@ squeak4.out: squeak4.o pio.o system.o timer.o button.o display.o led.o ledmat.o 
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+squeak4.hex: squeak4.out
+	$(OBJCOPY) -O ihex squeak4.out squeak4.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -75,8 +80,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: squeak4.out
-	$(OBJCOPY) -O ihex squeak4.out squeak4.hex
+program: squeak4.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash squeak4.hex; dfu-programmer atmega32u2 start
 
 

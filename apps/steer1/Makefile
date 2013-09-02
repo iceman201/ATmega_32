@@ -55,6 +55,11 @@ steer1.out: steer1.o pio.o system.o timer.o display.o ledmat.o navswitch.o font.
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+steer1.hex: steer1.out
+	$(OBJCOPY) -O ihex steer1.out steer1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: steer1.out
-	$(OBJCOPY) -O ihex steer1.out steer1.hex
+program: steer1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash steer1.hex; dfu-programmer atmega32u2 start
 
 

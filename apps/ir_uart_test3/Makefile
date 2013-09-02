@@ -70,6 +70,11 @@ ir_uart_test3.out: ir_uart_test3.o ir_uart.o pio.o prescale.o system.o timer.o t
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+ir_uart_test3.hex: ir_uart_test3.out
+	$(OBJCOPY) -O ihex ir_uart_test3.out ir_uart_test3.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -78,8 +83,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: ir_uart_test3.out
-	$(OBJCOPY) -O ihex ir_uart_test3.out ir_uart_test3.hex
+program: ir_uart_test3.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash ir_uart_test3.hex; dfu-programmer atmega32u2 start
 
 

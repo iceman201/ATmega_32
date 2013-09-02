@@ -61,6 +61,11 @@ ir_serial_test3.out: ir_serial_test3.o pio.o system.o timer.o display.o ir.o ir_
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+ir_serial_test3.hex: ir_serial_test3.out
+	$(OBJCOPY) -O ihex ir_serial_test3.out ir_serial_test3.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -69,8 +74,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: ir_serial_test3.out
-	$(OBJCOPY) -O ihex ir_serial_test3.out ir_serial_test3.hex
+program: ir_serial_test3.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash ir_serial_test3.hex; dfu-programmer atmega32u2 start
 
 

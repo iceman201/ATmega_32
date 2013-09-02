@@ -61,6 +61,11 @@ scribble1.out: scribble1.o pio.o system.o timer.o button.o display.o led.o ledma
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+scribble1.hex: scribble1.out
+	$(OBJCOPY) -O ihex scribble1.out scribble1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -69,8 +74,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: scribble1.out
-	$(OBJCOPY) -O ihex scribble1.out scribble1.hex
+program: scribble1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash scribble1.hex; dfu-programmer atmega32u2 start
 
 

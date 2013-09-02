@@ -55,6 +55,11 @@ snake1.out: snake1.o pio.o system.o timer.o display.o ledmat.o navswitch.o font.
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+snake1.hex: snake1.out
+	$(OBJCOPY) -O ihex snake1.out snake1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: snake1.out
-	$(OBJCOPY) -O ihex snake1.out snake1.hex
+program: snake1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash snake1.hex; dfu-programmer atmega32u2 start
 
 

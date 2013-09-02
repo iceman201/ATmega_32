@@ -58,6 +58,11 @@ ir_grab1.out: ir_grab1.o pio.o system.o timer.o display.o ir.o ledmat.o navswitc
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+ir_grab1.hex: ir_grab1.out
+	$(OBJCOPY) -O ihex ir_grab1.out ir_grab1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -66,8 +71,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: ir_grab1.out
-	$(OBJCOPY) -O ihex ir_grab1.out ir_grab1.hex
+program: ir_grab1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash ir_grab1.hex; dfu-programmer atmega32u2 start
 
 

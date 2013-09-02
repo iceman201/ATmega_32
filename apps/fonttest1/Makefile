@@ -55,6 +55,11 @@ fonttest1.out: fonttest1.o pio.o system.o timer.o display.o ledmat.o navswitch.o
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+fonttest1.hex: fonttest1.out
+	$(OBJCOPY) -O ihex fonttest1.out fonttest1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: fonttest1.out
-	$(OBJCOPY) -O ihex fonttest1.out fonttest1.hex
+program: fonttest1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash fonttest1.hex; dfu-programmer atmega32u2 start
 
 

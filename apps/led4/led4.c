@@ -14,8 +14,6 @@
 
 #define LED_RATE 40
 
-typedef struct pen pen_t;
-
 
 int main (void)
 {

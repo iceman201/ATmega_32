@@ -55,6 +55,11 @@ stopwatch1.out: stopwatch1.o pio.o system.o timer.o button.o display.o ledmat.o 
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+stopwatch1.hex: stopwatch1.out
+	$(OBJCOPY) -O ihex stopwatch1.out stopwatch1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: stopwatch1.out
-	$(OBJCOPY) -O ihex stopwatch1.out stopwatch1.hex
+program: stopwatch1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash stopwatch1.hex; dfu-programmer atmega32u2 start
 
 

@@ -70,6 +70,11 @@ space9.out: space9.o flasher.o spacey.o eeprom.o pio.o system.o timer.o display.
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+space9.hex: space9.out
+	$(OBJCOPY) -O ihex space9.out space9.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -78,8 +83,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: space9.out
-	$(OBJCOPY) -O ihex space9.out space9.hex
+program: space9.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash space9.hex; dfu-programmer atmega32u2 start
 
 

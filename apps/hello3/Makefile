@@ -52,6 +52,11 @@ hello3.out: hello3.o pio.o system.o timer.o display.o ledmat.o font.o pacer.o ti
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+hello3.hex: hello3.out
+	$(OBJCOPY) -O ihex hello3.out hello3.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -60,8 +65,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: hello3.out
-	$(OBJCOPY) -O ihex hello3.out hello3.hex
+program: hello3.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash hello3.hex; dfu-programmer atmega32u2 start
 
 

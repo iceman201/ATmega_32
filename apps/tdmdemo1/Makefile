@@ -43,6 +43,11 @@ tdmdemo1.out: tdmdemo1.o pio.o system.o timer.o ledmat.o pacer.o
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+tdmdemo1.hex: tdmdemo1.out
+	$(OBJCOPY) -O ihex tdmdemo1.out tdmdemo1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -51,8 +56,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: tdmdemo1.out
-	$(OBJCOPY) -O ihex tdmdemo1.out tdmdemo1.hex
+program: tdmdemo1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash tdmdemo1.hex; dfu-programmer atmega32u2 start
 
 

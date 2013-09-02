@@ -67,6 +67,11 @@ squeak3.out: squeak3.o pio.o system.o timer.o button.o display.o led.o ledmat.o 
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+squeak3.hex: squeak3.out
+	$(OBJCOPY) -O ihex squeak3.out squeak3.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -75,8 +80,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: squeak3.out
-	$(OBJCOPY) -O ihex squeak3.out squeak3.hex
+program: squeak3.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash squeak3.hex; dfu-programmer atmega32u2 start
 
 

@@ -40,6 +40,11 @@ bounce1.out: bounce1.o pio.o system.o timer.o pacer.o
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+bounce1.hex: bounce1.out
+	$(OBJCOPY) -O ihex bounce1.out bounce1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -48,8 +53,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: bounce1.out
-	$(OBJCOPY) -O ihex bounce1.out bounce1.hex
+program: bounce1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash bounce1.hex; dfu-programmer atmega32u2 start
 
 

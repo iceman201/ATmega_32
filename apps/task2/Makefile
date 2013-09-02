@@ -55,6 +55,11 @@ task2.out: task2.o pio.o system.o timer.o display.o led.o ledmat.o font.o task.o
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+task2.hex: task2.out
+	$(OBJCOPY) -O ihex task2.out task2.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -63,8 +68,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: task2.out
-	$(OBJCOPY) -O ihex task2.out task2.hex
+program: task2.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash task2.hex; dfu-programmer atmega32u2 start
 
 

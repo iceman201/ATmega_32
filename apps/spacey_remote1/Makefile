@@ -61,6 +61,11 @@ spacey_remote1.out: spacey_remote1.o pio.o system.o timer.o display.o ir.o ir_se
 	$(SIZE) $@
 
 
+# Create hex file for programming from executable file.
+spacey_remote1.hex: spacey_remote1.out
+	$(OBJCOPY) -O ihex spacey_remote1.out spacey_remote1.hex
+
+
 # Target: clean project.
 .PHONY: clean
 clean: 
@@ -69,8 +74,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: spacey_remote1.out
-	$(OBJCOPY) -O ihex spacey_remote1.out spacey_remote1.hex
+program: spacey_remote1.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash spacey_remote1.hex; dfu-programmer atmega32u2 start
 
 
