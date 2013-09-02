@@ -1,9 +1,3 @@
-../../drivers/avr/timer.h: 
-
-../../drivers/avr/timer.c: ../../drivers/avr/timer.h
-
-../../drivers/avr/timer.o: ../../drivers/avr/timer.c
-
 ../../drivers/navswitch.h: 
 
 ../../drivers/display.h: 
@@ -20,15 +14,31 @@ hello5.c: ../../drivers/navswitch.h ../../utils/tinygl.h ../../utils/pacer.h ../
 
 hello5.o: hello5.c
 
-../../drivers/avr/delay.h: 
+../../drivers/avr/system.c: 
+
+../../drivers/avr/system.o: ../../drivers/avr/system.c
 
 ../../drivers/avr/pio.h: 
 
-../../drivers/navswitch.c: ../../drivers/navswitch.h ../../drivers/avr/delay.h ../../drivers/avr/pio.h
+../../drivers/avr/pio.c: ../../drivers/avr/pio.h
 
-../../drivers/navswitch.o: ../../drivers/navswitch.c
+../../drivers/avr/pio.o: ../../drivers/avr/pio.c
+
+../../drivers/avr/timer.h: 
+
+../../drivers/avr/timer.c: ../../drivers/avr/timer.h
+
+../../drivers/avr/timer.o: ../../drivers/avr/timer.c
+
+../../utils/tinygl.c: ../../utils/tinygl.h ../../drivers/display.h ../../utils/font.h
+
+../../utils/tinygl.o: ../../utils/tinygl.c
 
 ../../drivers/ledmat.h: 
+
+../../drivers/display.c: ../../drivers/ledmat.h ../../drivers/display.h
+
+../../drivers/display.o: ../../drivers/display.c
 
 ../../drivers/ledmat.c: ../../drivers/avr/pio.h ../../drivers/ledmat.h
 
@@ -38,25 +48,15 @@ hello5.o: hello5.c
 
 ../../utils/font.o: ../../utils/font.c
 
-../../drivers/avr/pio.c: ../../drivers/avr/pio.h
-
-../../drivers/avr/pio.o: ../../drivers/avr/pio.c
-
 ../../utils/pacer.c: ../../drivers/avr/timer.h ../../utils/pacer.h
 
 ../../utils/pacer.o: ../../utils/pacer.c
 
-../../drivers/display.c: ../../drivers/ledmat.h ../../drivers/display.h
+../../drivers/avr/delay.h: 
 
-../../drivers/display.o: ../../drivers/display.c
+../../drivers/navswitch.c: ../../drivers/navswitch.h ../../drivers/avr/delay.h ../../drivers/avr/pio.h
 
-../../utils/tinygl.c: ../../utils/tinygl.h ../../drivers/display.h ../../utils/font.h
+../../drivers/navswitch.o: ../../drivers/navswitch.c
 
-../../utils/tinygl.o: ../../utils/tinygl.c
-
-../../drivers/avr/system.c: 
-
-../../drivers/avr/system.o: ../../drivers/avr/system.c
-
-hello5.out: ../../drivers/avr/timer.o hello5.o ../../drivers/navswitch.o ../../drivers/ledmat.o ../../utils/font.o ../../drivers/avr/pio.o ../../utils/pacer.o ../../drivers/display.o ../../utils/tinygl.o ../../drivers/avr/system.o
+hello5.out: hello5.o ../../drivers/avr/system.o ../../drivers/avr/pio.o ../../drivers/avr/timer.o ../../utils/tinygl.o ../../drivers/display.o ../../drivers/ledmat.o ../../utils/font.o ../../utils/pacer.o ../../drivers/navswitch.o
 

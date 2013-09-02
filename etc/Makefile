@@ -9,7 +9,7 @@
 # the applications looking for #includes.
 # It also creates the doc directories and the callgraphs, etc.
 
-APPDIRS = $(filter-out ../apps/README ../Makefile, $(wildcard ../apps/*/ ../lab*/*/))
+APPDIRS = $(filter-out ../apps/README ../Makefile, $(wildcard ../apps/*/ ))
 DOCDIRS = $(addsuffix /doc, $(APPDIRS))
 
 # Don't link against test-scaffold if directly accessing harware
