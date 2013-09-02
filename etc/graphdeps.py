@@ -187,6 +187,10 @@ def main(argv = None):
                       dest = 'debug', default = False,
                       help = 'enable debugging')
 
+    parser.add_option('--rotate', action = 'store_true',
+                      dest = 'rotate', default = False,
+                      help = 'rotate diagram')
+
     parser.add_option('--fullpaths', action = 'store_true',
                       dest = 'fullpaths', default = False,
                       help = 'show full paths')
@@ -236,7 +240,10 @@ def main(argv = None):
         dotfilename = '/tmp/tmp.dot'
             
     dotfile = open (dotfilename, 'w')
-    dotfile.write ('strict digraph {\n\tgraph [rankdir=LR];\n')
+    if options.rotate:
+        dotfile.write ('strict digraph {\n')
+    else:
+        dotfile.write ('strict digraph {\n\tgraph [rankdir=LR];\n')
 
     for target in wantedtargets:
         target_output (dotfile, target, targets, modules, options)
