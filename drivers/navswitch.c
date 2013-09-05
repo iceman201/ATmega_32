@@ -127,8 +127,10 @@ navswitch_update (void)
         /* I'm unsure why this is needed.  It wasn't required for the
            slightly slower PIO implementation.  There may be a minimum
            number of CPU clock cycles for the synchronising flip flops
-           to propagate the input state?  */
-        DELAY_US (1.0);
+           to propagate the input state?  For some reason the boards
+           made in 2013 need a longer delay.  Increasing the charge
+           time before switching to an input does not help.*/
+        DELAY_US (2.0); 
 
         navswitch_state[i].current = pio_input_get (navswitch_cfg[i].pio) == 0;
 
