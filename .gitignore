@@ -23,6 +23,7 @@
 *.bin
 *.map
 *.out
+*.hex
 
 *.pdf
 
