@@ -118,19 +118,16 @@ navswitch_update (void)
            MOSFET otherwise will always read logic low and think the
            switch is pushed.  Alternatively, we need to wait 10 us or
            more so that the gate capacitance of the MOSFET charges via
-           the pullup resistor.  */
+           the internal pullup resistor.  */
         pio_config_set (navswitch_cfg[i].pio, PIO_OUTPUT_HIGH);
 
         /* Switch PIO to an input to read switch.  */
         pio_config_set (navswitch_cfg[i].pio, PIO_PULLUP);
 
-        /* I'm unsure why this is needed.  It wasn't required for the
-           slightly slower PIO implementation.  There may be a minimum
-           number of CPU clock cycles for the synchronising flip flops
-           to propagate the input state?  For some reason the boards
-           made in 2013 need a longer delay.  Increasing the charge
-           time before switching to an input does not help.*/
-        DELAY_US (2.0); 
+        /* Wait long enough for MOSFET gate capacitance to discharge
+           through 2.2 kohm resistor when switch is pushed (connected
+           to ground).  */
+        DELAY_US (2.5); 
 
         navswitch_state[i].current = pio_input_get (navswitch_cfg[i].pio) == 0;
 
