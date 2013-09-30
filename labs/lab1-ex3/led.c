@@ -6,6 +6,7 @@
 void led_on (void)
 {
     /* TODO!  */
+    PORTC |= (1<<2);
 }
 
 
@@ -13,11 +14,13 @@ void led_on (void)
 void led_off (void)
 {
     /* TODO!  */
+    PORTC &= (0<<2);
 }
 
 
 /** Initialise LED1.  */
 void led_init (void)
 {
+	DDRC = DDRC | (1<<2);
     /* TODO!  */
 }

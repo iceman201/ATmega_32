@@ -32,19 +32,56 @@ int main (void)
     /* TODO: Initialise navigation switch driver.  */
 
     pacer_init (PACER_RATE);
-
+	int counter = 0;
     while(1)
     {
         pacer_wait ();
         tinygl_update ();
         
+        navswitch_update();
         /* TODO: Call the navswitch update function.  */
-        
+        if (navswitch_push_event_p(NAVSWITCH_SOUTH)&&counter==0){
         /* TODO: Increment character if NORTH is pressed.  */
-        
+			display_character('H');
+			counter+=1;
+		}
         /* TODO: Decrement character if SOUTH is pressed.  */
-        
-        display_character (character);
+        else if (navswitch_push_event_p(NAVSWITCH_SOUTH)&&counter==1){
+			display_character ('E');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_SOUTH)&&counter==2){
+			display_character ('L');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_SOUTH)&&counter==3){
+			display_character ('L');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_SOUTH) && counter==4){
+			display_character ('O');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_NORTH) && counter==5){
+			display_character ('l');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_NORTH) && counter==6){
+			display_character ('l');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_NORTH) && counter==7){
+			display_character ('e');
+			counter+=1;
+		}
+		else if (navswitch_push_event_p(NAVSWITCH_NORTH) && counter==8){
+			display_character ('h');
+			counter+=1;
+		}
+		else if (counter == 9){
+			counter = 0;
+		}
+		
     }
     return 0;
 }
