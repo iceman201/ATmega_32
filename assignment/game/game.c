@@ -72,7 +72,7 @@ static void game_over_display (char *buffer)
     while (*str){
         str++;
     }
-    uint8toa (spacey_aliens_killed_get (), str, 0);
+    //uint8toa (spacey_aliens_killed_get (), str, 0);
     while (*str){
         str++;
     }    
@@ -249,7 +249,7 @@ int main (void)
     while (1)
     {
         pacer_wait ();
-
+		led_init ();
         if (state == STATE_PLAYING)
         {
             uint8_t *src;
