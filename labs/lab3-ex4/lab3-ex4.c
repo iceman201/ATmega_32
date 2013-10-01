@@ -28,9 +28,9 @@ int main (void)
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
     navswitch_init ();
-
+	ir_uart_init ();
     /* TODO: Initialise IR driver.  */
-
+	char letter;
 
     pacer_init (PACER_RATE);
 
@@ -40,15 +40,17 @@ int main (void)
         tinygl_update ();
         navswitch_update ();
         
-        if (navswitch_push_event_p (NAVSWITCH_NORTH))
-            character++;
-
-        if (navswitch_push_event_p (NAVSWITCH_SOUTH))
-            character--;
-
+        if (navswitch_push_event_p (NAVSWITCH_NORTH)){
+            letter = character++;
+			ir_uart_putc(letter);
+		}
+        else if (navswitch_push_event_p (NAVSWITCH_SOUTH)){
+            letter = character--;
+			ir_uart_putc(letter);
+		}
         /* TODO: Transmit the character over IR on a NAVSWITCH_PUSH
            event.  */
-        
+		
         display_character (character);
         
     }

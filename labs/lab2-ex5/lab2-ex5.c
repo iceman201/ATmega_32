@@ -49,8 +49,7 @@ int main (void)
     {
         pacer_wait ();
         
-        display_column (bitmap[current_column], current_column);
-    
+        display_column (bitmap[current_column], current_column);    
         current_column++;
     
         if (current_column > (LEDMAT_COLS_NUM - 1))

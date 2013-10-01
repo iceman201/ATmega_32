@@ -1,11 +1,3 @@
-/** @file   space9.c
-    @author M. P. Hayes, UCECE
-    @date   20 April 2007
-    @brief  A simple space invaders game with different difficulty levels.
-
-    @defgroup space9 A simple space invaders game.
-*/
-
 #include <string.h>
 #include "system.h"
 #include "tinygl.h"
@@ -16,10 +8,11 @@
 #include "spacey.h"
 #include "eeprom.h"
 #include "uint8toa.h"
+#include "ir_uart.h"
 #include "../fonts/font3x5_1.h"
 
 
-#define VERSION "1.6"
+//#define VERSION "1.6"
 
 /** Define polling rates in Hz.  */
 enum {LOOP_RATE = 500};
@@ -35,7 +28,7 @@ static flasher_pattern_t flasher_patterns[] =
 {
     /** POLL_RATE, MOD_FREQ, MOD_DUTY, FLASHER_PERIOD,
        FLASHER_DUTY, FLASHES, PERIOD.  */
-    {FLASHER_PATTERN (FLASHER_UPDATE_RATE, 100, 100, 0.4, 100, 1, 0.4)},
+    //{FLASHER_PATTERN (FLASHER_UPDATE_RATE, 100, 100, 0.4, 100, 1, 0.4)},
     {FLASHER_PATTERN (FLASHER_UPDATE_RATE, 100, 100, 0.4, 100, 1, 0.4)},
     {FLASHER_PATTERN (FLASHER_UPDATE_RATE, 200, 100, 0.1, 50, 1, 0.1)},
 };
@@ -60,8 +53,7 @@ typedef struct
 
 
 /** Draw pixel on display.  */
-static void
-display_handler (void *data, uint8_t col, uint8_t row, spacey_pix_t type)
+static void display_handler (void *data, uint8_t col, uint8_t row, spacey_pix_t type)
 {
     uint8_t *display = data;
     uint8_t pixel;
@@ -72,17 +64,18 @@ display_handler (void *data, uint8_t col, uint8_t row, spacey_pix_t type)
 
 
 /** Display the game over message.  */
-static void
-game_over_display (char *buffer)
+static void game_over_display (char *buffer)
 {
     char *str = buffer;
 
     strcpy (str, "GAME OVER ");
-    while (*str)
+    while (*str){
         str++;
+    }
     uint8toa (spacey_aliens_killed_get (), str, 0);
-    while (*str)
+    while (*str){
         str++;
+    }    
     *str++ = '/';
     uint8toa (spacey_shells_fired_get (), str, 0);
     tinygl_clear ();
@@ -90,88 +83,86 @@ game_over_display (char *buffer)
 }
 
 
-static void
-game_text_display (uint8_t num, char *buffer, char *msg)
+static void game_text_display (uint8_t num, char *buffer, char *msg)
 {
     char *str = buffer;
 
-    while (*msg)
+    while (*msg){
         *str++ = *msg++;
+    }
     uint8toa (num, str, 0);
     tinygl_clear ();
     tinygl_text (buffer);
+    
 }
 
 
 /** Display the game level of difficulty.  */
-static void
-game_level_display (uint8_t level, char *buffer)
+static void game_level_display (uint8_t level, char *buffer)
 {
     game_text_display (level, buffer, "L");
 }
 
 
 /** Set the game level of difficulty.  */
-static void
-game_level_set (uint8_t level)
-{
-    spacey_options_t options;
-    uint8_t alien_num = 3;
-    uint8_t alien_steps = 4;
+//~ static void game_level_set (uint8_t level)
+//~ {
+    //~ spacey_options_t options;
+    //~ uint8_t alien_num = 3;
+    //~ uint8_t alien_steps = 4;
+//~ 
+    //~ switch (level)
+    //~ {
+    //~ default:
+    //~ case 0:
+        //~ options.aliens_wrap = 0;
+        //~ options.aliens_evasive = 0;
+        //~ break;
+//~ 
+    //~ case 1:
+        //~ options.aliens_wrap = 0;
+        //~ options.aliens_evasive = 1;
+        //~ alien_steps = 3;
+        //~ break;
+//~ 
+    //~ case 2:
+        //~ options.aliens_wrap = 1;
+        //~ options.aliens_evasive = 0;
+        //~ alien_steps = 3;
+        //~ break;
+//~ 
+    //~ case 3:
+        //~ options.aliens_wrap = 1;
+        //~ options.aliens_evasive = 1;
+        //~ alien_steps = 3;
+        //~ break;
+//~ 
+    //~ case 4:
+        //~ options.aliens_wrap = 1;
+        //~ options.aliens_evasive = 1;
+        //~ alien_steps = 3;
+        //~ alien_num = 4;
+        //~ break;
+//~ 
+    //~ case 5:
+        //~ options.aliens_wrap = 1;
+        //~ options.aliens_evasive = 1;
+        //~ alien_steps = 2;
+        //~ alien_num = 4;
+        //~ break;
+    //~ }
+    //~ 
+    //~ spacey_alien_num_set (alien_num);
+    //~ spacey_alien_create_steps_set (alien_steps);
+    //~ spacey_options_set (options);
+//~ }
 
-    switch (level)
-    {
-    default:
-    case 0:
-        options.aliens_wrap = 0;
-        options.aliens_evasive = 0;
-        break;
 
-    case 1:
-        options.aliens_wrap = 0;
-        options.aliens_evasive = 1;
-        alien_steps = 3;
-        break;
-
-    case 2:
-        options.aliens_wrap = 1;
-        options.aliens_evasive = 0;
-        alien_steps = 3;
-        break;
-
-    case 3:
-        options.aliens_wrap = 1;
-        options.aliens_evasive = 1;
-        alien_steps = 3;
-        break;
-
-    case 4:
-        options.aliens_wrap = 1;
-        options.aliens_evasive = 1;
-        alien_steps = 3;
-        alien_num = 4;
-        break;
-
-    case 5:
-        options.aliens_wrap = 1;
-        options.aliens_evasive = 1;
-        alien_steps = 2;
-        alien_num = 4;
-        break;
-    }
-    
-    spacey_alien_num_set (alien_num);
-    spacey_alien_create_steps_set (alien_steps);
-    spacey_options_set (options);
-}
-
-
-static void
-game_start (game_data_t *data)
+static void game_start (game_data_t *data)
 {
     tinygl_clear ();
     data->games++;
-    game_level_set (data->level);
+    //game_level_set (data->level);
     spacey_start ();
     eeprom_write (0, data, sizeof (*data));
 }
@@ -190,8 +181,7 @@ void game_event (__unused__ void *data, spacey_event_t event)
 }
 
 
-int
-main (void)
+int main (void)
 {
     uint8_t navswitch_ticks;
     uint8_t game_ticks;
@@ -204,7 +194,7 @@ main (void)
     uint8_t display[TINYGL_WIDTH * TINYGL_HEIGHT];
     uint8_t i;
     uint8_t j;
-    game_data_t data;
+    game_data_t data; //????
     char message[44];
 
     system_init ();
@@ -214,8 +204,8 @@ main (void)
 
     /* When the EEPROM is erased all the bytes are 0xFF so set to
        sensible defaults.  */
-    eeprom_read (0, &data, sizeof (data));
-    if (data.level == 0xff)
+    eeprom_read (0, &data, sizeof (data));  //??????
+    if (data.level == 0xff)//???
     {
         data.level = 0;
         data.games = 0;
@@ -228,8 +218,9 @@ main (void)
     }
 
     for (i = 0; i < ARRAY_SIZE (display); i++)
+    {
         display[i] = 0;
-
+	}
     /* Set up flash patterns for different pixel types.  */
     flasher_pattern_set (flashers[SPACEY_PIX_GUN],
                          &flasher_patterns[FLASH_MODE_GUN]);
@@ -302,16 +293,16 @@ main (void)
                 break;
                 
             case STATE_INIT:
-                tinygl_text ("SPACEY READY V" VERSION " BY MPH ");
+                tinygl_text ("SHOOT DAVID BY DAVID AND LEE");
                 state = STATE_READY;
                 break;
                 
             case STATE_OVER:
                 game_over_ticks ++;
-                if (game_over_ticks >= GAME_UPDATE_RATE * GAME_OVER_PERIOD)
+                if (game_over_ticks >= GAME_UPDATE_RATE * GAME_OVER_PERIOD){
                     state = STATE_READY;
                 /* Fall through.  */
-                
+				}
             case STATE_READY:
             case STATE_MENU_LEVEL:
             default:
@@ -319,7 +310,7 @@ main (void)
                 
             case STATE_START:
                 /* Turn that bloody blimey space invader off...  */
-                game_start (&data);
+                game_start (&data);//???
                 led_set (LED1, 0);
                 state = STATE_PLAYING;
                 break;
@@ -335,13 +326,17 @@ main (void)
             navswitch_update ();
 
             if (navswitch_down_p (NAVSWITCH_EAST))
+            {
                 navswitch_down_count++;
+            }
             else
+            {
                 navswitch_down_count = 0;
-
+			}
             if (navswitch_down_count >= BUTTON_POLL_RATE * BUTTON_HOLD_PERIOD)
+            {
                 state = STATE_INIT;
-
+			}
             if (navswitch_push_event_p (NAVSWITCH_EAST))
             {
                 switch (state)
@@ -350,7 +345,7 @@ main (void)
                     break;
 
                 case STATE_MENU_LEVEL:
-                    if (data.level < GAME_LEVEL_MAX - 1)
+                    if (data.level < GAME_LEVEL_MAX - 1) //????
                         data.level++;
                     game_level_display (data.level, message);
                     break;
@@ -372,8 +367,10 @@ main (void)
                     break;
 
                 case STATE_MENU_LEVEL:
-                    if (data.level > 1)
+                    if (data.level > 1)//???
+                    {
                         data.level--;
+                    }
                     game_level_display (data.level, message);
                     break;
 
