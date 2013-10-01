@@ -28,7 +28,7 @@ static flasher_pattern_t flasher_patterns[] =
 {
     /** POLL_RATE, MOD_FREQ, MOD_DUTY, FLASHER_PERIOD,
        FLASHER_DUTY, FLASHES, PERIOD.  */
-    //{FLASHER_PATTERN (FLASHER_UPDATE_RATE, 100, 100, 0.4, 100, 1, 0.4)},
+    {FLASHER_PATTERN (FLASHER_UPDATE_RATE, 100, 100, 0.4, 100, 1, 0.4)},
     {FLASHER_PATTERN (FLASHER_UPDATE_RATE, 100, 100, 0.4, 100, 1, 0.4)},
     {FLASHER_PATTERN (FLASHER_UPDATE_RATE, 200, 100, 0.1, 50, 1, 0.1)},
 };
@@ -46,7 +46,7 @@ enum {GAME_LEVEL_MAX = 5};
 
 typedef struct
 {
-    uint8_t level;
+    //uint8_t level;
     uint8_t games;
 } game_data_t;
 
@@ -98,10 +98,10 @@ static void game_text_display (uint8_t num, char *buffer, char *msg)
 
 
 /** Display the game level of difficulty.  */
-static void game_level_display (uint8_t level, char *buffer)
-{
-    game_text_display (level, buffer, "L");
-}
+//~ static void game_level_display (uint8_t level, char *buffer)
+//~ {
+    //~ game_text_display (level, buffer, "L");
+//~ }
 
 
 /** Set the game level of difficulty.  */
@@ -164,21 +164,21 @@ static void game_start (game_data_t *data)
     data->games++;
     //game_level_set (data->level);
     spacey_start ();
-    eeprom_write (0, data, sizeof (*data));
+    //eeprom_write (0, data, sizeof (*data));
 }
 
 
-void game_event (__unused__ void *data, spacey_event_t event)
-{
-    switch (event)
-    {
-    case SPACEY_EVENT_ALIEN_HIT:
-        break;
-
-    case SPACEY_EVENT_ALIEN_LANDED:
-        break;
-    }
-}
+//~ void game_event (__unused__ void *data, spacey_event_t event)
+//~ {
+    //~ switch (event)
+    //~ {
+    //~ case SPACEY_EVENT_ALIEN_HIT:
+        //~ break;
+//~ 
+    //~ case SPACEY_EVENT_ALIEN_LANDED:
+        //~ break;
+    //~ }
+//~ }
 
 
 int main (void)
@@ -205,11 +205,8 @@ int main (void)
     /* When the EEPROM is erased all the bytes are 0xFF so set to
        sensible defaults.  */
     eeprom_read (0, &data, sizeof (data));  //??????
-    if (data.level == 0xff)//???
-    {
-        data.level = 0;
-        data.games = 0;
-    }
+    data.games = 0;
+
 
     for (i = 0; i < ARRAY_SIZE (flashers); i++)
     {
@@ -240,7 +237,7 @@ int main (void)
     spacey_init (GAME_UPDATE_RATE, TINYGL_WIDTH, TINYGL_HEIGHT, 
                  display_handler, display);
 
-    spacey_event_handler_set (game_event, 0);
+    //spacey_event_handler_set (game_event, 0);
 
     navswitch_ticks = 0;
     game_ticks = 0;
@@ -345,9 +342,9 @@ int main (void)
                     break;
 
                 case STATE_MENU_LEVEL:
-                    if (data.level < GAME_LEVEL_MAX - 1) //????
-                        data.level++;
-                    game_level_display (data.level, message);
+                    //~ if (data.level < GAME_LEVEL_MAX - 1) //????
+                        //~ data.level++;
+                    //~ //game_level_display (data.level, message);
                     break;
 
                 case STATE_PLAYING:
@@ -367,11 +364,11 @@ int main (void)
                     break;
 
                 case STATE_MENU_LEVEL:
-                    if (data.level > 1)//???
-                    {
-                        data.level--;
-                    }
-                    game_level_display (data.level, message);
+                    //~ if (data.level > 1)//???
+                    //~ {
+                        //~ data.level--;
+                    //~ }
+                    //~ //game_level_display (data.level, message);
                     break;
 
                 case STATE_PLAYING:
@@ -389,7 +386,7 @@ int main (void)
                 {
                 case STATE_READY:
                     state = STATE_MENU_LEVEL;
-                    game_level_display (data.level, message);
+                    //game_level_display (data.level, message);
                     break;
 
                 case STATE_MENU_LEVEL:
