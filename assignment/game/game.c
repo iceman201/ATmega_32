@@ -14,6 +14,7 @@
 #define COL_INCREMENT 1
 #define ROW_INCREMENT 1
 
+/* initialises the game */
 void game_init () {
     row = INITIAL_ROW;
     col = INITIAL_COL;
@@ -21,7 +22,8 @@ void game_init () {
     colinc = COL_INCREMENT;
 }
 
-void game_update () {
+/* calculates the next game tick */
+void game_tick () {
     
 }
 
@@ -42,19 +44,19 @@ int main (void)
     while (1)
     {
 
-    /* Set up the game */
+    /* TODO Set up the game */
 
     /* while the game has not ended */
         while (state == PLAYING) {
         /* Wait for next tick.  */
         pacer_wait ();
         
-        game_update ();
+        game_tick ();
         display_update ();
 
         }
 
-    /* Finish the game */
+    /* TODO Finish the game */
         
     }
 }
