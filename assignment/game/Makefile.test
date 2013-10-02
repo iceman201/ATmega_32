@@ -1,7 +1,7 @@
 # File:   Makefile
 # Author: M. P. Hayes, UCECE
 # Date:   11 Sep 2010
-# Descr:  Makefile for bounce1
+# Descr:  Makefile for game
 
 CC = gcc
 CFLAGS = -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/test -I../../utils
@@ -10,11 +10,11 @@ DEL = rm
 
 
 # Default target.
-all: bounce1
+all: game
 
 
 # Compile: create object files from C source files.
-bounce1-test.o: bounce1.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../utils/pacer.h
+game-test.o: game.c ../../drivers/test/avrtest.h ../../drivers/test/pio.h ../../drivers/test/system.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 mgetkey-test.o: ../../drivers/test/mgetkey.c ../../drivers/test/mgetkey.h
@@ -36,14 +36,14 @@ pacer-test.o: ../../utils/pacer.c ../../drivers/test/system.h ../../drivers/test
 
 
 # Link: create executable file from object files.
-bounce1: bounce1-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o pacer-test.o
+game: game-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o pacer-test.o
 	$(CC) $(CFLAGS) $^ -o $@ -lrt
 
 
 # Clean: delete derived files.
 .PHONY: clean
 clean: 
-	-$(DEL) bounce1 bounce1-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o pacer-test.o
+	-$(DEL) game game-test.o mgetkey-test.o pio-test.o system-test.o timer-test.o pacer-test.o
 
 
 
