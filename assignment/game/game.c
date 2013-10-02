@@ -1,12 +1,3 @@
-/** @file   bounce1.c
-    @author M. P. Hayes, UCECE
-    @date   24 August 2009
-    @brief  Simple bouncing dot program
-    @note   This program has deliberate magic numbers as
-    an exercise for students to replace.
-    
-    @defgroup bounce1 Bounce1 application
-*/
 #include "system.h"
 #include "pacer.h"
 #include "pio.h"
