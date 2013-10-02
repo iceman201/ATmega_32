@@ -1,6 +1,7 @@
 #include "system.h"
 #include "pacer.h"
 #include "navswitch.h"
+#include "ir_uart.h"
 #include "tinygl.h"
 #include "../fonts/font5x7_1.h"
 
@@ -21,10 +22,11 @@ void display_character (char character)
 
 int main (void)
 {
-    char character = 'A';
+    char character = 'W';
 
     system_init ();
-
+	ir_uart_init ();
+	
     tinygl_init (PACER_RATE);
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
@@ -37,13 +39,14 @@ int main (void)
     {
         pacer_wait ();
         tinygl_update ();
-        
+        //ir_uart_read_ready_p()
         navswitch_update();
         /* TODO: Call the navswitch update function.  */
         if (navswitch_push_event_p(NAVSWITCH_SOUTH)&&counter==0){
         /* TODO: Increment character if NORTH is pressed.  */
 			display_character('H');
 			counter+=1;
+			ir_uart_putc(character);
 		}
         /* TODO: Decrement character if SOUTH is pressed.  */
         else if (navswitch_push_event_p(NAVSWITCH_SOUTH)&&counter==1){
