@@ -13,7 +13,7 @@
 
 
 /* Define polling rate in Hz.  */
-#define LOOP_RATE 10
+#define LOOP_RATE 3
 
 
 /* Define PIO pins driving LED matrix rows and columns.  */
