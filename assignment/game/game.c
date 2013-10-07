@@ -5,16 +5,17 @@
 #include "pacer.h"
 #include "button.h"
 #include "pio.h"
-//#include "display.h"
 #include "com.h"
-//#include "navswitch.h"
-//#include "tinygl.h"
+#include "navswitch.h"
+#include "tinygl.h"
 #include "ir_uart.h"
+#include "display.h"
 #include "../fonts/font5x7_1.h"
 
 
 /* Define polling rate in Hz.  */
 #define LOOP_RATE 3
+#define NAVSWITCH_RATE 50
 
 /* Define row constants */
 #define COL_NUM 5
@@ -24,11 +25,19 @@
 #define COL_INCREMENT 1
 #define ROW_INCREMENT 1
 
-/* the batten position it will change by navswiching*/
-typedef struct {
-	int col;
-	int row;
-} batten;
+struct pad 
+{
+    tinygl_point_t pos;
+    /* Current direction.  */
+};
+typedef struct pad pad_t;
+
+struct ball 
+{
+    tinygl_point_t pos;
+    /* Current direction.  */
+};
+typedef struct ball ball_t;
 
 
 /* Define PIO pins driving LED matrix rows and columns.  */
@@ -45,10 +54,6 @@ static pio_t ledmat_cols[] =
 };
 
 
-/** Turn single LED within matrix on or off.
-    @param col LED column number
-    @param row LED row number
-    @param state LED state  */
 static void ledmat_pixel_set (int col, int row, bool state)
 {
     if (state)
@@ -82,103 +87,97 @@ static void ledmat_init (void)
         pio_output_high (ledmat_cols[col]);
     }
 }
-/*  bottom_pad 
- * 	just got a idea and wrtten it down dont know how to link with whole code
-void bottom_pad(void){
-	navswitch_update();
-	tinnygl_draw_point(pad,0);
-	if (navswitch_push_event_p (NAVSWITCH_NORTH)&& pad.x < TINYGL_HEIGHT -1)
-	{
-		pad.x++;
-	}
-	if (navswitch_push_event_p (NAVSWITCH_SOUTH)&& pad.x < TINYGL_HEIGHT -1)
-	{
-		pad.x--;
-	}
-	tinygl.draw_point(pad,1);
-}
-*/
+
+
 int main (void)
 {
 
     int row;
     int col;
-    int x; int y;
     int rowinc;
     int colinc;
-	int check = 0;
-	
+
     system_init ();
     ir_uart_init ();
     ledmat_init ();
     pacer_init (LOOP_RATE);
     ir_uart_putc('A');
-    
-    /*the two if loop is for run this code two time at different board
-     *  and distinguish them which one is the second run
-     */
 
-    if (ir_uart_getc() == 'A' && check == 0){
-		x = 3;
-		y = 2;
-	}
-	
-	if (ir_uart_getc() == 'B'){
-		x = 1;
-		y = -1;
-	}
-	row = x;
-	col = y;
+	tinygl_init (LOOP_RATE);
+    tinygl_font_set (&font5x7_1);
+    uint8_t running = 1;
+    //~ if (ir_uart_getc() == 'A' && check == 0){
+		//~ x = 3;
+		//~ y = 2;
+	//~ }
+	//~ 
+	//~ if (ir_uart_getc() == 'B'){
+		//~ x = 1;
+		//~ y = -1;
+	//~ }
+
+	row = INITIAL_ROW;
+	col = INITIAL_COL;
 	rowinc = 1;
 	colinc = 1;
-    
     ledmat_pixel_set (col, row, 1);
-	ledmat_pixel_set (4, row, 1);
+
+	pad_t pad;
+	ball_t ball;
+	ball.pos.x = col;
+	ball.pos.y = row;
+	pad.pos.x = 4;
+	pad.pos.y = TINYGL_HEIGHT / 2;
     while (1)
     {
+		//check = 1;
+		tinygl_draw_point (pad.pos, 0); 
+		tinygl_draw_point (ball.pos, 0);       
+		//bottom_pad();
+		col += colinc;
+		row += rowinc;
+		ball.pos.x = col;
+		ball.pos.y = row;
 		navswitch_update();
-		if (navswitch_push_event_p())
+		
+		if (navswitch_push_event_p (NAVSWITCH_NORTH) && pad.pos.y > 0)
 		{
-			/*start*/
-			break;
+			pad.pos.y--;
 		}
-    }
-    while (1)
-    {
-			check = 1;
+		if (navswitch_push_event_p (NAVSWITCH_SOUTH) && pad.pos.y < TINYGL_HEIGHT -1)
+		{
+			pad.pos.y++;
+		}
+		tinygl_draw_point (pad.pos, 1);
+        if (running)
+		{
 			pacer_wait ();
-			ledmat_pixel_set (col, row, 0);        
-			
-			col += colinc;
-			row += rowinc;
-			
-			/* update pad position somewhere here???*/ 
 			if (row > 6 || row < 0)
 			{
 				row -= rowinc * 2;
 				rowinc = -rowinc;
-				/* update pad position somewhere here???*/
-			}
-			
+				ball.pos.y = row;
+			/* update pad position somewhere here???*/
+			}	
 			if (col > 3 || col < -4)
 			{
 				col -= colinc * 2;
 				colinc = -colinc;
-				/* update pad position somewhere here???*/
+				ball.pos.x = col;
+			/* update pad position somewhere here???*/
 			}
-			if (col <= -1)
-			{
-				char letter = 'B';
-				/* sent signnal to the 2nd run borad*/
-				ir_uart_putc(letter);
-				
-			}
-			
-			ledmat_pixel_set (col, row, 1);        	
+		}
+		tinygl_draw_point (ball.pos, 1);
+		if (col <= -1)
+		{
+			char letter = 'B';
+		/* sent signnal to the 2nd run borad*/
+			ir_uart_putc(letter);
+		}
+		tinygl_update ();
 
 	}
 
     /* TODO Finish the game */
-        
-    
+	return 0;
 }

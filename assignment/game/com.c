@@ -24,3 +24,4 @@ void sent_loss (void){
 void sent_start (void){
 	ir_uart_putc('s');
 }
+

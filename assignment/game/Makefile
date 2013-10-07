@@ -5,7 +5,7 @@
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/avr -I../../utils
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../../drivers/avr -I../../fonts -I../../drivers -I../../utils
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
@@ -31,6 +31,12 @@ timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/
 prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/prescale.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/ledmat.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/ledmat.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
@@ -45,6 +51,12 @@ ir_uart.o: ../../drivers/avr/ir_uart.c ../../drivers/avr/ir_uart.h ../../drivers
 	
 navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
+
+font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+	
+tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
+	$(CC) -c $(CFLAGS) $< -o $@
 	
 button.o: button.c button.h
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -53,7 +65,7 @@ com.o: com.c com.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Link: create output file (executable) from object files.
-game.out: game.o com.o pio.o system.o prescale.o timer.o pacer.o navswitch.o button.o timer0.o usart1.o ir_uart.o 
+game.out: game.o com.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o 
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
