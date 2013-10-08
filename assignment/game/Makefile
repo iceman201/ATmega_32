@@ -58,9 +58,9 @@ font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
 tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
-button.o: button.c button.h
+button.o: ../../drivers/button.c ../../drivers/button.h ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
-	
+
 basic_function.o: basic_function.c basic_function.h ../../utils/tinygl.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 

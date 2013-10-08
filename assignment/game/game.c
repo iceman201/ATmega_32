@@ -1,6 +1,6 @@
 /*
  * 
-*/
+ */
 #include "system.h"
 #include "pacer.h"
 #include "button.h"
@@ -9,17 +9,16 @@
 #include "navswitch.h"
 #include "tinygl.h"
 #include "ir_uart.h"
-//#include "display.h"
 
 /* Define polling rate in Hz.  */
 #define LOOP_RATE 500
 #define NAVSWITCH_RATE 50
 #define MESSAGE_RATE 10
 /* Define row constants */
-#define INITIAL_COL 2
 #define INITIAL_ROW 3
-#define COL_INCREMENT 1
+#define INITIAL_COL 2
 #define ROW_INCREMENT 1
+#define COL_INCREMENT 1
 
 struct pad 
 {
@@ -29,6 +28,7 @@ struct ball
 {
     tinygl_point_t pos;
 };
+
 typedef struct pad pad_t;
 typedef struct ball ball_t;
 
@@ -50,6 +50,7 @@ int main (void)
 	ball_t ball;
 	pad.pos.x = 4;
 	pad.pos.y = 4;
+	
     //if (ir_uart_getc() == 'A' && check == 0){
 	ball.pos.x = INITIAL_COL;
 	ball.pos.y = INITIAL_ROW;
@@ -105,9 +106,6 @@ int main (void)
 		else {
 			you_lose(LOOP_RATE, MESSAGE_RATE);
 		}
-		tinygl_update ();
-		
+		tinygl_update ();	
 	}
-    /* TODO Finish the game */
-	return 0;
-}
+}	
