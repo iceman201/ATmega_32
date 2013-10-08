@@ -14,7 +14,7 @@
 
 
 /* Define polling rate in Hz.  */
-#define LOOP_RATE 3
+#define LOOP_RATE 500
 #define NAVSWITCH_RATE 50
 
 /* Define row constants */
@@ -96,7 +96,7 @@ int main (void)
     int col;
     int rowinc;
     int colinc;
-
+	int tick;
     system_init ();
     ir_uart_init ();
     ledmat_init ();
@@ -115,7 +115,7 @@ int main (void)
 		//~ x = 1;
 		//~ y = -1;
 	//~ }
-
+	tick=0;
 	row = INITIAL_ROW;
 	col = INITIAL_COL;
 	rowinc = 1;
@@ -128,18 +128,12 @@ int main (void)
 	ball.pos.y = row;
 	pad.pos.x = 4;
 	pad.pos.y = TINYGL_HEIGHT / 2;
+	tinygl_draw_point (ball.pos, 1);
     while (1)
     {
-		//check = 1;
-		tinygl_draw_point (pad.pos, 0); 
-		tinygl_draw_point (ball.pos, 0);       
-		//bottom_pad();
-		col += colinc;
-		row += rowinc;
-		ball.pos.x = col;
-		ball.pos.y = row;
+		pacer_wait ();
 		navswitch_update();
-		
+		tinygl_draw_point (pad.pos, 0);
 		if (navswitch_push_event_p (NAVSWITCH_NORTH) && pad.pos.y > 0)
 		{
 			pad.pos.y--;
@@ -149,33 +143,34 @@ int main (void)
 			pad.pos.y++;
 		}
 		tinygl_draw_point (pad.pos, 1);
-        if (running)
+		tick++;
+        if (running && tick > 60)
 		{
-			pacer_wait ();
-			if (row > 6 || row < 0)
+			tick=0;
+			tinygl_draw_point (ball.pos, 0);
+			ball.pos.x += colinc;
+			ball.pos.y += rowinc;
+			if (ball.pos.y > 6 || ball.pos.y < 0)
 			{
-				row -= rowinc * 2;
+				ball.pos.y -= rowinc * 2;
 				rowinc = -rowinc;
-				ball.pos.y = row;
-			/* update pad position somewhere here???*/
+				//tinygl_update ();
 			}	
-			if (col > 3 || col < -4)
+			if (ball.pos.x > 3 || ball.pos.x < -4)
 			{
-				col -= colinc * 2;
+				ball.pos.x -= colinc * 2;
 				colinc = -colinc;
-				ball.pos.x = col;
-			/* update pad position somewhere here???*/
+				//tinygl_update ();
 			}
+			tinygl_draw_point (ball.pos, 1);
 		}
-		tinygl_draw_point (ball.pos, 1);
-		if (col <= -1)
-		{
-			char letter = 'B';
-		/* sent signnal to the 2nd run borad*/
-			ir_uart_putc(letter);
-		}
+		//~ if (col <= -1)
+		//~ {
+			//~ char letter = 'B';
+		//~ /* sent signnal to the 2nd run borad*/
+			//~ ir_uart_putc(letter);
+		//~ }
 		tinygl_update ();
-
 	}
 
     /* TODO Finish the game */
