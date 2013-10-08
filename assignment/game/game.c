@@ -5,18 +5,16 @@
 #include "pacer.h"
 #include "button.h"
 #include "pio.h"
-#include "com.h"
+#include "basic_function.h"
 #include "navswitch.h"
 #include "tinygl.h"
 #include "ir_uart.h"
-#include "display.h"
-#include "../fonts/font5x7_1.h"
-
+//#include "display.h"
 
 /* Define polling rate in Hz.  */
 #define LOOP_RATE 500
 #define NAVSWITCH_RATE 50
-
+#define MESSAGE_RATE 10
 /* Define row constants */
 #define COL_NUM 5
 #define ROW_NUM 7
@@ -28,151 +26,90 @@
 struct pad 
 {
     tinygl_point_t pos;
-    /* Current direction.  */
 };
-typedef struct pad pad_t;
-
 struct ball 
 {
     tinygl_point_t pos;
-    /* Current direction.  */
 };
+typedef struct pad pad_t;
 typedef struct ball ball_t;
-
-
-/* Define PIO pins driving LED matrix rows and columns.  */
-static pio_t ledmat_rows[] =
-{
-    LEDMAT_ROW1_PIO, LEDMAT_ROW2_PIO, LEDMAT_ROW3_PIO, LEDMAT_ROW4_PIO,
-    LEDMAT_ROW5_PIO, LEDMAT_ROW6_PIO, LEDMAT_ROW7_PIO
-};
-
-static pio_t ledmat_cols[] =
-{
-    LEDMAT_COL1_PIO, LEDMAT_COL2_PIO, LEDMAT_COL3_PIO,
-    LEDMAT_COL4_PIO, LEDMAT_COL5_PIO
-};
-
-
-static void ledmat_pixel_set (int col, int row, bool state)
-{
-    if (state)
-    {
-        pio_output_low (ledmat_rows[row]);
-        pio_output_low (ledmat_cols[col]);
-    }
-    else
-    {
-        pio_output_high (ledmat_rows[row]);
-        pio_output_high (ledmat_cols[col]);
-    }
-}
-
-
-/** Initialise LED matrix PIO pins.  */
-static void ledmat_init (void)
-{
-    uint8_t row;
-    uint8_t col;
-
-    for (row = 0; row < 7; row++)
-    {
-        pio_config_set (ledmat_rows[row], PIO_OUTPUT_HIGH);
-        pio_output_high (ledmat_rows[row]);
-    }
-
-    for (col = 0; col < 5; col++)
-    {
-        pio_config_set (ledmat_cols[col], PIO_OUTPUT_HIGH);
-        pio_output_high (ledmat_cols[col]);
-    }
-}
-
 
 int main (void)
 {
-
-    int row;
-    int col;
-    int rowinc;
-    int colinc;
-	int tick;
+    uint8_t rowinc;
+    uint8_t colinc;
+	uint8_t running;
+	uint16_t tick;
+	uint8_t Lost;
+	tick = 0; running = 1; Lost = 0;
+	rowinc = ROW_INCREMENT;
+	colinc = COL_INCREMENT;
     system_init ();
-    ir_uart_init ();
-    ledmat_init ();
     pacer_init (LOOP_RATE);
-    ir_uart_putc('A');
-
+    ir_uart_init ();
 	tinygl_init (LOOP_RATE);
-    tinygl_font_set (&font5x7_1);
-    uint8_t running = 1;
-    //~ if (ir_uart_getc() == 'A' && check == 0){
-		//~ x = 3;
-		//~ y = 2;
+    pad_t pad; 
+	ball_t ball;
+	pad.pos.x = 4;
+	pad.pos.y = 4;
+    //if (ir_uart_getc() == 'A' && check == 0){
+	ball.pos.x = INITIAL_COL;
+	ball.pos.y = INITIAL_ROW;
 	//~ }
 	//~ 
 	//~ if (ir_uart_getc() == 'B'){
-		//~ x = 1;
-		//~ y = -1;
+		//~ ball.pos.x = 1;
+		//~ ball.pos.y = -1;
 	//~ }
-	tick=0;
-	row = INITIAL_ROW;
-	col = INITIAL_COL;
-	rowinc = 1;
-	colinc = 1;
-    ledmat_pixel_set (col, row, 1);
-
-	pad_t pad;
-	ball_t ball;
-	ball.pos.x = col;
-	ball.pos.y = row;
-	pad.pos.x = 4;
-	pad.pos.y = TINYGL_HEIGHT / 2;
-	tinygl_draw_point (ball.pos, 1);
     while (1)
     {
 		pacer_wait ();
 		navswitch_update();
-		tinygl_draw_point (pad.pos, 0);
-		if (navswitch_push_event_p (NAVSWITCH_NORTH) && pad.pos.y > 0)
-		{
-			pad.pos.y--;
-		}
-		if (navswitch_push_event_p (NAVSWITCH_SOUTH) && pad.pos.y < TINYGL_HEIGHT -1)
-		{
-			pad.pos.y++;
-		}
-		tinygl_draw_point (pad.pos, 1);
-		tick++;
-        if (running && tick > 60)
-		{
-			tick=0;
-			tinygl_draw_point (ball.pos, 0);
-			ball.pos.x += colinc;
-			ball.pos.y += rowinc;
-			if (ball.pos.y > 6 || ball.pos.y < 0)
+		if (!Lost) {
+			tinygl_draw_point (pad.pos, 0);
+			if (navswitch_push_event_p (NAVSWITCH_NORTH) && pad.pos.y > 0)
 			{
-				ball.pos.y -= rowinc * 2;
-				rowinc = -rowinc;
-				//tinygl_update ();
-			}	
-			if (ball.pos.x > 3 || ball.pos.x < -4)
-			{
-				ball.pos.x -= colinc * 2;
-				colinc = -colinc;
-				//tinygl_update ();
+				pad.pos.y--;
 			}
-			tinygl_draw_point (ball.pos, 1);
+			if (navswitch_push_event_p (NAVSWITCH_SOUTH) && pad.pos.y < TINYGL_HEIGHT -1)
+			{
+				pad.pos.y++;
+			}
+			tinygl_draw_point (pad.pos, 1);
+			tick++;
+			if (running && tick > 300)
+			{
+				tick = 0;
+				tinygl_draw_point (ball.pos, 0);
+				ball.pos.x += colinc;
+				ball.pos.y += rowinc;
+				if (ball.pos.y > 6 || ball.pos.y < 0)
+				{
+					ball.pos.y -= rowinc * 2;
+					rowinc = -rowinc;
+				}	
+				if (ball.pos.x > 3 || ball.pos.x < -4)
+				{
+					ball.pos.x -= colinc * 2;
+					colinc = -colinc;
+				}
+				if (ball.pos.x == -1)
+				{
+					ir_uart_putc('S');
+				}
+				tinygl_draw_point (ball.pos, 1);
+			}
+			if (check_lose (ball.pos.x, ball.pos.y, pad.pos.y) == 0)
+			{
+				Lost = 1;
+			}
+		} 
+		else {
+			you_lose(LOOP_RATE, MESSAGE_RATE);
 		}
-		//~ if (col <= -1)
-		//~ {
-			//~ char letter = 'B';
-		//~ /* sent signnal to the 2nd run borad*/
-			//~ ir_uart_putc(letter);
-		//~ }
 		tinygl_update ();
+		
 	}
-
     /* TODO Finish the game */
 	return 0;
 }

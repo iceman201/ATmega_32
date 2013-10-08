@@ -61,11 +61,11 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 button.o: button.c button.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
-com.o: com.c com.h
+basic_function.o: basic_function.c basic_function.h ../../utils/tinygl.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Link: create output file (executable) from object files.
-game.out: game.o com.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o 
+game.out: game.o basic_function.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o 
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
