@@ -58,10 +58,10 @@ font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
 tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
-button.o: button.c button.h
+button.o: ../../drivers/button.c ../../drivers/button.h ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
-com.o: com.c com.h
+com.o: com.c com.h ../../drivers/avr/ir_uart.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Link: create output file (executable) from object files.
