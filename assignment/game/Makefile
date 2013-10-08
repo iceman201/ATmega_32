@@ -64,8 +64,11 @@ button.o: ../../drivers/button.c ../../drivers/button.h ../../drivers/avr/pio.h 
 basic_function.o: basic_function.c basic_function.h ../../utils/tinygl.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+led.o: ../../drivers/led.c ../../drivers/led.h ../../drivers/avr/system.h ../../drivers/avr/pio.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 # Link: create output file (executable) from object files.
-game.out: game.o basic_function.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o 
+game.out: game.o basic_function.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o led.o  
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

@@ -4,44 +4,54 @@
 #include "pacer.h"
 #include "../fonts/font5x7_1.h"
 
-int start_disaplay (int LOOP_RATE, int MESSAGE_RATE)
+#define MESSAGE_RATE 10
+
+void com_send (char m)
 {
-    pacer_init (LOOP_RATE);
-	tinygl_init (LOOP_RATE);
-	tinygl_font_set (&font5x7_1);
-	tinygl_text_speed_set(MESSAGE_RATE);
-	tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
-	tinygl_text("D&L PONG GAME, PUSH START\0");
-	while(1){
-		pacer_wait();
-		tinygl_update ();
-	}
-	return 0;
+	ir_uart_putc (m);
 }
 
-int you_lose(int LOOP_RATE, int MESSAGE_RATE)
+char com_get (void)
 {
-    pacer_init (LOOP_RATE);
-	tinygl_init (LOOP_RATE);
-	tinygl_font_set (&font5x7_1);
-	tinygl_text_speed_set(MESSAGE_RATE);
-	tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
-	tinygl_text("HAHA YOU LOSE\0");
-	while(1){
-		pacer_wait();
-		tinygl_update ();
-	}
-	return 0;
-}
-
-int check_lose (int ball_x, int ball_y, int pad_y)
-{
-	if (ball_x == 3 && ball_y == pad_y)
+	if ( ir_uart_read_ready_p () )
 	{
-		return 1;
+		return ir_uart_getc ();
 	}
-	else if (ball_x == 3 && ball_y != pad_y)
+	else 
 	{
 		return 0;
 	}
 }
+
+void display_character (char character)
+{
+    char buffer[2];
+
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text_mode_set(TINYGL_TEXT_MODE_STEP);
+    tinygl_text (buffer);
+}
+
+void you_lose (void)
+{
+	tinygl_text_speed_set(MESSAGE_RATE);
+	tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
+	tinygl_text("HAHA YOU LOSE!\0");
+	while (1) {
+		pacer_wait ();
+		tinygl_update ();
+	}
+}
+
+void you_win (void)
+{
+	tinygl_text_speed_set(MESSAGE_RATE);
+	tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
+	tinygl_text("YAY YOU WIN!\0");
+	while (1) {
+		pacer_wait ();
+		tinygl_update ();
+	}
+}
+
