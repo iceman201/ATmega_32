@@ -16,8 +16,6 @@
 #define NAVSWITCH_RATE 50
 #define MESSAGE_RATE 10
 /* Define row constants */
-#define COL_NUM 5
-#define ROW_NUM 7
 #define INITIAL_COL 2
 #define INITIAL_ROW 3
 #define COL_INCREMENT 1
