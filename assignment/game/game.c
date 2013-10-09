@@ -7,44 +7,49 @@
  * ID - NAME      lji30 - Liguo Jiao        *
  ********************************************/
 
+/** @file   game.c
+    @author Group 40
+    @date   10/10/2013
+    @brief  A simple pong-like game
+*/
+
 #include "pong.h"
 #include "navswitch.h"
 #include "tinygl.h"
 
-/* Define polling rate in Hz.  */
 #define LOOP_RATE (uint16_t)(500)
 #define GAME_RATE 300
 #define MESSAGE_RATE 10
 
-/* Define game board constants */
+/* Define initial game variables  */
 enum {
-    INITIAL_STATE = STATE_SETUP_SENDING,
-    INITIAL_ROW_S =  3,
-    INITIAL_COL_S =  2,
-    INITIAL_ROW_R =  3,
-    INITIAL_COL_R = -3,
-    INITIAL_ROW_INC =  1,
-    INITIAL_COL_INC =  1,
-    INITIAL_PAD_X = 4,
-    INITIAL_PAD_Y = 4,
+    INITIAL_STATE   =   STATE_SETUP_SENDING,
+    INITIAL_ROW_S   =   3,
+    INITIAL_COL_S   =   2,
+    INITIAL_ROW_R   =   3,
+    INITIAL_COL_R   =   -3,
+    INITIAL_ROW_INC =   1,
+    INITIAL_COL_INC =   1,
+    INITIAL_PAD_X   =   4,
+    INITIAL_PAD_Y   =   4
 };
 
 int main (void)
 {
-    /* initialise stuff */
+    /* initialise stuff  */
     system_init ();
     pacer_init (LOOP_RATE);
     navswitch_init ();
     tinygl_init (LOOP_RATE);
     pong_init (LOOP_RATE);
 
-    /* initialise variables */
+    /* initialise variables  */
     uint16_t tick;
     pong_state_t state;
     pong_pad_t pad; 
     pong_ball_t ball;
 
-    /* set initialised variables */
+    /* set initialised variables  */
     tick = 0;
     ball.rowinc = INITIAL_ROW_INC;
     ball.colinc = INITIAL_COL_INC;
@@ -54,7 +59,7 @@ int main (void)
     ball.pos.y = INITIAL_ROW_S;
     state = INITIAL_STATE;
 
-    /* Main game loop, this will only get cycled once as the end functions block */
+    /* Main game loop, this will only get cycled once as the end functions block  */
     while (1)
     {
         // Sending state loop
@@ -95,25 +100,25 @@ int main (void)
                 state = STATE_PLAYING;
             }
         }        
-        /* Game loop */
+        /* Game loop  */
         while (state == STATE_PLAYING) 
         {
             pong_wait ();
             navswitch_update();
 
             // Send playing message
-            if (!(tick%(MESSAGE_RATE))
+            if (!(tick % MESSAGE_RATE))
             {
                 pong_send (MESSAGE_PLAYING);
             }            
             
             // Do pad movement
             tinygl_draw_point (pad.pos, 0);
-            if (navswitch_push_event_p (NAVSWITCH_NORTH) && pad.pos.y > 0)
+            if (navswitch_push_event_p (NAVSWITCH_NORTH) && (pad.pos.y > 0))
             {
                 pad.pos.y--;
             }
-            if (navswitch_push_event_p (NAVSWITCH_SOUTH) && pad.pos.y < TINYGL_HEIGHT -1)
+            if (navswitch_push_event_p (NAVSWITCH_SOUTH) && (pad.pos.y < (TINYGL_HEIGHT -1)))
             {
                 pad.pos.y++;
             }
@@ -127,12 +132,12 @@ int main (void)
                 tinygl_draw_point (ball.pos, 0); // Remove the old point
                 ball.pos.x += ball.colinc;
                 ball.pos.y += ball.rowinc;
-                if ( (ball.pos.y > MAX_Y) || (ball.pos.y < MIN_Y) )
+                if ((ball.pos.y > MAX_Y) || (ball.pos.y < MIN_Y))
                 {
                     ball.pos.y -=  ball.rowinc * 2;
                     ball.rowinc = -ball.rowinc;
                 }  
-                if ( (ball.pos.x > MAX_X) || (ball.pos.x < MIN_X) )
+                if ((ball.pos.x > MAX_X) || (ball.pos.x < MIN_X))
                 {
                     ball.pos.x -=  ball.colinc * 2;
                     ball.colinc = -ball.colinc;
@@ -144,18 +149,18 @@ int main (void)
             tinygl_update ();
 
             // Check for game loss
-            if ( (ball.pos.x == MAX_X) && (ball.pos.y != pad.pos.y) )
+            if ((ball.pos.x == MAX_X) && (ball.pos.y != pad.pos.y))
             {
                 state = STATE_FINISH_LOST;
             }
             // Check for loss signal
-            if ( pong_get () == MESSAGE_LOST )
+            if (pong_get () == MESSAGE_LOST)
             {
                 state = STATE_FINISH_WON;
             }
         }
 
-        /* End program */
+        /* End program  */
         if (state == STATE_FINISH_LOST)
         {
             pong_lose ();
