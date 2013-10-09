@@ -16,8 +16,6 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h
-	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -61,14 +59,17 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 button.o: ../../drivers/button.c ../../drivers/button.h ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-basic_function.o: basic_function.c basic_function.h ../../utils/tinygl.h ../../utils/pacer.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 led.o: ../../drivers/led.c ../../drivers/led.h ../../drivers/avr/system.h ../../drivers/avr/pio.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+pong.o: pong.c pong.h ../../utils/tinygl.h ../../utils/pacer.h ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 # Link: create output file (executable) from object files.
-game.out: game.o basic_function.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o led.o  
+game.out: game.o pong.o pio.o system.o prescale.o timer.o ledmat.o pacer.o navswitch.o display.o font.o tinygl.o button.o timer0.o usart1.o ir_uart.o led.o  
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
