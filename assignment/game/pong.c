@@ -7,6 +7,11 @@
 
 #define MESSAGE_RATE 10
 
+void pong_wait (void)
+{
+	pacer_wait ();
+}
+
 void pong_led_on (void)
 {
 	led_set (LED1, 1);
@@ -36,12 +41,18 @@ pong_message pong_get (void)
 
 void pong_lose (void)
 {
+	int tick = 0;
     tinygl_text_speed_set(MESSAGE_RATE);
     tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
-    tinygl_text("HAHA YOU LOSE!\0");
+    tinygl_text("YOU LOSE! HAHA!\0");
     while (1) {
         pacer_wait ();
-        pong_send (MESSAGE_LOST);
+        tick++;
+        if (tick == 20) 
+        {
+        	pong_send (MESSAGE_LOST);
+        	tick = 0;
+        }
         tinygl_update ();
     }
 }
@@ -50,16 +61,17 @@ void pong_win (void)
 {
     tinygl_text_speed_set(MESSAGE_RATE);
     tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
-    tinygl_text("YAY YOU WIN!\0");
+    tinygl_text("YOU WIN! YAAAY!\0");
     while (1) {
         pacer_wait ();
         tinygl_update ();
     }
 }
 
-void pong_init (void)
+void pong_init (uint8_t rate)
 {
 	led_init ();
+	pacer_init (rate);
 	ir_uart_init ();
 	tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set(MESSAGE_RATE);

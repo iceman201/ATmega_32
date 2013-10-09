@@ -9,7 +9,7 @@
 #ifndef PONG_H
 #define PONG_H
 
-#include "led.h"]\
+#include "led.h"
 #include "system.h"
 #include "tinygl.h"
 #include "ir_uart.h"
@@ -47,6 +47,9 @@ typedef struct _ball
     tinygl_point_t pos;
 } pong_ball;
 
+/* Implements the pacer_wait function */
+void pong_wait (void);
+
 /** Turns the blue LED on */
 void pong_led_on (void);
 
@@ -71,6 +74,6 @@ void pong_lose (void);
 void pong_win (void);
 
 /** Initialize stuff */
-void pong_init (void);
+void pong_init (uint8_t rate);
 
-#endif PONG_H
+#endif

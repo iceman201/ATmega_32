@@ -5,20 +5,19 @@
  * Game name :                              *
  * Student name: David Barclay & Liguo Jiao *
  ********************************************/
- 
-#include "pacer.h"
+
 #include "pong.h"
 #include "navswitch.h"
 #include "tinygl.h"
-#include "../../fonts/font5x7_1.h"
 
 /* Define polling rate in Hz.  */
-#define LOOP_RATE 500
+#define LOOP_RATE (uint8_t)(500)
 
 /* Define game board constants */
 enum {
-    INITIAL_ROW_S =  3,    INITIAL_COL_S =  2,
-    INITIAL_ROW_R =  3,    INITIAL_COL_R =  -3,
+    INITIAL_STATE = STATE_SETUP_SENDING,
+    INITIAL_ROW_S = 3,    INITIAL_COL_S = 2,
+    INITIAL_ROW_R = 3,    INITIAL_COL_R = -3,
     INITIAL_ROW_INCREMENT =  1,
     INITIAL_COL_INCREMENT =  1,
     INITIAL_PAD_X = 4,
@@ -40,7 +39,7 @@ int main (void)
     pacer_init (LOOP_RATE);
     navswitch_init ();
     tinygl_init (LOOP_RATE);
-    pong_init ();
+    pong_init (LOOP_RATE);
 
     tick = 0;
     rowinc = INITIAL_ROW_INCREMENT;
@@ -49,14 +48,14 @@ int main (void)
     pad.pos.y = INITIAL_PAD_Y;
     ball.pos.x = INITIAL_COL_S;
     ball.pos.y = INITIAL_ROW_S;
-    state = STATE_SETUP_SENDING;
+    state = INITIAL_STATE;
 
     while (1)
     {
         // Sending state loop
         while (state == STATE_SETUP_SENDING)
         {
-            pacer_wait ();
+            pong_wait ();
             navswitch_update ();
             if (navswitch_down_p (NAVSWITCH_PUSH))
             {
@@ -79,7 +78,7 @@ int main (void)
         tick = 0;
         while (state == STATE_SETUP_RECIEVING)
         {
-            pacer_wait ();
+            pong_wait ();
             tick++;
             if (tick == 10)
             {
@@ -94,7 +93,7 @@ int main (void)
         /* Game loop */
         while (state == STATE_PLAYING) 
         {
-            pacer_wait ();
+            pong_wait ();
             navswitch_update();
 
             // Send playing message
