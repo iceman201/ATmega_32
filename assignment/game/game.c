@@ -2,8 +2,9 @@
  * 2013 Semester 2                          *
  * ENCE 260  Assignment                     *
  * Group number:   40                       *
- * Game name :                              *
- * Student name: David Barclay & Liguo Jiao *
+ * Game name : Simple Pong                  *
+ * Student:       dlb70 - David Barclay     *
+ * ID - NAME      lji30 - Liguo Jiao        *
  ********************************************/
 
 #include "pong.h"
@@ -12,6 +13,8 @@
 
 /* Define polling rate in Hz.  */
 #define LOOP_RATE (uint16_t)(500)
+#define GAME_RATE 300
+#define MESSAGE_RATE 10
 
 /* Define game board constants */
 enum {
@@ -28,17 +31,20 @@ enum {
 
 int main (void)
 {
-    uint16_t tick;
-    pong_state_t state;
-    pong_pad_t pad; 
-    pong_ball_t ball;
-    
+    /* initialise stuff */
     system_init ();
     pacer_init (LOOP_RATE);
     navswitch_init ();
     tinygl_init (LOOP_RATE);
     pong_init (LOOP_RATE);
 
+    /* initialise variables */
+    uint16_t tick;
+    pong_state_t state;
+    pong_pad_t pad; 
+    pong_ball_t ball;
+
+    /* set initialised variables */
     tick = 0;
     ball.rowinc = INITIAL_ROW_INC;
     ball.colinc = INITIAL_COL_INC;
@@ -48,6 +54,7 @@ int main (void)
     ball.pos.y = INITIAL_ROW_S;
     state = INITIAL_STATE;
 
+    /* Main game loop, this will only get cycled once as the end functions block */
     while (1)
     {
         // Sending state loop
@@ -78,7 +85,7 @@ int main (void)
         {
             pong_wait ();
             tick++;
-            if (tick == 10)
+            if (tick == MESSAGE_RATE)
             {
                 pong_send (MESSAGE_RECIEVING);
                 tick = 0;
@@ -95,7 +102,7 @@ int main (void)
             navswitch_update();
 
             // Send playing message
-            if (!(tick%10))
+            if (!(tick%(MESSAGE_RATE))
             {
                 pong_send (MESSAGE_PLAYING);
             }            
@@ -114,7 +121,7 @@ int main (void)
 
             // Do ball movement
             tick++;
-            if (tick == 300)
+            if (tick > GAME_RATE)
             {
                 tick = 0;
                 tinygl_draw_point (ball.pos, 0); // Remove the old point
@@ -156,7 +163,7 @@ int main (void)
         if (state == STATE_FINISH_WON)
         {
             pong_win ();
-        }      
-    }   
+        }
+    }
     return 0;
 }

@@ -1,8 +1,7 @@
 /** @file pong.h
-
+	@author Group 40
     @brief helper module for the pong game
-
-    This module contains some functions to abstract complexity from the main game program.
+    @date 9/10/2013
 */
 
 #ifndef PONG_H
