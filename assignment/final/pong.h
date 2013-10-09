@@ -1,8 +1,7 @@
 /** @file pong.h
-
+	@author Group 40
     @brief helper module for the pong game
-
-    This module contains some functions to abstract complexity from the main game program.
+    @date 10/10/2013
 */
 
 #ifndef PONG_H
@@ -15,7 +14,7 @@
 #include "pacer.h"
 #include "../fonts/font5x7_1.h"
 
-/* Messages to be sent between boards */
+/* Messages to be sent between boards  */
 typedef enum
 {
     MESSAGE_SENDING = 'A',
@@ -24,7 +23,7 @@ typedef enum
     MESSAGE_LOST = 'D'
 } pong_message_t;
 
-/* Different states of the program */
+/* Different states of the program  */
 typedef enum 
 {
     STATE_SETUP_SENDING,
@@ -34,7 +33,7 @@ typedef enum
     STATE_FINISH_LOST
 } pong_state_t;
 
-/* Borders of the board */
+/* Borders of the board  */
 typedef enum
 {
     MIN_Y =  0,
@@ -43,13 +42,13 @@ typedef enum
     MAX_X =  3
 } pong_border_t;
 
-/* The pad controlled by the player */
+/* The pad controlled by the player  */
 typedef struct _pad 
 {
     tinygl_point_t pos;
 } pong_pad_t;
 
-/* The ball */
+/* The ball  */
 typedef struct _ball 
 {
     tinygl_point_t pos;
@@ -57,33 +56,33 @@ typedef struct _ball
     int colinc;
 } pong_ball_t;
 
-/* Implements the pacer_wait function */
+/* Implements the pacer_wait function  */
 void pong_wait (void);
 
-/** Turns the blue LED on */
+/** Turns the blue LED on  */
 void pong_led_on (void);
 
-/** Turns the blue LED off */
+/** Turns the blue LED off  */
 void pong_led_off (void);
 
 /** Transmits a message over IR 
-    @param pong_message m message */
+    @param pong_message m message  */
 void pong_send (pong_message_t m);
 
 /** Tries to recieve a message over IR 
-    @return pong_message m message */
+    @return pong_message m message  */
 pong_message_t pong_get (void);
 
 /** Displays a loss message on the LED Matrix 
     and frequently send a loss message.
-    !!This function blocks indefinitely!! */
+    !!This function blocks indefinitely!!  */
 void pong_lose (void);
 
 /** Displays a win message on the LED Matrix.
-    !!This function blocks indefinitely!! */
+    !!This function blocks indefinitely!!  */
 void pong_win (void);
 
-/** Initialize stuff */
+/** Initialize stuff  */
 void pong_init (uint16_t rate);
 
 #endif
