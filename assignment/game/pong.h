@@ -1,9 +1,8 @@
-/** @file basic_function.h
-    @brief Infrared (IR) communications for pong.
+/** @file pong.h
 
-    This module implements and IR communication system
-    for the UCFK4 for playing a game similar to pong
-    across two boards.
+    @brief helper module for the pong game
+
+    This module contains some functions to abstract complexity from the main game program.
 */
 
 #ifndef PONG_H
@@ -23,7 +22,7 @@ typedef enum
     MESSAGE_RECIEVING = 'B',
     MESSAGE_PLAYING = 'C',
     MESSAGE_LOST = 'D'
-} pong_message;
+} pong_message_t;
 
 /* Different states of the program */
 typedef enum 
@@ -33,19 +32,30 @@ typedef enum
     STATE_PLAYING,
     STATE_FINISH_WON,
     STATE_FINISH_LOST
-} pong_state;
+} pong_state_t;
+
+/* Borders of the board */
+typedef enum
+{
+    MIN_Y =  0,
+    MAX_Y =  6,
+    MIN_X = -4,
+    MAX_X =  3
+} pong_border_t;
 
 /* The pad controlled by the player */
 typedef struct _pad 
 {
     tinygl_point_t pos;
-} pong_pad;
+} pong_pad_t;
 
 /* The ball */
 typedef struct _ball 
 {
     tinygl_point_t pos;
-} pong_ball;
+    int rowinc;
+    int colinc;
+} pong_ball_t;
 
 /* Implements the pacer_wait function */
 void pong_wait (void);
@@ -58,11 +68,11 @@ void pong_led_off (void);
 
 /** Transmits a message over IR 
     @param pong_message m message */
-void pong_send (pong_message m);
+void pong_send (pong_message_t m);
 
 /** Tries to recieve a message over IR 
     @return pong_message m message */
-pong_message pong_get (void);
+pong_message_t pong_get (void);
 
 /** Displays a loss message on the LED Matrix 
     and frequently send a loss message.
@@ -74,6 +84,6 @@ void pong_lose (void);
 void pong_win (void);
 
 /** Initialize stuff */
-void pong_init (uint8_t rate);
+void pong_init (uint16_t rate);
 
 #endif

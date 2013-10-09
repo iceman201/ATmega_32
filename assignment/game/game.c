@@ -11,29 +11,27 @@
 #include "tinygl.h"
 
 /* Define polling rate in Hz.  */
-#define LOOP_RATE (uint8_t)(500)
+#define LOOP_RATE (uint16_t)(500)
 
 /* Define game board constants */
 enum {
     INITIAL_STATE = STATE_SETUP_SENDING,
-    INITIAL_ROW_S = 3,    INITIAL_COL_S = 2,
-    INITIAL_ROW_R = 3,    INITIAL_COL_R = -3,
-    INITIAL_ROW_INCREMENT =  1,
-    INITIAL_COL_INCREMENT =  1,
+    INITIAL_ROW_S =  3,
+    INITIAL_COL_S =  2,
+    INITIAL_ROW_R =  3,
+    INITIAL_COL_R = -3,
+    INITIAL_ROW_INC =  1,
+    INITIAL_COL_INC =  1,
     INITIAL_PAD_X = 4,
     INITIAL_PAD_Y = 4,
-    MIN_Y =  0,    MAX_Y =  6,
-    MIN_X = -4,    MAX_X =  3,
 };
 
 int main (void)
 {
-    uint8_t rowinc;
-    uint8_t colinc;
     uint16_t tick;
-    pong_state state;
-    pong_pad pad; 
-    pong_ball ball;
+    pong_state_t state;
+    pong_pad_t pad; 
+    pong_ball_t ball;
     
     system_init ();
     pacer_init (LOOP_RATE);
@@ -42,8 +40,8 @@ int main (void)
     pong_init (LOOP_RATE);
 
     tick = 0;
-    rowinc = INITIAL_ROW_INCREMENT;
-    colinc = INITIAL_COL_INCREMENT;
+    ball.rowinc = INITIAL_ROW_INC;
+    ball.colinc = INITIAL_COL_INC;
     pad.pos.x = INITIAL_PAD_X;
     pad.pos.y = INITIAL_PAD_Y;
     ball.pos.x = INITIAL_COL_S;
@@ -62,8 +60,8 @@ int main (void)
                 state = STATE_SETUP_RECIEVING;
                 ball.pos.x = INITIAL_COL_R;
                 ball.pos.y = INITIAL_ROW_R;
-                rowinc = -INITIAL_ROW_INCREMENT;
-                colinc = -INITIAL_ROW_INCREMENT;
+                ball.rowinc = -INITIAL_ROW_INC;
+                ball.colinc = -INITIAL_ROW_INC;
                 pong_led_off ();
             }
             pong_send (MESSAGE_SENDING);
@@ -116,28 +114,30 @@ int main (void)
 
             // Do ball movement
             tick++;
-            if (tick > 300)
+            if (tick == 300)
             {
                 tick = 0;
                 tinygl_draw_point (ball.pos, 0); // Remove the old point
-                ball.pos.x += colinc;
-                ball.pos.y += rowinc;
-                if (ball.pos.y > MAX_Y || ball.pos.y < MIN_Y)
+                ball.pos.x += ball.colinc;
+                ball.pos.y += ball.rowinc;
+                if ( (ball.pos.y > MAX_Y) || (ball.pos.y < MIN_Y) )
                 {
-                    ball.pos.y -= rowinc * 2;
-                    rowinc = -rowinc;
+                    ball.pos.y -=  ball.rowinc * 2;
+                    ball.rowinc = -ball.rowinc;
                 }  
-                if (ball.pos.x > MAX_X || ball.pos.x < MIN_X)
+                if ( (ball.pos.x > MAX_X) || (ball.pos.x < MIN_X) )
                 {
-                    ball.pos.x -= colinc * 2;
-                    colinc = -colinc;
+                    ball.pos.x -=  ball.colinc * 2;
+                    ball.colinc = -ball.colinc;
                 }
                 tinygl_draw_point (ball.pos, 1); // Draw the new point
             }
+            
+            // Refresh the display
             tinygl_update ();
 
             // Check for game loss
-            if ((ball.pos.x == MAX_X) && (ball.pos.y != pad.pos.y))
+            if ( (ball.pos.x == MAX_X) && (ball.pos.y != pad.pos.y) )
             {
                 state = STATE_FINISH_LOST;
             }
