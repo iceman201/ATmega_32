@@ -11,6 +11,9 @@
     @author Group 40
     @date   10/10/2013
     @brief  A simple pong-like game
+
+    @reference  Some of the code for ball movement was appropriated 
+                from Michael Hayes' bounce program.
 */
 
 #include "pong.h"
@@ -36,20 +39,20 @@ enum {
 
 int main (void)
 {
-    /* initialise stuff  */
+    /* Initialise stuff  */
     system_init ();
     pacer_init (LOOP_RATE);
     navswitch_init ();
     tinygl_init (LOOP_RATE);
     pong_init (LOOP_RATE);
 
-    /* initialise variables  */
+    /* Initialise variables  */
     uint16_t tick;
     pong_state_t state;
     pong_pad_t pad; 
     pong_ball_t ball;
 
-    /* set initialised variables  */
+    /* Set initialised variables  */
     tick = 0;
     ball.rowinc = INITIAL_ROW_INC;
     ball.colinc = INITIAL_COL_INC;
@@ -62,7 +65,7 @@ int main (void)
     /* Main game loop, this will only get cycled once as the end functions block  */
     while (1)
     {
-        // Sending state loop
+
         while (state == STATE_SETUP_SENDING)
         {
             pong_wait ();
@@ -84,7 +87,7 @@ int main (void)
                 pong_led_off ();
             }
         }
-        // Recieving state loop
+
         tick = 0;
         while (state == STATE_SETUP_RECIEVING)
         {
@@ -99,14 +102,14 @@ int main (void)
             {
                 state = STATE_PLAYING;
             }
-        }        
-        /* Game loop  */
+        }
+
+        tick = 0;
         while (state == STATE_PLAYING) 
         {
             pong_wait ();
             navswitch_update();
 
-            // Send playing message
             if (!(tick % MESSAGE_RATE))
             {
                 pong_send (MESSAGE_PLAYING);
@@ -129,7 +132,7 @@ int main (void)
             if (tick > GAME_RATE)
             {
                 tick = 0;
-                tinygl_draw_point (ball.pos, 0); // Remove the old point
+                tinygl_draw_point (ball.pos, 0);
                 ball.pos.x += ball.colinc;
                 ball.pos.y += ball.rowinc;
                 if ((ball.pos.y > MAX_Y) || (ball.pos.y < MIN_Y))
@@ -142,18 +145,15 @@ int main (void)
                     ball.pos.x -=  ball.colinc * 2;
                     ball.colinc = -ball.colinc;
                 }
-                tinygl_draw_point (ball.pos, 1); // Draw the new point
+                tinygl_draw_point (ball.pos, 1);
             }
             
-            // Refresh the display
             tinygl_update ();
 
-            // Check for game loss
             if ((ball.pos.x == MAX_X) && (ball.pos.y != pad.pos.y))
             {
                 state = STATE_FINISH_LOST;
             }
-            // Check for loss signal
             if (pong_get () == MESSAGE_LOST)
             {
                 state = STATE_FINISH_WON;
