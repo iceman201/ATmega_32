@@ -29,10 +29,10 @@ int main (void)
     {
 		pio_output_low(LEDMAT_COL1_PIO);    
 		pio_output_low(LEDMAT_ROW1_PIO);
-				pio_output_low(LEDMAT_ROW2_PIO);
-						pio_output_low(LEDMAT_ROW3_PIO);
-								pio_output_low(LEDMAT_ROW5_PIO);
-										pio_output_low(LEDMAT_ROW6_PIO);
+		pio_output_low(LEDMAT_ROW2_PIO);
+		pio_output_low(LEDMAT_ROW3_PIO);
+		pio_output_low(LEDMAT_ROW5_PIO);
+		pio_output_low(LEDMAT_ROW6_PIO);
 		pio_output_low(LEDMAT_COL3_PIO);
 		pio_output_low(LEDMAT_ROW4_PIO);
 		pio_output_low(LEDMAT_COL2_PIO);    
@@ -44,8 +44,7 @@ int main (void)
 		//~ if (PIND & (1<<7)){
 			//~ pio_output_toggle(LED_PIO);
 		//~ }
-		//~ while(!PIND & (0<<7)){
-		//~ }
+		//~ while(!PIND & (0<<7)){		//~ }
 	//~ 
 			
 		//~ if (PIND &= (0<<7)){

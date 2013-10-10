@@ -1,5 +1,5 @@
 /** @file pong.h
-	@author Group 40
+    @author Group 40
     @brief helper module for the pong game
     @date 10/10/2013
 */
